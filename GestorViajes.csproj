@@ -27,9 +27,7 @@
     <Folder Include="Translations\" />
     <Folder Include="Services\Account\" />
     <Folder Include="Services\User\" />
-    <Folder Include="Views\Viaje\" />
     <Folder Include="Views\User\" />
-    <Folder Include="Views\Vehiculos\" />
   </ItemGroup>
 
 </Project>

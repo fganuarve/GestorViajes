@@ -22,4 +22,20 @@
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\ViewModels\Account\" />
+    <Folder Include="Models\ViewModels\Roadtrip\" />
+    <Folder Include="Models\ViewModels\Vehicle\" />
+    <Folder Include="Translations\" />
+    <Folder Include="Repositories\Vehicles\" />
+    <Folder Include="Repositories\Roadtrips\" />
+    <Folder Include="Services\Account\" />
+    <Folder Include="Services\Vehicle\" />
+    <Folder Include="Services\Roadtrip\" />
+    <Folder Include="Services\User\" />
+    <Folder Include="Views\Roadtrips\" />
+    <Folder Include="Views\User\" />
+    <Folder Include="Views\Vehicles\" />
+  </ItemGroup>
+
 </Project>

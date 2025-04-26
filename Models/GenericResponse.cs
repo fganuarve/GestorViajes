@@ -1,6 +1,6 @@
-﻿/*namespace GestorViajes.Models
+﻿namespace GestorViajes.Models
 {
-    public class GenericResponse
+    public class GenericResponse<T>
     {
         public T? Data { get; set; }
         public ErrorResponse? Error { get; set; }
@@ -13,4 +13,4 @@
             }
         }
     }
-}*/
+}

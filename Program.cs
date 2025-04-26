@@ -38,6 +38,8 @@ namespace GestorViajes
             //builder.Services.AddScoped<IUserService, UserService>();
             //builder.Services.AddScoped<IViajeService, ViajeService>();
             //builder.Services.AddScoped<IVehiculoService, VehiculoService>();
+            builder.Services.AddAutoMapper(typeof(Program));
+
 
 
             var app = builder.Build();

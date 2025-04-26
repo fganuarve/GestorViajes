@@ -1,135 +1,57 @@
-﻿/*using AutoMapper;*/
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using GestorViajes.Models.EFCore;
-using GestorViajes.Models.ViewModels;
-/*using GestorViajes.Services;
-using GestorViajes.Services.Datatables.User;
-using GestorViajes.Utils.TempData;*/
+using GestorViajes.Models.EFCore.GestionTurnos;
+using GestorViajes.Models.ViewModels.User;
+using GestorViajes.Services.User;
 
 namespace GestorViajes.Controllers
 {
     public class UserController : Controller
     {
         private readonly IUserService _userService;
-        private readonly IUserDatatablesService _datatables;
-        //private readonly IAddressService _addressService;
-        private readonly IHttpContextAccessor _accessor;
         private readonly IMapper _mapper;
+
         public UserController(
             IUserService userService,
-            IUserDatatablesService datatables,
-            //IAddressService addressService,
-            IHttpContextAccessor accessor,
             IMapper mapper)
         {
             _userService = userService;
-            _datatables = datatables;
-            //_addressService = addressService;
-            _accessor = accessor;
             _mapper = mapper;
         }
 
+        // Lista de usuarios
         public IActionResult Index()
         {
             return View();
         }
+       
 
-        public async Task<IActionResult> GetData()
-        {
-            var response = await _datatables.List(Request, "");
-
-            return Ok(response);
-        }
-
-
-        // Muestra el formulario para agregar un usuario (GET)
+        // Formulario de creacion
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
-        }
-        [HttpGet]
-        public IActionResult CreateStep1()
-        {
-            return PartialView("_CreateStep1", new CreateUserStep1ViewModel());
+            var model = new UserViewModel
+            {
+                Roles = GetAvailableRoles()
+            };
+            return View(model);
         }
 
+        // Procesa la creacion
         [HttpPost]
-        public IActionResult CreateStep1(CreateUserStep1ViewModel model)
+        public async Task<IActionResult> Create(UserViewModel model)
         {
             if (!ModelState.IsValid)
             {
+                model.Roles = GetAvailableRoles();
                 return View(model);
             }
 
-            // Anti Tamper protection
-            TempData.StoreModelInTempData(model); // Store dynamically
-            return Json(new { success = true, nextStep = "CreateStep2" });
-        }
+            var usuario = _mapper.Map<usuarios>(model);
 
-        [HttpGet]
-        public ActionResult CreateStep2()
-        {
-            return PartialView("_CreateStep2", new AddressViewModel());
-        }
+            var serviceResponse = await _userService.Add(usuario);
 
-        [HttpPost]
-        public async Task<IActionResult> CreateStep2(AddressViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            // Add the address if doesnt exists in the database
-            var addressResponse = await _addressService.Exists(model);
-            if (!addressResponse.Success)
-            {
-                return View(model);
-            }
-            if (!addressResponse.Data)
-            {
-                var addressSaved = await _addressService.Add(model);
-                if (!addressSaved.Success)
-                {
-                    return View(model);
-                }
-            }
-
-            TempData.StoreModelInTempData(model);
-            return Json(new { success = true, nextStep = "CreateStep3" });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> CreateStep3()
-        {
-            var roles = await _userService.ListRoles();
-            if (!roles.Success)
-            {
-                TempData.Clear();
-                return RedirectToAction(nameof(Index));
-            }
-            var model = new CreateUserStep3ViewModel();
-            model.Roles = roles.Data!;
-            return PartialView("_CreateStep3", model);
-        }
-
-        // Procesa el formulario y agrega un usuario 
-        [HttpPost]
-        public async Task<IActionResult> CreateSubmit(CreateUserStep3ViewModel model)
-        {   //Validación del modelo
-            if (!ModelState.IsValid)
-            {
-                return PartialView("_CreateStep3", model);
-            }
-
-            // Recover all the steps
-            var userModel = TempData.RetrieveModelFromTempData<CreateUserViewModel>();
-            userModel.SelectedRole = model.SelectedRole;
-            var mapedEntity = _mapper.Map<CreateUserViewModel, User>(userModel);
-            //Llamada al servicio
-            var serviceResponse = await _userService.Add(mapedEntity);
             if (!serviceResponse.Success)
             {
                 TempData["status"] = "error";
@@ -137,16 +59,17 @@ namespace GestorViajes.Controllers
                 return View(model);
             }
 
-            //Redirección a la pantalla de inicio del controlador
             TempData["status"] = "success";
-            TempData["mensaje"] = "El usuario se ha creado con éxito";
+            TempData["mensaje"] = "Usuario creado exitosamente.";
             return RedirectToAction(nameof(Index));
         }
+
+        // Formulario de edicion
         [HttpGet]
-        //Mostrar el formulario de edición con los datos actuales del usuario.
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(long id)
         {
-            var userResponse = await _userService.Get(u => u.Id == id);
+            var userResponse = await _userService.Get(u => u.id == id);
+
             if (!userResponse.Success)
             {
                 TempData["status"] = "error";
@@ -155,54 +78,65 @@ namespace GestorViajes.Controllers
             }
 
             var model = _mapper.Map<UserViewModel>(userResponse.Data);
-            model.Roles = new List<SelectListItem>()
-            {
-                new SelectListItem(){ Value = "1", Text = "Admin"},
-                new SelectListItem(){ Value = "2", Text = "Veterinarian"},
-                new SelectListItem(){ Value = "3", Text = "User"},
-            };
+            model.Roles = GetAvailableRoles();
+
             return View(model);
         }
 
+        // Procesa la edicion
         [HttpPost]
-        //Recibe los datos del formulario que el usuario ha introducido y los guarda en la base de datos.
-        public async Task<IActionResult> EditSubmit(UserViewModel model)
+        public async Task<IActionResult> Edit(UserViewModel model)
         {
             if (!ModelState.IsValid)
             {
+                model.Roles = GetAvailableRoles();
                 TempData["status"] = "error";
-                TempData["mensaje"] = "Error al editar el usuario";
+                TempData["mensaje"] = "Error al editar el usuario.";
                 return View(model);
             }
 
-            var mappedEntity = _mapper.Map<User>(model);
-            var serviceResponse = await _userService.Edit(mappedEntity);
+            var usuario = _mapper.Map<usuarios>(model);
+
+            var serviceResponse = await _userService.Edit(usuario);
+
             if (!serviceResponse.Success)
             {
                 TempData["status"] = "error";
                 TempData["mensaje"] = serviceResponse.Error!.Message;
                 return RedirectToAction(nameof(Index));
             }
+
             TempData["status"] = "success";
-            TempData["mensaje"] = "Usuario editado exitosamente";
+            TempData["mensaje"] = "Usuario editado exitosamente.";
             return RedirectToAction(nameof(Index));
         }
 
-        // TODO: Darle otra vuelta al delete
-        // Llamarlo por ajax? Mostrar una vista con confirmacion? Por decidir
-        //Muestra la vista de confirmación antes de eliminar el usuario (evitar borrado accidental)
-        public async Task<IActionResult> DeleteUser(string id)
+        // Eliminar usuario
+        [HttpPost]
+        public async Task<IActionResult> Delete(long id)
         {
             var serviceResponse = await _userService.Delete(id);
+
             if (!serviceResponse.Success)
             {
                 TempData["status"] = "error";
                 TempData["mensaje"] = serviceResponse.Error!.Message;
                 return RedirectToAction(nameof(Index));
             }
+
             TempData["status"] = "success";
-            TempData["mensaje"] = "Usuario eliminado exitosamente";
+            TempData["mensaje"] = "Usuario eliminado exitosamente.";
             return RedirectToAction(nameof(Index));
         }
+
+        // Roles disponibles
+        private List<SelectListItem> GetAvailableRoles()
+        {
+            return new List<SelectListItem>
+            {
+                new SelectListItem { Value = "Admin", Text = "Administrador" },
+                new SelectListItem { Value = "User", Text = "Usuario" }
+            };
+        }
     }
-}*/
+}

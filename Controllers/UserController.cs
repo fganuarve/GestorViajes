@@ -1,11 +1,11 @@
-﻿/*using AutoMapper;
+﻿/*using AutoMapper;*/
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GestorViajes.Models.EFCore;
 using GestorViajes.Models.ViewModels;
-using GestorViajes.Services;
+/*using GestorViajes.Services;
 using GestorViajes.Services.Datatables.User;
-using GestorViajes.Utils.TempData;
+using GestorViajes.Utils.TempData;*/
 
 namespace GestorViajes.Controllers
 {

@@ -1,4 +1,4 @@
-﻿using GestorViajes.Models.EFCore.GestionTurnos;
+﻿/*using GestorViajes.Models.EFCore.GestionTurnos;
 using GestorViajes.Models.ViewModels.Vehicle;
 using GestorViajes.Services.Vehiculo;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,6 @@ namespace GestorViajes.Controllers
     public class VehiculoController : Controller
     {
         private readonly IVehiculoService _vehiculoService;
-        private readonly IVehiculoDatatablesService _datatables;
         private readonly IHttpContextAccessor _accessor;
         private readonly IMapper _mapper;
 
@@ -142,4 +141,4 @@ namespace GestorViajes.Controllers
         }
     }
 
-}
+}*/

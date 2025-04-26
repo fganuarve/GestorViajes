@@ -1,4 +1,4 @@
-﻿using GestorViajes.Models.ViewModels.Vehicle;
+﻿/*using GestorViajes.Models.ViewModels.Vehicle;
 using System.Linq.Expressions;
 
 namespace GestorViajes.Services.Vehiculo
@@ -13,4 +13,4 @@ namespace GestorViajes.Services.Vehiculo
         Task<GenericResponse<bool>> Exists(Expression<Func<Vehiculo, bool>> predicate);
         Task<GenericResponse<List<VehiculoViewModel>>> ListByUser(long userId);
     }
-}
+}*/

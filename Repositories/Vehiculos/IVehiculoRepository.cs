@@ -1,4 +1,4 @@
-﻿using GestorViajes.Models.EFCore.GestionTurnos;
+﻿/*using GestorViajes.Models.EFCore.GestionTurnos;
 using System.Linq.Expressions;
 
 namespace GestorViajes.Repositories.Vehiculos
@@ -24,4 +24,4 @@ namespace GestorViajes.Repositories.Vehiculos
         Task<GenericResponse<bool>> Exists(Expression<Func<Vehiculo, bool>> predicate);
 
     }
-}
+}*/

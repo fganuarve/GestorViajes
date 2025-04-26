@@ -1,10 +1,10 @@
 using GestorViajes.Models.EFCore.GestionTurnos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using GestorViajes.Repositories.Viajes;
-using GestorViajes.Repositories.Vehiculos;
-using GestorViajes.Repositories.Users;
-using GestorViajes.Services.Roadtrip;
+//using GestorViajes.Repositories.Viajes;
+//using GestorViajes.Repositories.Vehiculos;
+//using GestorViajes.Repositories.Users;
+//using GestorViajes.Services.Roadtrip;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace GestorViajes
@@ -31,13 +31,13 @@ namespace GestorViajes
                 options.UseMySql(connectionString, serverVersion)
             );
             // Repositories
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IViajeRepository, ViajeRepository>();  
+            //builder.Services.AddScoped<IUserRepository, UserRepository>();
+            //builder.Services.AddScoped<IViajeRepository, ViajeRepository>();  
 
             // Servicios
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IViajeService, ViajeService>();
-            builder.Services.AddScoped<IVehiculoService, VehiculoService>();
+            //builder.Services.AddScoped<IUserService, UserService>();
+            //builder.Services.AddScoped<IViajeService, ViajeService>();
+            //builder.Services.AddScoped<IVehiculoService, VehiculoService>();
 
 
             var app = builder.Build();

@@ -1,7 +1,7 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿/*using static System.Runtime.InteropServices.JavaScript.JSType;
 using AutoMapper;
-using VetApp.Models.EFCore;
-using VetApp.Models.ViewModels;
+using GestorViajes.Models.EFCore;
+using GestorViajes.Models.ViewModels;
 
 namespace GestorViajes.Automapper
 {
@@ -37,3 +37,4 @@ namespace GestorViajes.Automapper
 
         }
     }
+}*/

@@ -1,4 +1,4 @@
-﻿using GestorViajes.Models.EFCore.GestionTurnos;
+﻿/*using GestorViajes.Models.EFCore.GestionTurnos;
 using GestorViajes.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -132,4 +132,4 @@ namespace GestorViajes.Repositories.Viajes
             }
         }
     }
-}
+}*/

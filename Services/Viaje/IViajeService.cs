@@ -1,4 +1,4 @@
-﻿using GestorViajes.Models.ViewModels.Roadtrip;
+﻿/*using GestorViajes.Models.ViewModels.Roadtrip;
 using System.Linq.Expressions;
 using GestorViajes.Models.ViewModels;
 using GestorViajes.Models;
@@ -20,3 +20,4 @@ namespace GestorViajes.Services.Roadtrip
     Task<GenericResponse<bool>> Iniciar(int viajeId);
     Task<GenericResponse<bool>> Finalizar(int viajeId);
 }
+*/

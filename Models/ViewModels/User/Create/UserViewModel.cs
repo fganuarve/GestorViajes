@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace GestorViajes.Models.ViewModels.User.Create
+
 {
     public class UserViewModel
     {

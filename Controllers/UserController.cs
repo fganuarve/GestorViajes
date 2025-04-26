@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GestorViajes.Models.EFCore;
@@ -205,4 +205,4 @@ namespace GestorViajes.Controllers
             return RedirectToAction(nameof(Index));
         }
     }
-}
+}*/

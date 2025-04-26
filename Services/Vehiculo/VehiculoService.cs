@@ -1,4 +1,4 @@
-﻿using GestorViajes.Models.ViewModels.Vehicle;
+﻿/*using GestorViajes.Models.ViewModels.Vehicle;
 using GestorViajes.Models;
 using GestorViajes.Repositories.Users;
 using System.Linq.Expressions;
@@ -106,4 +106,4 @@ namespace GestorViajes.Services.Vehiculo
             return new GenericResponse<VehiculoViewModel> { Data = viewModel };
         }
     }
-}
+}*/

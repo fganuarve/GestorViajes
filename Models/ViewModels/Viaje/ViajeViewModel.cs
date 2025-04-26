@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace GestorViajes.Models.ViewModels.Roadtrip
+namespace GestorViajes.Models.ViewModels.ViajeViewModel
 {
     public class ViajeViewModel : CommonFields
     {

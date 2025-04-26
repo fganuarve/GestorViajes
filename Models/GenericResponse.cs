@@ -1,4 +1,4 @@
-﻿namespace GestorViajes.Models
+﻿/*namespace GestorViajes.Models
 {
     public class GenericResponse
     {
@@ -13,4 +13,4 @@
             }
         }
     }
-}
+}*/

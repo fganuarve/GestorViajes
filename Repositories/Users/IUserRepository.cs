@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+﻿/*using System.Linq.Expressions;
 using GestorViajes.Models;
 using GestorViajes.Models.EFCore;
 
@@ -19,5 +19,5 @@ namespace GestorViajes.Repositories.Users
         Task<GenericResponse<User>> UserExists(string nationalId);
         Task<GenericResponse<User>> Get(Expression<Func<User, bool>>? predicate = null);
     }
-}
-}
+}*/
+

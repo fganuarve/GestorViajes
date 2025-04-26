@@ -28,6 +28,8 @@
     <Folder Include="Services\Account\" />
     <Folder Include="Services\User\" />
     <Folder Include="Views\User\" />
+    <Folder Include="Views\Vehiculos\" />
+    <Folder Include="Views\Viaje\" />
   </ItemGroup>
 
 </Project>

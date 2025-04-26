@@ -23,4 +23,4 @@ namespace GestorViajes.Models.ViewModels.User.Create
         public string? Notes { get; set; }
     }
 }
-}
+

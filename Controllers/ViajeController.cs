@@ -1,4 +1,4 @@
-﻿using GestorViajes.Models.EFCore.GestionTurnos;
+﻿/*using GestorViajes.Models.EFCore.GestionTurnos;
 using GestorViajes.Models.ViewModels.Roadtrip;
 using GestorViajes.Services.Roadtrip;
 using Microsoft.AspNetCore.Mvc;
@@ -142,4 +142,4 @@ namespace GestorViajes.Controllers
         }
     }
 
-}
+}*/

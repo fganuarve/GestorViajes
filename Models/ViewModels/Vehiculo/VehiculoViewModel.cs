@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace GestorViajes.Models.ViewModels.Vehicle
+namespace GestorViajes.Models.ViewModels.Vehiculo
 {
     public class VehiculoViewModel : CommonFields
     {
@@ -16,6 +16,7 @@ namespace GestorViajes.Models.ViewModels.Vehicle
         [Display(Name = "Matrícula")]
         public string Matricula { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Debe indicar el número de plazas")]
         [Range(1, 100, ErrorMessage = "Debe ingresar un número válido de plazas")]
         [Display(Name = "Número de Plazas")]
         public int? Plazas { get; set; }
@@ -30,8 +31,8 @@ namespace GestorViajes.Models.ViewModels.Vehicle
         // para mostrar info del usuario asociado
         public UsuarioVehiculoViewModel? Usuario { get; set; }
 
-        // Dropdown de ususario
-        public List<SelectListItem> Usuarios { get; set; } = new List<SelectListItem>();
+        // Dropdown de usuario
+        public List<SelectListItem> Usuarios { get; set; } = [];
     }
 
     // version del usuario para incluir dentro del vehiculo

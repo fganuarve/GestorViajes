@@ -1,11 +1,13 @@
 using GestorViajes.Models.EFCore.GestionTurnos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-//using GestorViajes.Repositories.Viajes;
-//using GestorViajes.Repositories.Vehiculos;
+using GestorViajes.Repositories.Viajes;
+using GestorViajes.Repositories.Vehiculos;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using GestorViajes.Repositories.Users;
 using GestorViajes.Services.User;
+using GestorViajes.Services.Vehiculo;
+using GestorViajes.Services.Viaje;
 
 namespace GestorViajes
 {
@@ -32,12 +34,13 @@ namespace GestorViajes
             );
             //Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            //builder.Services.AddScoped<IViajeRepository, ViajeRepository>();  
+            builder.Services.AddScoped<IVehiculoRepository, VehiculoRepository>();
+            builder.Services.AddScoped<IViajeRepository, ViajeRepository>();  
 
             // Servicios
             builder.Services.AddScoped<IUserService, UserService>();
-            //builder.Services.AddScoped<IViajeService, ViajeService>();
-            //builder.Services.AddScoped<IVehiculoService, VehiculoService>();
+            builder.Services.AddScoped<IViajeService, ViajeService>();
+            builder.Services.AddScoped<IVehiculoService, VehiculoService>();
             builder.Services.AddAutoMapper(typeof(Program));
 
 

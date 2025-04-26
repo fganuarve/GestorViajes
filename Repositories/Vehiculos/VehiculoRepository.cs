@@ -1,4 +1,4 @@
-﻿/*using GestorViajes.Models.EFCore.GestionTurnos;
+﻿using GestorViajes.Models.EFCore.GestionTurnos;
 using GestorViajes.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -7,119 +7,119 @@ namespace GestorViajes.Repositories.Vehiculos
 {
     public class VehiculoRepository : IVehiculoRepository
     {
-        private readonly IDbContextFactory<VetAppDbContext> _context;
-        public VehiculoRepository(IDbContextFactory<VetAppDbContext> context)
+        private readonly IDbContextFactory<gestionturnosContext> _context;
+        public VehiculoRepository(IDbContextFactory<gestionturnosContext> context)
         {
             _context = context;
         }
 
-        public async Task<GenericResponse<List<Vehiculo>>> List(Expression<Func<Vehiculo, bool>>? predicate = null)
+        public async Task<GenericResponse<List<vehiculos>>> List(Expression<Func<vehiculos, bool>>? predicate = null)
         {
             try
             {
                 await using var context = await _context.CreateDbContextAsync();
-                var query = context.Vehiculos.Include(v => v.Usuario).AsQueryable();  // Relación con Usuario (similar al de User)
+                var query = context.vehiculos.Include(v => v.usuario).AsQueryable();
 
                 if (predicate != null)
                 {
                     query = query.Where(predicate);
                 }
 
-                return new GenericResponse<List<Vehiculo>> { Data = await query.ToListAsync() };
+                return new GenericResponse<List<vehiculos>> { Data = await query.ToListAsync() };
             }
             catch (Exception ex)
             {
-                return new GenericResponse<List<Vehiculo>> { Error = new ErrorResponse(ex) };
+                return new GenericResponse<List<vehiculos>> { Error = new ErrorResponse(ex) };
             }
         }
 
-        public async Task<GenericResponse<Vehiculo>> Add(Vehiculo vehiculo)
+        public async Task<GenericResponse<vehiculos>> Add(vehiculos vehiculo)
         {
             try
             {
                 await using var context = await _context.CreateDbContextAsync();
-                context.Vehiculos.Add(vehiculo);
+                context.vehiculos.Add(vehiculo);
                 await context.SaveChangesAsync();
 
-                return new GenericResponse<Vehiculo>() { Data = vehiculo };
+                return new GenericResponse<vehiculos>() { Data = vehiculo };
             }
             catch (Exception ex)
             {
-                return new GenericResponse<Vehiculo>() { Error = new ErrorResponse(ex) };
+                return new GenericResponse<vehiculos>() { Error = new ErrorResponse(ex) };
             }
         }
 
-        public async Task<GenericResponse<Vehiculo>> Delete(long id)
+        public async Task<GenericResponse<vehiculos>> Delete(long id)
         {
             try
             {
                 await using var context = await _context.CreateDbContextAsync();
-                var vehiculo = await context.Vehiculos.FindAsync(id);
+                var vehiculo = await context.vehiculos.FindAsync(id);
                 if (vehiculo == null)
                 {
-                    return new GenericResponse<Vehiculo>() { Error = new ErrorResponse($"No se ha encontrado el vehículo con ID {id}") };
+                    return new GenericResponse<vehiculos>() { Error = new ErrorResponse($"No se ha encontrado el vehículo con ID {id}") };
                 }
 
-                context.Vehiculos.Remove(vehiculo);
+                context.vehiculos.Remove(vehiculo);
                 await context.SaveChangesAsync();
 
-                return new GenericResponse<Vehiculo>() { Data = vehiculo };
+                return new GenericResponse<vehiculos>() { Data = vehiculo };
             }
             catch (Exception ex)
             {
-                return new GenericResponse<Vehiculo>() { Error = new ErrorResponse(ex) };
+                return new GenericResponse<vehiculos>() { Error = new ErrorResponse(ex) };
             }
         }
 
-        public async Task<GenericResponse<Vehiculo>> Edit(Vehiculo vehiculo)
+        public async Task<GenericResponse<vehiculos>> Edit(vehiculos vehiculo)
         {
             try
             {
                 await using var context = await _context.CreateDbContextAsync();
 
-                var entity = await context.Vehiculos.FindAsync(vehiculo.Id);
+                var entity = await context.vehiculos.FindAsync(vehiculo.id);
                 if (entity == null)
                 {
-                    return new GenericResponse<Vehiculo>() { Error = new ErrorResponse($"No se ha encontrado el vehículo con ID {vehiculo.Id}") };
+                    return new GenericResponse<vehiculos>() { Error = new ErrorResponse($"No se ha encontrado el vehículo con ID {vehiculo.id}") };
                 }
 
                 context.Entry(entity).CurrentValues.SetValues(vehiculo);
                 await context.SaveChangesAsync();
 
-                return new GenericResponse<Vehiculo> { Data = vehiculo };
+                return new GenericResponse<vehiculos> { Data = vehiculo };
             }
             catch (Exception ex)
             {
-                return new GenericResponse<Vehiculo> { Error = new ErrorResponse(ex) };
+                return new GenericResponse<vehiculos> { Error = new ErrorResponse(ex) };
             }
         }
 
-        public async Task<GenericResponse<Vehiculo>> Get(Expression<Func<Vehiculo, bool>>? predicate = null)
+        public async Task<GenericResponse<vehiculos>> Get(Expression<Func<vehiculos, bool>>? predicate = null)
         {
             try
             {
                 await using var context = await _context.CreateDbContextAsync();
-                var query = context.Vehiculos.Include(v => v.Usuario).AsQueryable();  // Relación con Usuario
+                var query = context.vehiculos.Include(v => v.usuario).AsQueryable();  // Relación con Usuario
 
                 if (predicate != null)
                 {
                     query = query.Where(predicate);
                 }
 
-                return new GenericResponse<Vehiculo> { Data = await query.FirstOrDefaultAsync() };
+                return new GenericResponse<vehiculos> { Data = await query.FirstOrDefaultAsync() };
             }
             catch (Exception ex)
             {
-                return new GenericResponse<Vehiculo> { Error = new ErrorResponse(ex) };
+                return new GenericResponse<vehiculos> { Error = new ErrorResponse(ex) };
             }
         }
 
-        public async Task<GenericResponse<bool>> Exists(Expression<Func<Vehiculo, bool>> predicate)
+        public async Task<GenericResponse<bool>> Exists(Expression<Func<vehiculos, bool>> predicate)
         {
             try
             {
                 await using var context = await _context.CreateDbContextAsync();
-                var exists = await context.Vehiculos.AnyAsync(predicate);
+                var exists = await context.vehiculos.AnyAsync(predicate);
                 return new GenericResponse<bool> { Data = exists };
             }
             catch (Exception ex)
@@ -128,4 +128,4 @@ namespace GestorViajes.Repositories.Vehiculos
             }
         }
     }
-}*/
+}

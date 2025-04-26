@@ -1,7 +1,10 @@
-﻿/*using GestorViajes.Models.ViewModels.Vehicle;
-using GestorViajes.Models;
+﻿using GestorViajes.Models;
 using GestorViajes.Repositories.Users;
 using System.Linq.Expressions;
+using GestorViajes.Models.ViewModels.Vehiculo;
+using GestorViajes.Models.EFCore.GestionTurnos;
+using GestorViajes.Repositories.Vehiculos;
+using AutoMapper;
 
 namespace GestorViajes.Services.Vehiculo
 {
@@ -31,7 +34,7 @@ namespace GestorViajes.Services.Vehiculo
 
         public async Task<GenericResponse<List<VehiculoViewModel>>> ListByUser(long userId)
         {
-            var response = await _vehiculoRepository.List(v => v.UsuarioId == userId);
+            var response = await _vehiculoRepository.List(v => v.usuario_id == userId);
 
             if (!response.Success)
                 return new GenericResponse<List<VehiculoViewModel>> { Error = response.Error };
@@ -42,7 +45,7 @@ namespace GestorViajes.Services.Vehiculo
 
         public async Task<GenericResponse<VehiculoViewModel>> Get(long id)
         {
-            var response = await _vehiculoRepository.Get(v => v.Id == id);
+            var response = await _vehiculoRepository.Get(v => v.id == id);
 
             if (!response.Success || response.Data == null)
                 return new GenericResponse<VehiculoViewModel> { Error = response.Error };
@@ -53,15 +56,15 @@ namespace GestorViajes.Services.Vehiculo
 
         public async Task<GenericResponse<VehiculoViewModel>> Add(VehiculoViewModel model)
         {
-            var existsResponse = await _vehiculoRepository.Exists(v => v.Matricula == model.Matricula);
+            var existsResponse = await _vehiculoRepository.Exists(v => v.matricula == model.Matricula);
             if (!existsResponse.Success || existsResponse.Data)
                 return new GenericResponse<VehiculoViewModel> { Error = new ErrorResponse("Ya existe un vehículo con esa matrícula.") };
 
-            var userExists = await _userRepository.Get(u => u.Id == model.UsuarioId);
+            var userExists = await _userRepository.Get(u => u.id == model.UsuarioId);
             if (!userExists.Success || userExists.Data == null)
                 return new GenericResponse<VehiculoViewModel> { Error = new ErrorResponse("El usuario no existe.") };
 
-            var vehiculoEntity = _mapper.Map<Vehiculo>(model);
+            var vehiculoEntity = _mapper.Map<vehiculos>(model);
             var response = await _vehiculoRepository.Add(vehiculoEntity);
 
             if (!response.Success)
@@ -71,7 +74,7 @@ namespace GestorViajes.Services.Vehiculo
             return new GenericResponse<VehiculoViewModel> { Data = result };
         }
 
-        public async Task<GenericResponse<bool>> Exists(Expression<Func<Vehiculo, bool>> predicate)
+        public async Task<GenericResponse<bool>> Exists(Expression<Func<vehiculos, bool>> predicate)
         {
             try
             {
@@ -85,7 +88,7 @@ namespace GestorViajes.Services.Vehiculo
 
         public async Task<GenericResponse<VehiculoViewModel>> Edit(VehiculoViewModel model)
         {
-            var entity = _mapper.Map<Vehiculo>(model);
+            var entity = _mapper.Map<vehiculos>(model);
             var response = await _vehiculoRepository.Edit(entity);
 
             if (!response.Success)
@@ -106,4 +109,4 @@ namespace GestorViajes.Services.Vehiculo
             return new GenericResponse<VehiculoViewModel> { Data = viewModel };
         }
     }
-}*/
+}

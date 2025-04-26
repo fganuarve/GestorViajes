@@ -1,4 +1,6 @@
-﻿/*using GestorViajes.Models.ViewModels.Vehicle;
+﻿using GestorViajes.Models;
+using GestorViajes.Models.EFCore.GestionTurnos;
+using GestorViajes.Models.ViewModels.Vehiculo;
 using System.Linq.Expressions;
 
 namespace GestorViajes.Services.Vehiculo
@@ -10,7 +12,7 @@ namespace GestorViajes.Services.Vehiculo
         Task<GenericResponse<VehiculoViewModel>> Add(VehiculoViewModel model);
         Task<GenericResponse<VehiculoViewModel>> Edit(VehiculoViewModel model);
         Task<GenericResponse<VehiculoViewModel>> Delete(long id);
-        Task<GenericResponse<bool>> Exists(Expression<Func<Vehiculo, bool>> predicate);
+        Task<GenericResponse<bool>> Exists(Expression<Func<vehiculos, bool>> predicate);
         Task<GenericResponse<List<VehiculoViewModel>>> ListByUser(long userId);
     }
-}*/
+}

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 //using GestorViajes.Repositories.Viajes;
 //using GestorViajes.Repositories.Vehiculos;
-//using GestorViajes.Repositories.Users;
-//using GestorViajes.Services.Roadtrip;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using GestorViajes.Repositories.Users;
+using GestorViajes.Services.User;
 
 namespace GestorViajes
 {
@@ -30,12 +30,12 @@ namespace GestorViajes
             builder.Services.AddDbContextFactory<gestionturnosContext>(options =>
                 options.UseMySql(connectionString, serverVersion)
             );
-            // Repositories
-            //builder.Services.AddScoped<IUserRepository, UserRepository>();
+            //Repositories
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
             //builder.Services.AddScoped<IViajeRepository, ViajeRepository>();  
 
             // Servicios
-            //builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             //builder.Services.AddScoped<IViajeService, ViajeService>();
             //builder.Services.AddScoped<IVehiculoService, VehiculoService>();
             builder.Services.AddAutoMapper(typeof(Program));
@@ -44,8 +44,8 @@ namespace GestorViajes
 
             var app = builder.Build();
 
-            
-            /*// autenticacion, modificar
+
+            /*//autenticacion, modificar
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -57,12 +57,12 @@ namespace GestorViajes
                 options.ExpireTimeSpan = TimeSpan.FromDays(50);
                 options.LoginPath = "/Account/Login";
                 options.AccessDeniedPath = "/Account/Login";
-            });
+            });*/
 
-            builder.Services.AddAutoMapper(typeof(Program)); 
+            builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddSession();
             builder.Services.AddHttpContextAccessor();
-            */
+
 
 
 

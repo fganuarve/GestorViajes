@@ -25,7 +25,6 @@ namespace GestorViajes.Controllers
         {
             return View();
         }
-       
 
         // Formulario de creacion
         [HttpGet]
@@ -48,9 +47,8 @@ namespace GestorViajes.Controllers
                 return View(model);
             }
 
-            var usuario = _mapper.Map<usuarios>(model);
-
-            var serviceResponse = await _userService.Add(usuario);
+            // Pasar el UserViewModel directamente al servicio
+            var serviceResponse = await _userService.Add(model);
 
             if (!serviceResponse.Success)
             {
@@ -68,7 +66,8 @@ namespace GestorViajes.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(long id)
         {
-            var userResponse = await _userService.Get(u => u.id == id);
+            // Obtener el usuario por ID, pasando solo el ID y no una expresión lambda
+            var userResponse = await _userService.Get(id);
 
             if (!userResponse.Success)
             {
@@ -95,9 +94,8 @@ namespace GestorViajes.Controllers
                 return View(model);
             }
 
-            var usuario = _mapper.Map<usuarios>(model);
-
-            var serviceResponse = await _userService.Edit(usuario);
+            // Pasar el UserViewModel directamente al servicio
+            var serviceResponse = await _userService.Edit(model);
 
             if (!serviceResponse.Success)
             {

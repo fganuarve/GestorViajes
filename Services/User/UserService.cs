@@ -33,7 +33,7 @@ namespace GestorViajes.Services.User
 
         public async Task<GenericResponse<UserViewModel>> Get(long id)
         {
-            var response = await _userRepository.Get(u => u.Id == id);
+            var response = await _userRepository.Get(u => u.id == id);
 
             if (!response.Success)
                 return new GenericResponse<UserViewModel>() { Error = response.Error };
@@ -76,13 +76,17 @@ namespace GestorViajes.Services.User
 
         public async Task<GenericResponse<bool>> Delete(long id)
         {
+            // Llamar al repositorio
             var response = await _userRepository.Delete(id);
 
+            // Verificamos si fue bien
             if (!response.Success)
                 return new GenericResponse<bool>() { Error = response.Error };
 
-            return new GenericResponse<bool>() { Data = response.Data };
+            // Si fue exitosa, devolvemos 'true' como Data
+            return new GenericResponse<bool>() { Data = true };
         }
+
 
         public async Task<GenericResponse<bool>> Exists(Expression<Func<usuarios, bool>> predicate)
         {

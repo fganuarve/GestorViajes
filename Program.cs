@@ -24,12 +24,15 @@ namespace GestorViajes
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            //Autenticacion
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+
+
+
             //Conexion a la base de datos MySQL
             var connectionString = configuration.GetConnectionString("GestionTurnos");
             
-
-
-
             
             //Repositories
             //builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -42,6 +45,8 @@ namespace GestorViajes
             //builder.Services.AddScoped<IVehiculoService, VehiculoService>();
             builder.Services.AddAutoMapper(typeof(Program));
 
+            //builder.Services.AddSession();
+            builder.Services.AddHttpContextAccessor();
 
 
             var app = builder.Build();
@@ -59,15 +64,7 @@ namespace GestorViajes
                 options.ExpireTimeSpan = TimeSpan.FromDays(50);
                 options.LoginPath = "/Account/Login";
                 options.AccessDeniedPath = "/Account/Login";
-            });*/
-
-            builder.Services.AddAutoMapper(typeof(Program));
-            builder.Services.AddSession();
-            builder.Services.AddHttpContextAccessor();
-
-
-
-
+            });*/                     
 
 
             // Configure the HTTP request pipeline.
@@ -82,7 +79,8 @@ namespace GestorViajes
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            //Importante el orden!
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

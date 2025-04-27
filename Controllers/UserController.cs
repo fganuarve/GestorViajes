@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using GestorViajes.Models.EFCore.GestionTurnos;
+using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Models.ViewModels.User;
 using GestorViajes.Services.User;
 

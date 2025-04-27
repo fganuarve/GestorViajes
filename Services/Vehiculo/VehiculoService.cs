@@ -2,7 +2,7 @@
 using GestorViajes.Repositories.Users;
 using System.Linq.Expressions;
 using GestorViajes.Models.ViewModels.Vehiculo;
-using GestorViajes.Models.EFCore.GestionTurnos;
+using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Repositories.Vehiculos;
 using AutoMapper;
 

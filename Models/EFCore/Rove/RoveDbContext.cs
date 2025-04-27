@@ -1,14 +1,20 @@
 ﻿using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
 
 namespace GestorViajes.Models.EFCore.Rove
 {
     public class RoveDbContext : DbContext
     {
-        public RoveDbContext(DbContextOptions<RoveDbContext> options)
-        : base(options)
+        private readonly IConfiguration _configuration;
+
+
+        public RoveDbContext(DbContextOptions<RoveDbContext> options, IConfiguration configuration) : base(options)
         {
+            _configuration = configuration;
         }
+       
 
         public DbSet<User> Users { get; set; }
         public DbSet<UserTrip> UserTrips { get; set; }
@@ -16,7 +22,15 @@ namespace GestorViajes.Models.EFCore.Rove
         public DbSet<TripRequest> TripRequests { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
 
-
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                var connectionString = _configuration.GetConnectionString("Rove");
+                optionsBuilder.UseSqlServer(connectionString);
+            }
+            optionsBuilder.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

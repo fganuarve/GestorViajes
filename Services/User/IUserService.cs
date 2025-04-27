@@ -1,5 +1,5 @@
 ﻿using GestorViajes.Models;
-using GestorViajes.Models.EFCore.GestionTurnos;
+using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Models.ViewModels.User;
 using System.Linq.Expressions;
 

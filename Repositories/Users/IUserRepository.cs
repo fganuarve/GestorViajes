@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using GestorViajes.Models;
 using GestorViajes.Models.EFCore;
-using GestorViajes.Models.EFCore.GestionTurnos;
+using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Models.ViewModels.User;
 
 namespace GestorViajes.Repositories.Users{

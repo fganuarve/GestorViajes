@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 using GestorViajes.Models;
-using GestorViajes.Models.EFCore.GestionTurnos;
+using GestorViajes.Models.EFCore.Rove;
 
 namespace GestorViajes.Repositories.Viajes
 {

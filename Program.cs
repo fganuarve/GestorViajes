@@ -8,6 +8,7 @@ using GestorViajes.Repositories.Users;
 using GestorViajes.Services.User;
 using GestorViajes.Services.Vehiculo;
 using GestorViajes.Services.Viaje;
+using GestorViajes.Models.EFCore.Rove;
 
 namespace GestorViajes
 {
@@ -23,17 +24,20 @@ namespace GestorViajes
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews().AddNewtonsoftJson();
+            builder.Services.AddSession();
 
             //Autenticacion
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
 
 
-            //Conexion a la base de datos MySQL
-            var connectionString = configuration.GetConnectionString("GestionTurnos");
-            
-            
+            //Conexion a la base de datos
+            builder.Services.AddDbContextFactory<RoveDbContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("Rove"))
+            );
+
+
             //Repositories
             //builder.Services.AddScoped<IUserRepository, UserRepository>();
             //builder.Services.AddScoped<IVehiculoRepository, VehiculoRepository>();

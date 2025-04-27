@@ -1,5 +1,5 @@
 ﻿using GestorViajes.Models;
-using GestorViajes.Models.EFCore.GestionTurnos;
+using GestorViajes.Models.EFCore.Rove;
 using System.Linq.Expressions;
 
 namespace GestorViajes.Repositories.Vehiculos

@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
 using GestorViajes.Models;
-using GestorViajes.Models.EFCore.GestionTurnos;
+using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Models.ViewModels.ViajeViewModel;
 using GestorViajes.Repositories.Viajes;
 

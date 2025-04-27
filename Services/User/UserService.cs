@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using GestorViajes.Models.EFCore.GestionTurnos;
+using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Models.ViewModels.User;
 using GestorViajes.Models;
 using Microsoft.EntityFrameworkCore;

@@ -1,4 +1,4 @@
-using GestorViajes.Models.EFCore.GestionTurnos;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using GestorViajes.Repositories.Viajes;

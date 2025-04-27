@@ -7,18 +7,18 @@ using GestorViajes.Repositories.Viajes;
 
 namespace GestorViajes.Services.Viaje
 {
-    public class ViajeService : IViajeService
+    public class ViajeService 
     {
-        private readonly IViajeRepository _viajeRepository;
-        private readonly IMapper _mapper;
+        //private readonly IViajeRepository _viajeRepository;
+        //private readonly IMapper _mapper;
 
-        public ViajeService(IViajeRepository viajeRepository, IMapper mapper)
-        {
-            _viajeRepository = viajeRepository;
-            _mapper = mapper;
-        }
+        //public ViajeService(IViajeRepository viajeRepository, IMapper mapper)
+        //{
+        //    _viajeRepository = viajeRepository;
+        //    _mapper = mapper;
+        //}
 
-        public async Task<GenericResponse<List<ViajeViewModel>>> List(Expression<Func<ViajeViewModel, bool>>? predicate = null)
+        /*public async Task<GenericResponse<List<ViajeViewModel>>> List(Expression<Func<ViajeViewModel, bool>>? predicate = null)
         {
             // TODO: Implementar listado de viajes (posiblemente mapear entidad a ViewModel)
             return new GenericResponse<List<ViajeViewModel>>();
@@ -94,7 +94,7 @@ namespace GestorViajes.Services.Viaje
         {
             // TODO: Implementar finalización de viaje
             return new GenericResponse<bool>();
-        }
+        }*/
     }
 }
 

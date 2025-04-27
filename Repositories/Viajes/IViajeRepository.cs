@@ -6,24 +6,24 @@ namespace GestorViajes.Repositories.Viajes
 {
     public interface IViajeRepository
     {
-        // listar viajes 
-        Task<GenericResponse<List<viajes>>> List(Expression<Func<viajes, bool>>? predicate = null);
+        //// listar viajes 
+        //Task<GenericResponse<List<viajes>>> List(Expression<Func<viajes, bool>>? predicate = null);
 
-        //Task<GenericResponse<List<viajes>>> List(Expression<Func<viajes, bool>>? predicate = null, int skip = 0, int take = 100);
+        ////Task<GenericResponse<List<viajes>>> List(Expression<Func<viajes, bool>>? predicate = null, int skip = 0, int take = 100);
 
-        // agregar un nuevo viaje
-        Task<GenericResponse<viajes>> Add(viajes viaje);
+        //// agregar un nuevo viaje
+        //Task<GenericResponse<viajes>> Add(viajes viaje);
 
-        // eliminar un viaje por ID
-        Task<GenericResponse<viajes>> Delete(long id);
+        //// eliminar un viaje por ID
+        //Task<GenericResponse<viajes>> Delete(long id);
 
-        // editar un viaje 
-        Task<GenericResponse<viajes>> Edit(viajes viaje);
+        //// editar un viaje 
+        //Task<GenericResponse<viajes>> Edit(viajes viaje);
 
-        // obtener un  viaje 
-        Task<GenericResponse<viajes>> Get(Expression<Func<viajes, bool>>? predicate = null);
+        //// obtener un  viaje 
+        //Task<GenericResponse<viajes>> Get(Expression<Func<viajes, bool>>? predicate = null);
 
-        // verificar si existe un viaje
-        Task<GenericResponse<bool>> Exists(Expression<Func<viajes, bool>> predicate);
+        //// verificar si existe un viaje
+        //Task<GenericResponse<bool>> Exists(Expression<Func<viajes, bool>> predicate);
     }
 }

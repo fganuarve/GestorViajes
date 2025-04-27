@@ -5,8 +5,10 @@ using System.Linq.Expressions;
 
 namespace GestorViajes.Repositories.Users
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository
+    
     {
+        /*
         private readonly IDbContextFactory<gestionturnosContext> _context;
 
         public UserRepository(IDbContextFactory<gestionturnosContext> context)
@@ -124,7 +126,7 @@ namespace GestorViajes.Repositories.Users
                 return new GenericResponse<bool> { Error = new ErrorResponse(ex) };
             }
         }
-    }
+    */}
 }
 
 

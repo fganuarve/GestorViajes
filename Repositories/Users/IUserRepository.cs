@@ -8,23 +8,23 @@ namespace GestorViajes.Repositories.Users{
 
     public interface IUserRepository
     {
-        // Listar usuarios
-        Task<GenericResponse<List<usuarios>>> List(Expression<Func<usuarios, bool>>? predicate = null);
+        //// Listar usuarios
+        //Task<GenericResponse<List<usuarios>>> List(Expression<Func<usuarios, bool>>? predicate = null);
 
-        // Agregar un nuevo usuario
-        Task<GenericResponse<usuarios>> Add(usuarios user);
+        //// Agregar un nuevo usuario
+        //Task<GenericResponse<usuarios>> Add(usuarios user);
 
-        // Editar un usuario
-        Task<GenericResponse<usuarios>> Edit(usuarios user);
+        //// Editar un usuario
+        //Task<GenericResponse<usuarios>> Edit(usuarios user);
 
-        // Eliminar un usuario por ID
-        Task<GenericResponse<usuarios>> Delete(long id);
+        //// Eliminar un usuario por ID
+        //Task<GenericResponse<usuarios>> Delete(long id);
 
-        // Obtener un usuario
-        Task<GenericResponse<usuarios>> Get(Expression<Func<usuarios, bool>>? predicate = null);
+        //// Obtener un usuario
+        //Task<GenericResponse<usuarios>> Get(Expression<Func<usuarios, bool>>? predicate = null);
 
-        // Verificar si un usuario existe
-        Task<GenericResponse<bool>> Exists(Expression<Func<usuarios, bool>> predicate);
+        //// Verificar si un usuario existe
+        //Task<GenericResponse<bool>> Exists(Expression<Func<usuarios, bool>> predicate);
     }
 
 }

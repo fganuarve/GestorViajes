@@ -7,7 +7,7 @@ namespace GestorViajes.Services.Viaje
 {
     public interface IViajeService
     {
-        Task<GenericResponse<List<ViajeViewModel>>> List(Expression<Func<ViajeViewModel, bool>>? predicate = null);
+        /*Task<GenericResponse<List<ViajeViewModel>>> List(Expression<Func<ViajeViewModel, bool>>? predicate = null);
         Task<GenericResponse<ViajeViewModel>> Get(int id);
         Task<GenericResponse<ViajeViewModel>> Add(CrearViajeViewModel model);
         Task<GenericResponse<ViajeViewModel>> Edit(int id, EditarViajeViewModel model);
@@ -19,6 +19,6 @@ namespace GestorViajes.Services.Viaje
         Task<GenericResponse<bool>> RechazarSolicitud(int usuarioId, int viajeId);
         Task<GenericResponse<bool>> Cancelar(int viajeId);
         Task<GenericResponse<bool>> Iniciar(int viajeId);
-        Task<GenericResponse<bool>> Finalizar(int viajeId);
+        Task<GenericResponse<bool>> Finalizar(int viajeId);*/
     }
 }

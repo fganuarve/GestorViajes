@@ -26,21 +26,20 @@ namespace GestorViajes
             builder.Services.AddControllersWithViews();
             //Conexion a la base de datos MySQL
             var connectionString = configuration.GetConnectionString("GestionTurnos");
-            var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
+            
 
-            // DbContext (gestionturnosContext) para inyeccion de dependencias
-            builder.Services.AddDbContextFactory<gestionturnosContext>(options =>
-                options.UseMySql(connectionString, serverVersion)
-            );
+
+
+            
             //Repositories
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IVehiculoRepository, VehiculoRepository>();
-            builder.Services.AddScoped<IViajeRepository, ViajeRepository>();  
+            //builder.Services.AddScoped<IUserRepository, UserRepository>();
+            //builder.Services.AddScoped<IVehiculoRepository, VehiculoRepository>();
+            //builder.Services.AddScoped<IViajeRepository, ViajeRepository>();  
 
             // Servicios
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IViajeService, ViajeService>();
-            builder.Services.AddScoped<IVehiculoService, VehiculoService>();
+            //builder.Services.AddScoped<IUserService, UserService>();
+            //builder.Services.AddScoped<IViajeService, ViajeService>();
+            //builder.Services.AddScoped<IVehiculoService, VehiculoService>();
             builder.Services.AddAutoMapper(typeof(Program));
 
 

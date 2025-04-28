@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GestorViajes.Models.EFCore.Rove;
 
-public partial class Trip
+public partial class Trip : CommonFields
 {
     public long Id { get; set; }
 

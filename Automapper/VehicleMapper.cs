@@ -22,7 +22,8 @@ namespace GestorViajes.Automapper
                 .ForMember(dest => dest.Usuario, opt => opt.MapFrom(src => new UsuarioVehiculoViewModel
                 {
                     Id = src.Owner.Id,
-                    Nombre = src.Owner.Name // solo si quieres incluir datos del usuario
+                    // solo para incluir datos del usuario
+                    Nombre = src.Owner.Name 
                 }))
                 ;
 

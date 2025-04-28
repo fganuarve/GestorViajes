@@ -7,11 +7,11 @@ namespace GestorViajes.Services.User
 {
     public interface IUserService
     {
-        //Task<GenericResponse<List<UserViewModel>>> List(Expression<Func<usuarios, bool>>? predicate = null);
-        //Task<GenericResponse<UserViewModel>> Get(long id);
-        //Task<GenericResponse<UserViewModel>> Add(UserViewModel model);
-        //Task<GenericResponse<UserViewModel>> Edit(UserViewModel model);
-        //Task<GenericResponse<bool>> Delete(long id);
-        //Task<GenericResponse<bool>> Exists(Expression<Func<usuarios, bool>> predicate);
+        Task<GenericResponse<List<UserViewModel>>> List(Expression<Func<Models.EFCore.Rove.User, bool>>? predicate = null);
+        Task<GenericResponse<UserViewModel>> GetById(long id);
+        Task<GenericResponse<UserViewModel>> Add(UserViewModel model);
+        Task<GenericResponse<UserViewModel>> Update(UserViewModel model);
+        Task<GenericResponse<bool>> Delete(long id);
+        Task<GenericResponse<bool>> Exists(Expression<Func<Models.EFCore.Rove.User, bool>> predicate);
     }
 }

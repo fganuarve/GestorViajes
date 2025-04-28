@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace GestorViajes.Models.ViewModels.User
 
 {
-    public class UserViewModel
+    public class UserViewModel : CommonFields
     {
         
         public long Id { get; set; }
@@ -18,11 +18,14 @@ namespace GestorViajes.Models.ViewModels.User
         
         [MaxLength(50)]
         public string LastName { get; set; }
-        //apellido2 opcional
+        //El segundo apellido va a ser es opcional
         [MaxLength(50)]
         public string? LastName2 { get; set; }
 
-        
+        public string NationalId { get; set; }
+        public string Password { get; set; } = null!;
+
+
         [Required]
         [EmailAddress]
         [MaxLength(100)]
@@ -36,6 +39,7 @@ namespace GestorViajes.Models.ViewModels.User
         [Required]
         [Display(Name = "Rol")]
         public string SelectedRol { get; set; } = string.Empty;
+
 
         // Lista de roles
         public List<SelectListItem> Roles { get; set; } = new List<SelectListItem>();

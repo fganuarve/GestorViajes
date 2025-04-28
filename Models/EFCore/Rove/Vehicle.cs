@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GestorViajes.Models.EFCore.Rove;
 
-public partial class Vehicle
+public partial class Vehicle : CommonFields
 {
     public long Id { get; set; }
 
@@ -17,15 +17,15 @@ public partial class Vehicle
 
     public long UserId { get; set; }
 
-    public string? CreatedBy { get; set; }
-
-    public DateTime? CreatedAt { get; set; }
-
-    public DateTime? ModifiedAt { get; set; }
-
-    public string? ModifiedBy { get; set; }
-
     public virtual User Owner { get; set; } 
 
     public virtual ICollection<Trip> Trips { get; set; } = [];
+
+    //public string? CreatedBy { get; set; }
+
+    //public DateTime? CreatedAt { get; set; }
+
+    //public DateTime? ModifiedAt { get; set; }
+
+    //public string? ModifiedBy { get; set; }
 }

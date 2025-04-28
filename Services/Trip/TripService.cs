@@ -70,7 +70,7 @@ namespace GestorViajes.Services.Trip
             var response = new GenericResponse<TripViewModel>();
             try
             {
-                var trip = _mapper.Map<Trip>(model);
+                var trip = _mapper.Map<Models.EFCore.Rove.Trip>(model);
 
                 trip.CreatedAt = DateTime.UtcNow;
                 trip.Active = true;
@@ -88,7 +88,7 @@ namespace GestorViajes.Services.Trip
             return response;
         }
 
-        public async Task<GenericResponse<TripViewModel>> Edit(TripViewModel model)
+        public async Task<GenericResponse<TripViewModel>> Update(TripViewModel model)
         {
             var response = new GenericResponse<TripViewModel>();
             try

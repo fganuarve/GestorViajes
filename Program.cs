@@ -1,14 +1,15 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using GestorViajes.Repositories.Viajes;
-using GestorViajes.Repositories.Vehiculos;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using GestorViajes.Repositories.Users;
 using GestorViajes.Services.User;
-using GestorViajes.Services.Vehiculo;
-using GestorViajes.Services.Viaje;
 using GestorViajes.Models.EFCore.Rove;
+using GestorViajes.Services.Vehicle;
+using GestorViajes.Services.Trip;
+using GestorViajes.Services.User.GestorViajes.Services.User;
+using GestorViajes.Repositories.Vehicles;
+using GestorViajes.Repositories.Trips;
 
 namespace GestorViajes
 {
@@ -39,14 +40,14 @@ namespace GestorViajes
 
 
             //Repositories
-            //builder.Services.AddScoped<IUserRepository, UserRepository>();
-            //builder.Services.AddScoped<IVehiculoRepository, VehiculoRepository>();
-            //builder.Services.AddScoped<IViajeRepository, ViajeRepository>();  
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+            builder.Services.AddScoped<ITripRepository, TripRepository>();  
 
             // Servicios
-            //builder.Services.AddScoped<IUserService, UserService>();
-            //builder.Services.AddScoped<IViajeService, ViajeService>();
-            //builder.Services.AddScoped<IVehiculoService, VehiculoService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ITripService, TripService>();
+            builder.Services.AddScoped<IVehicleService, VehicleService>();
             builder.Services.AddAutoMapper(typeof(Program));
 
             //builder.Services.AddSession();

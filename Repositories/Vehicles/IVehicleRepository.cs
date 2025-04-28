@@ -8,13 +8,12 @@ namespace GestorViajes.Repositories.Vehicles
     {
         public interface IVehicleRepository
         {
-            Task<List<Vehicle>> GetAllAsync();
-            Task<Vehicle?> GetByIdAsync(long id);
-            Task AddAsync(Vehicle vehicle);
-            Task UpdateAsync(Vehicle vehicle);
-            Task DeleteAsync(Vehicle vehicle);
-            Task<List<Vehicle>> GetByUserIdAsync(long userId);
-            Task<bool> ExistsAsync(Expression<Func<Vehicle, bool>> predicate);
+            Task<GenericResponse<List<Vehicle>>> List(Expression<Func<Vehicle, bool>>? predicate = null);
+            Task<GenericResponse<Vehicle>> Get(long id);
+            Task<GenericResponse<Vehicle>> Add(Vehicle entity);
+            Task<GenericResponse<Vehicle>> Update(Vehicle entity);
+            Task<GenericResponse<bool>> Delete(long id);
+            Task<GenericResponse<bool>> Exists(Expression<Func<Vehicle, bool>> predicate);
         }
 
     }

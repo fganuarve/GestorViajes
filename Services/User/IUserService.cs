@@ -12,6 +12,7 @@ namespace GestorViajes.Services.User
         Task<GenericResponse<UserViewModel>> Add(UserViewModel model);
         Task<GenericResponse<UserViewModel>> Update(UserViewModel model);
         Task<GenericResponse<bool>> Delete(long id);
+        //Para exists, trabajo sobre la entidad, no sobre el ViewModel
         Task<GenericResponse<bool>> Exists(Expression<Func<Models.EFCore.Rove.User, bool>> predicate);
     }
 }

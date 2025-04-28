@@ -5,13 +5,13 @@ using GestorViajes.Models.ViewModels.Trip;
 using GestorViajes.Services.Trip;
 using Microsoft.AspNetCore.Mvc;
 using GestorViajes.Services.User;
-using GestorViajes.Services.Vehiculo;
+using GestorViajes.Services.Vehicle;
 
 namespace GestorViajes.Controllers
 {
     public class TripController : Controller
     {
-        private readonly ITripService _tripService;
+        /*private readonly ITripService _tripService;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
         private readonly IVehicleService _vehicleService;
@@ -185,7 +185,7 @@ namespace GestorViajes.Controllers
             TempData["status"] = "success";
             TempData["message"] = "Viaje eliminado correctamente.";
             return RedirectToAction(nameof(Index));
-        }
+        }*/
     }
 
 }

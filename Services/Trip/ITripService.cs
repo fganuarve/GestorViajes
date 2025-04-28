@@ -11,10 +11,12 @@ namespace GestorViajes.Services.Trip
         Task<GenericResponse<List<TripViewModel>>> List();
         Task<GenericResponse<TripViewModel>> Get(long id);
         Task<GenericResponse<TripViewModel>> Add(TripViewModel model);
-        Task<GenericResponse<TripViewModel>> Edit(TripViewModel model);
+        Task<GenericResponse<TripViewModel>> Update(TripViewModel model);
         Task<GenericResponse<bool>> Delete(long id);
         Task<GenericResponse<bool>> Terminate(long id);
         Task<GenericResponse<List<TripViewModel>>> ListByDriver(long driverId);
+
+        //Para exists, trabajo sobre la entidad, no sobre el ViewModel
 
 
 

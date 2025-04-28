@@ -4,9 +4,9 @@ using GestorViajes.Models.ViewModels.Vehicle;
 
 namespace GestorViajes.Automapper
 {
-    public class VehiculoMapper : Profile
+    public class VehicleMapper : Profile
     {
-        public VehiculoMapper()
+        public VehicleMapper()
         {
             
         }

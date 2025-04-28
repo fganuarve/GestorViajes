@@ -1,145 +1,189 @@
 ﻿using AutoMapper;
 using GestorViajes.Models.EFCore.Rove;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using GestorViajes.Models.ViewModels.TripViewModel;
+using GestorViajes.Models.ViewModels.Trip;
 using GestorViajes.Services.Trip;
 using Microsoft.AspNetCore.Mvc;
+using GestorViajes.Services.User;
+using GestorViajes.Services.Vehiculo;
 
 namespace GestorViajes.Controllers
 {
-    public class ViajeController : Controller
+    public class TripController : Controller
     {
-        private readonly IViajeService _viajeService;
-        private readonly IViajeDatatablesService _datatables;
-        private readonly IHttpContextAccessor _accessor;
+        private readonly ITripService _tripService;
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
+        private readonly IVehicleService _vehicleService;
 
-        public ViajeController(
-            IViajeService viajeService,
-            IViajeDatatablesService datatables,
-            IHttpContextAccessor accessor,
-            IMapper mapper)
+        public TripController(
+            ITripService tripService,
+            IMapper mapper,
+            IUserService userService,
+            IVehicleService vehicleService)
         {
-            _viajeService = viajeService;
-            _datatables = datatables;
-            _accessor = accessor;
+            _tripService = tripService;
             _mapper = mapper;
-        }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> GetData()
-        {
-            var response = await _datatables.List(Request, "");
-
-            return Ok(response);
-        }
-
-        // Muestra el formulario para agregar un viaje (GET)
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // Procesa el formulario y agrega un viaje (POST)
-        [HttpPost]
-        public async Task<IActionResult> CreateSubmit(CreateViajeViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            var mappedEntity = _mapper.Map<Viaje>(model);
-            var serviceResponse = await _viajeService.Add(mappedEntity);
-            if (!serviceResponse.Success)
-            {
-                TempData["status"] = "error";
-                TempData["mensaje"] = serviceResponse.Error!.Message;
-                return View(model);
-            }
-
-            TempData["status"] = "success";
-            TempData["mensaje"] = "El viaje se ha creado con éxito";
-            return RedirectToAction(nameof(Index));
+            _userService = userService;
+            _vehicleService = vehicleService;
         }
 
         [HttpGet]
-        // Muestra el formulario de edicion con los datos actuales del viaje.
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Index()
         {
-            var viajeResponse = await _viajeService.Get(v => v.Id == id);
-            if (!viajeResponse.Success)
+            var response = await _tripService.List();
+            if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["mensaje"] = viajeResponse.Error!.Message;
+                TempData["message"] = response.Error?.Message ?? "Error al cargar los viajes.";
+                return View(new List<TripViewModel>());
+            }
+            return View(response.Data);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(long id)
+        {
+            var response = await _tripService.Get(id);
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error?.Message ?? "No se encontró el viaje.";
                 return RedirectToAction(nameof(Index));
             }
 
-            var model = _mapper.Map<ViajeViewModel>(viajeResponse.Data);
+            var tripViewModel = _mapper.Map<TripViewModel>(response.Data);
+            return View(tripViewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var usersResponse = await _userService.List();
+            var vehiclesResponse = await _vehicleService.List();
+
+            if (!usersResponse.Success || !vehiclesResponse.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = "Error al cargar datos para crear viaje.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var model = new TripViewModel
+            {
+                Drivers = usersResponse.Data.Select(u => new SelectListItem
+                {
+                    Value = u.Id.ToString(),
+                    Text = $"{u.Name} {u.LastName1}"
+                }).ToList(),
+
+                Vehicles = vehiclesResponse.Data.Select(v => new SelectListItem
+                {
+                    Value = v.Id.ToString(),
+                    Text = v.Plate
+                }).ToList()
+            };
+
             return View(model);
         }
 
         [HttpPost]
-        // Recibe los datos del formulario que el usuario ha introducido y los guarda en la base de datos.
-        public async Task<IActionResult> EditSubmit(ViajeViewModel model)
+        public async Task<IActionResult> CreateSubmit(TripViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 TempData["status"] = "error";
-                TempData["mensaje"] = "Error al editar el viaje";
-                return View(model);
+                TempData["message"] = "Datos inválidos al crear el viaje.";
+                return RedirectToAction(nameof(Create));
             }
 
-            var mappedEntity = _mapper.Map<Viaje>(model);
-            var serviceResponse = await _viajeService.Edit(mappedEntity);
-            if (!serviceResponse.Success)
+            var response = await _tripService.Add(model);
+            if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["mensaje"] = serviceResponse.Error!.Message;
-                return RedirectToAction(nameof(Index));
+                TempData["message"] = response.Error?.Message ?? "Error al crear viaje.";
+                return RedirectToAction(nameof(Create));
             }
 
             TempData["status"] = "success";
-            TempData["mensaje"] = "Viaje editado exitosamente";
+            TempData["message"] = "Viaje creado exitosamente.";
             return RedirectToAction(nameof(Index));
         }
 
-        // Muestra la vista de confirmacion antes de eliminar el viaje (evitar borrado accidental)
         [HttpGet]
-        public async Task<IActionResult> DeleteViaje(int id)
+        public async Task<IActionResult> Edit(long id)
         {
-            var viajeResponse = await _viajeService.Get(v => v.Id == id);
-            if (!viajeResponse.Success)
+            var response = await _tripService.Get(id);
+            if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["mensaje"] = viajeResponse.Error!.Message;
+                TempData["message"] = response.Error?.Message ?? "Error al cargar el viaje.";
                 return RedirectToAction(nameof(Index));
             }
 
-            var model = _mapper.Map<ViajeViewModel>(viajeResponse.Data);
-            // Muestra una vista de confirmacion antes de eliminar.
-            return View(model); 
+            var tripViewModel = _mapper.Map<TripViewModel>(response.Data);
+
+            // Cargar listas de drivers y vehículos para el dropdown
+            var usersResponse = await _userService.List();
+            var vehiclesResponse = await _vehicleService.List();
+
+            if (usersResponse.Success)
+            {
+                tripViewModel.Drivers = usersResponse.Data.Select(u => new SelectListItem
+                {
+                    Value = u.Id.ToString(),
+                    Text = $"{u.Name} {u.LastName1}"
+                }).ToList();
+            }
+
+            if (vehiclesResponse.Success)
+            {
+                tripViewModel.Vehicles = vehiclesResponse.Data.Select(v => new SelectListItem
+                {
+                    Value = v.Id.ToString(),
+                    Text = v.Plate
+                }).ToList();
+            }
+
+            return View(tripViewModel);
         }
 
-        // Elimina un viaje de la base de datos
         [HttpPost]
-        public async Task<IActionResult> DeleteConfirm(int id)
+        public async Task<IActionResult> EditSubmit(TripViewModel model)
         {
-            var serviceResponse = await _viajeService.Delete(id);
-            if (!serviceResponse.Success)
+            if (!ModelState.IsValid)
             {
                 TempData["status"] = "error";
-                TempData["mensaje"] = serviceResponse.Error!.Message;
+                TempData["message"] = "Datos inválidos al editar el viaje.";
+                return View("Edit", model);
+            }
+
+            var response = await _tripService.Edit(model);
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error?.Message ?? "Error al actualizar viaje.";
+                return View("Edit", model);
+            }
+
+            TempData["status"] = "success";
+            TempData["message"] = "Viaje actualizado exitosamente.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(long id)
+        {
+            var response = await _tripService.Delete(id);
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error?.Message ?? "Error al eliminar viaje.";
                 return RedirectToAction(nameof(Index));
             }
 
             TempData["status"] = "success";
-            TempData["mensaje"] = "Viaje eliminado exitosamente";
+            TempData["message"] = "Viaje eliminado correctamente.";
             return RedirectToAction(nameof(Index));
         }
     }

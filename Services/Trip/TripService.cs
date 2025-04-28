@@ -1,104 +1,283 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
+using Azure;
 using GestorViajes.Models;
 using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Models.ViewModels.Trip;
 using GestorViajes.Repositories.Trips;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 
 namespace GestorViajes.Services.Trip
 {
-    public class TripService 
+    public class TripService : ITripService
     {
-        //private readonly IViajeRepository _viajeRepository;
-        //private readonly IMapper _mapper;
+        private readonly RoveDbContext _context;
+        private readonly IMapper _mapper;
 
-        //public ViajeService(IViajeRepository viajeRepository, IMapper mapper)
-        //{
-        //    _viajeRepository = viajeRepository;
-        //    _mapper = mapper;
-        //}
-
-        /*public async Task<GenericResponse<List<ViajeViewModel>>> List(Expression<Func<ViajeViewModel, bool>>? predicate = null)
+        public TripService(RoveDbContext context, IMapper mapper)
         {
-            // TODO: Implementar listado de viajes (posiblemente mapear entidad a ViewModel)
-            return new GenericResponse<List<ViajeViewModel>>();
+            _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<GenericResponse<ViajeViewModel>> Get(int id)
+        public async Task<GenericResponse<List<TripViewModel>>> List()
         {
-            // TODO: Implementar obtención de un viaje por id
-            return new GenericResponse<ViajeViewModel>();
+            var response = new GenericResponse<List<TripViewModel>>();
+            try
+            {
+                var trips = await _context.Trips
+                    .Include(t => t.Driver)
+                    .Include(t => t.Vehicle)
+                    .ToListAsync();
+
+                response.Data = _mapper.Map<List<TripViewModel>>(trips);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorResponse(ex);
+            }
+            return response;
         }
 
-        public async Task<GenericResponse<ViajeViewModel>> Add(CrearViajeViewModel model)
+        public async Task<GenericResponse<TripViewModel>> Get(long id)
         {
-            // TODO: Implementar creación de un nuevo viaje
-            return new GenericResponse<ViajeViewModel>();
+            var response = new GenericResponse<TripViewModel>();
+            try
+            {
+                var trip = await _context.Trips
+                    .Include(t => t.Driver)
+                    .Include(t => t.Vehicle)
+                    .FirstOrDefaultAsync(t => t.Id == id);
+
+                if (trip == null)
+                {
+                    response.Error = new ErrorResponse("Viaje no encontrado.");
+                    return response;
+                }
+
+                response.Data = _mapper.Map<TripViewModel>(trip);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorResponse(ex);
+            }
+            return response;
         }
 
-        public async Task<GenericResponse<ViajeViewModel>> Edit(int id, EditarViajeViewModel model)
+        public async Task<GenericResponse<TripViewModel>> Add(TripViewModel model)
         {
-            // TODO: Implementar edición de un viaje
-            return new GenericResponse<ViajeViewModel>();
+            var response = new GenericResponse<TripViewModel>();
+            try
+            {
+                var trip = _mapper.Map<Trip>(model);
+
+                trip.CreatedAt = DateTime.UtcNow;
+                trip.Active = true;
+
+                _context.Trips.Add(trip);
+                await _context.SaveChangesAsync();
+
+                model.Id = trip.Id;
+                response.Data = model;
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorResponse(ex);
+            }
+            return response;
         }
 
-        public async Task<GenericResponse<ViajeViewModel>> Delete(int id)
+        public async Task<GenericResponse<TripViewModel>> Edit(TripViewModel model)
         {
-            // TODO: Implementar eliminación de un viaje
-            return new GenericResponse<ViajeViewModel>();
+            var response = new GenericResponse<TripViewModel>();
+            try
+            {
+                var trip = await _context.Trips.FindAsync(model.Id);
+
+                if (trip == null)
+                {
+                    response.Error = new ErrorResponse("Viaje no encontrado.");
+                    return response;
+                }
+
+                _mapper.Map(model, trip);
+                trip.ModifiedAt = DateTime.UtcNow;
+
+                _context.Trips.Update(trip);
+                await _context.SaveChangesAsync();
+
+                response.Data = model;
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorResponse(ex);
+            }
+            return response;
         }
 
-        public async Task<GenericResponse<List<ViajeViewModel>>> ListByUser(string userId, string role, EstadoViaje estado)
+        public async Task<GenericResponse<bool>> Delete(long id)
         {
-            // TODO: Implementar listado de viajes por usuario
-            return new GenericResponse<List<ViajeViewModel>>();
+            var response = new GenericResponse<bool>();
+            try
+            {
+                var trip = await _context.Trips.FindAsync(id);
+
+                if (trip == null)
+                {
+                    response.Error = new ErrorResponse("Viaje no encontrado.");
+                    return response;
+                }
+
+                _context.Trips.Remove(trip);
+                await _context.SaveChangesAsync();
+
+                response.Data = true;
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorResponse(ex);
+            }
+            return response;
         }
 
-        public async Task<GenericResponse<List<UsuarioViewModel>>> ListPasajeros(int viajeId)
+        public async Task<GenericResponse<bool>> Terminate(long id)
         {
-            // TODO: Implementar listado de pasajeros de un viaje
-            return new GenericResponse<List<UsuarioViewModel>>();
+            var response = new GenericResponse<bool>();
+            try
+            {
+                var trip = await _context.Trips.FindAsync(id);
+
+                if (trip == null)
+                {
+                    response.Error = new ErrorResponse("Viaje no encontrado.");
+                    return response;
+                }
+
+                trip.Active = false;
+                trip.ModifiedAt = DateTime.UtcNow;
+
+                _context.Trips.Update(trip);
+                await _context.SaveChangesAsync();
+
+                response.Data = true;
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorResponse(ex);
+            }
+            return response;
         }
 
-        public async Task<GenericResponse<bool>> SolicitarUnirse(int usuarioId, int viajeId)
+        public async Task<GenericResponse<List<TripViewModel>>> ListByDriver(long driverId)
         {
-            // TODO: Implementar solicitud de unirse a un viaje
-            return new GenericResponse<bool>();
-        }
+            var response = new GenericResponse<List<TripViewModel>>();
+            try
+            {
+                var trips = await _context.Trips
+                    .Where(t => t.DriverId == driverId)
+                    .Include(t => t.Vehicle)
+                    .Include(t => t.Driver)
+                    .ToListAsync();
 
-        public async Task<GenericResponse<bool>> AceptarSolicitud(int usuarioViajeId)
-        {
-            // TODO: Implementar aceptación de solicitud de pasajero
-            return new GenericResponse<bool>();
+                response.Data = _mapper.Map<List<TripViewModel>>(trips);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorResponse(ex);
+            }
+            return response;
         }
-
-        public async Task<GenericResponse<bool>> RechazarSolicitud(int usuarioId, int viajeId)
-        {
-            // TODO: Implementar rechazo de solicitud de pasajero
-            return new GenericResponse<bool>();
-        }
-
-        public async Task<GenericResponse<bool>> Cancelar(int viajeId)
-        {
-            // TODO: Implementar cancelación de viaje
-            return new GenericResponse<bool>();
-        }
-
-        public async Task<GenericResponse<bool>> Iniciar(int viajeId)
-        {
-            // TODO: Implementar inicio de viaje
-            return new GenericResponse<bool>();
-        }
-
-        public async Task<GenericResponse<bool>> Finalizar(int viajeId)
-        {
-            // TODO: Implementar finalización de viaje
-            return new GenericResponse<bool>();
-        }*/
     }
+
+
+    //private readonly IViajeRepository _viajeRepository;
+    //private readonly IMapper _mapper;
+
+    //public ViajeService(IViajeRepository viajeRepository, IMapper mapper)
+    //{
+    //    _viajeRepository = viajeRepository;
+    //    _mapper = mapper;
+    //}
+
+    /*public async Task<GenericResponse<List<ViajeViewModel>>> List(Expression<Func<ViajeViewModel, bool>>? predicate = null)
+    {
+        // TODO: Implementar listado de viajes (posiblemente mapear entidad a ViewModel)
+        return new GenericResponse<List<ViajeViewModel>>();
+    }
+
+    public async Task<GenericResponse<ViajeViewModel>> Get(int id)
+    {
+        // TODO: Implementar obtención de un viaje por id
+        return new GenericResponse<ViajeViewModel>();
+    }
+
+    public async Task<GenericResponse<ViajeViewModel>> Add(CrearViajeViewModel model)
+    {
+        // TODO: Implementar creación de un nuevo viaje
+        return new GenericResponse<ViajeViewModel>();
+    }
+
+    public async Task<GenericResponse<ViajeViewModel>> Edit(int id, EditarViajeViewModel model)
+    {
+        // TODO: Implementar edición de un viaje
+        return new GenericResponse<ViajeViewModel>();
+    }
+
+    public async Task<GenericResponse<ViajeViewModel>> Delete(int id)
+    {
+        // TODO: Implementar eliminación de un viaje
+        return new GenericResponse<ViajeViewModel>();
+    }
+
+    public async Task<GenericResponse<List<ViajeViewModel>>> ListByUser(string userId, string role, EstadoViaje estado)
+    {
+        // TODO: Implementar listado de viajes por usuario
+        return new GenericResponse<List<ViajeViewModel>>();
+    }
+
+    public async Task<GenericResponse<List<UsuarioViewModel>>> ListPasajeros(int viajeId)
+    {
+        // TODO: Implementar listado de pasajeros de un viaje
+        return new GenericResponse<List<UsuarioViewModel>>();
+    }
+
+    public async Task<GenericResponse<bool>> SolicitarUnirse(int usuarioId, int viajeId)
+    {
+        // TODO: Implementar solicitud de unirse a un viaje
+        return new GenericResponse<bool>();
+    }
+
+    public async Task<GenericResponse<bool>> AceptarSolicitud(int usuarioViajeId)
+    {
+        // TODO: Implementar aceptación de solicitud de pasajero
+        return new GenericResponse<bool>();
+    }
+
+    public async Task<GenericResponse<bool>> RechazarSolicitud(int usuarioId, int viajeId)
+    {
+        // TODO: Implementar rechazo de solicitud de pasajero
+        return new GenericResponse<bool>();
+    }
+
+    public async Task<GenericResponse<bool>> Cancelar(int viajeId)
+    {
+        // TODO: Implementar cancelación de viaje
+        return new GenericResponse<bool>();
+    }
+
+    public async Task<GenericResponse<bool>> Iniciar(int viajeId)
+    {
+        // TODO: Implementar inicio de viaje
+        return new GenericResponse<bool>();
+    }
+
+    public async Task<GenericResponse<bool>> Finalizar(int viajeId)
+    {
+        // TODO: Implementar finalización de viaje
+        return new GenericResponse<bool>();
+    }*/
 }
-
-
 
 /*public GenericResponse<CrearEditarViajeResponse> CrearViaje(CrearViajeRequest request)
 {

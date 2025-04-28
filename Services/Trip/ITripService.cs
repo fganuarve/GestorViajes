@@ -2,11 +2,23 @@
 using GestorViajes.Models.ViewModels.Trip;
 using GestorViajes.Models;
 using GestorViajes.Models.EFCore;
+using Azure;
 
 namespace GestorViajes.Services.Trip
 {
     public interface ITripService
     {
+        Task<GenericResponse<List<TripViewModel>>> List();
+        Task<GenericResponse<TripViewModel>> Get(long id);
+        Task<GenericResponse<TripViewModel>> Add(TripViewModel model);
+        Task<GenericResponse<TripViewModel>> Edit(TripViewModel model);
+        Task<GenericResponse<bool>> Delete(long id);
+        Task<GenericResponse<bool>> Terminate(long id);
+        Task<GenericResponse<List<TripViewModel>>> ListByDriver(long driverId);
+
+
+
+
         /*Task<GenericResponse<List<ViajeViewModel>>> List(Expression<Func<ViajeViewModel, bool>>? predicate = null);
         Task<GenericResponse<ViajeViewModel>> Get(int id);
         Task<GenericResponse<ViajeViewModel>> Add(CrearViajeViewModel model);

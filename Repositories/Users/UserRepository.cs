@@ -5,128 +5,125 @@ using System.Linq.Expressions;
 
 namespace GestorViajes.Repositories.Users
 {
-    public class UserRepository
-    
-    {
-        /*
-        private readonly IDbContextFactory<gestionturnosContext> _context;
+    public class UserRepository : IUserRepository
 
-        public UserRepository(IDbContextFactory<gestionturnosContext> context)
+    {
+        private readonly IDbContextFactory<RoveDbContext> _context;
+
+        public UserRepository(IDbContextFactory<RoveDbContext> context)
         {
             _context = context;
         }
 
-        public async Task<GenericResponse<List<usuarios>>> List(Expression<Func<usuarios, bool>>? predicate = null)
+        #region User CRUD
+
+        public async Task<GenericResponse<List<User>>> List(Expression<Func<User, bool>>? predicate = null)
         {
             try
             {
                 await using var context = await _context.CreateDbContextAsync();
-                var query = context.usuarios.AsQueryable();  // Se debe usar "usuarios" como entidad
+                var query = context.Users
+                    .Include(u => u.TripRequests)
+                    .Include(u => u.UserTrips)
+                    .Include(u => u.Vehicles)
+                    .Include(u => u.Trips)
+                    .AsQueryable();
+
                 if (predicate != null)
                 {
                     query = query.Where(predicate);
                 }
-                return new GenericResponse<List<usuarios>>() { Data = await query.ToListAsync() };
+
+                return new GenericResponse<List<User>>() { Data = await query.ToListAsync() };
             }
             catch (Exception ex)
             {
-                return new GenericResponse<List<usuarios>>() { Error = new ErrorResponse(ex) };
+                return new GenericResponse<List<User>>() { Error = new ErrorResponse(ex) };
             }
         }
 
-        public async Task<GenericResponse<usuarios>> Add(usuarios user)
+        public async Task<GenericResponse<User>> GetById(long id)
         {
             try
             {
                 await using var context = await _context.CreateDbContextAsync();
-                context.usuarios.Add(user);  // Se debe usar "usuarios" como entidad
-                await context.SaveChangesAsync();
-                return new GenericResponse<usuarios>() { Data = user };
-            }
-            catch (Exception ex)
-            {
-                return new GenericResponse<usuarios>() { Error = new ErrorResponse(ex) };
-            }
-        }
+                var user = await context.Users
+                    .Include(u => u.TripRequests)
+                    .Include(u => u.UserTrips)
+                    .Include(u => u.Vehicles)
+                    .Include(u => u.Trips)
+                    .FirstOrDefaultAsync(u => u.Id == id);
 
-        public async Task<GenericResponse<usuarios>> Edit(usuarios user)
-        {
-            try
-            {
-                await using var context = await _context.CreateDbContextAsync();
-                var entity = await context.usuarios.FindAsync(user.id);
-                if (entity == null)
-                {
-                    return new GenericResponse<usuarios> { Error = new ErrorResponse("Usuario no encontrado") };
-                }
-                context.Entry(entity).CurrentValues.SetValues(user);
-                context.Entry(entity).State = EntityState.Modified;
-                await context.SaveChangesAsync();
-                return new GenericResponse<usuarios> { Data = entity };
-            }
-            catch (Exception ex)
-            {
-                return new GenericResponse<usuarios> { Error = new ErrorResponse(ex) };
-            }
-        }
-
-        public async Task<GenericResponse<usuarios>> Delete(long id)
-        {
-            try
-            {
-                await using var context = await _context.CreateDbContextAsync();
-                var user = await context.usuarios.FindAsync(id);
                 if (user == null)
                 {
-                    return new GenericResponse<usuarios>() { Error = new ErrorResponse($"No se ha encontrado el usuario con ID {id}") };
+                    return new GenericResponse<User>() { Error = new ErrorResponse("User not found.") };
                 }
-                context.usuarios.Remove(user);
+
+                return new GenericResponse<User>() { Data = user };
+            }
+            catch (Exception ex)
+            {
+                return new GenericResponse<User>() { Error = new ErrorResponse(ex) };
+            }
+        }
+
+        public async Task<GenericResponse<User>> Add(User user)
+        {
+            try
+            {
+                await using var context = await _context.CreateDbContextAsync();
+                context.Users.Add(user);
                 await context.SaveChangesAsync();
-                return new GenericResponse<usuarios> { Data = user };
+
+                return new GenericResponse<User>() { Data = user };
             }
             catch (Exception ex)
             {
-                return new GenericResponse<usuarios> { Error = new ErrorResponse(ex) };
+                return new GenericResponse<User>() { Error = new ErrorResponse(ex) };
             }
         }
 
-        public async Task<GenericResponse<usuarios>> Get(Expression<Func<usuarios, bool>>? predicate = null)
+        public async Task<GenericResponse<User>> Update(User user)
         {
             try
             {
                 await using var context = await _context.CreateDbContextAsync();
-                var query = context.usuarios.AsQueryable();
-                if (predicate != null)
-                {
-                    query = query.Where(predicate);
-                }
-                var result = await query.FirstOrDefaultAsync();
-                if (result == null)
-                {
-                    return new GenericResponse<usuarios> { Error = new ErrorResponse("Usuario no encontrado") };
-                }
-                return new GenericResponse<usuarios> { Data = result };
+                context.Users.Update(user);
+                await context.SaveChangesAsync();
+
+                return new GenericResponse<User>() { Data = user };
             }
             catch (Exception ex)
             {
-                return new GenericResponse<usuarios> { Error = new ErrorResponse(ex) };
+                return new GenericResponse<User>() { Error = new ErrorResponse(ex) };
             }
         }
 
-        public async Task<GenericResponse<bool>> Exists(Expression<Func<usuarios, bool>> predicate)
+        public async Task<GenericResponse<bool>> Delete(long id)
         {
             try
             {
                 await using var context = await _context.CreateDbContextAsync();
-                var exists = await context.usuarios.AnyAsync(predicate);
-                return new GenericResponse<bool> { Data = exists };
+                var user = await context.Users.FindAsync(id);
+
+                if (user == null)
+                {
+                    return new GenericResponse<bool>() { Error = new ErrorResponse("User not found.") };
+                }
+
+                context.Users.Remove(user);
+                await context.SaveChangesAsync();
+
+                return new GenericResponse<bool>() { Data = true };
             }
             catch (Exception ex)
             {
-                return new GenericResponse<bool> { Error = new ErrorResponse(ex) };
+                return new GenericResponse<bool>() { Error = new ErrorResponse(ex) };
             }
         }
-    */}
+
+        #endregion
+    }
 }
 
 

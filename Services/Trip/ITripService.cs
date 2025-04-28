@@ -1,11 +1,11 @@
 ﻿using System.Linq.Expressions;
-using GestorViajes.Models.ViewModels.ViajeViewModel;
+using GestorViajes.Models.ViewModels.Trip;
 using GestorViajes.Models;
 using GestorViajes.Models.EFCore;
 
-namespace GestorViajes.Services.Viaje
+namespace GestorViajes.Services.Trip
 {
-    public interface IViajeService
+    public interface ITripService
     {
         /*Task<GenericResponse<List<ViajeViewModel>>> List(Expression<Func<ViajeViewModel, bool>>? predicate = null);
         Task<GenericResponse<ViajeViewModel>> Get(int id);

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace GestorViajes.Models.ViewModels.ViajeViewModel
+namespace GestorViajes.Models.ViewModels.Trip
 {
-    public class ViajeViewModel : CommonFields
+    public class TripViewModel : CommonFields
     {
         public long? Id { get; set; }
 

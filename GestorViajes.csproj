@@ -29,8 +29,8 @@
     <Folder Include="Migrations\" />
     <Folder Include="Services\Account\" />
     <Folder Include="Views\User\" />
-    <Folder Include="Views\Vehiculos\" />
-    <Folder Include="Views\Viaje\" />
+    <Folder Include="Views\Vehicle\" />
+    <Folder Include="Views\Trip\" />
   </ItemGroup>
 
 </Project>

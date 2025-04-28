@@ -2,12 +2,12 @@
 using AutoMapper;
 using GestorViajes.Models;
 using GestorViajes.Models.EFCore.Rove;
-using GestorViajes.Models.ViewModels.ViajeViewModel;
-using GestorViajes.Repositories.Viajes;
+using GestorViajes.Models.ViewModels.Trip;
+using GestorViajes.Repositories.Trips;
 
-namespace GestorViajes.Services.Viaje
+namespace GestorViajes.Services.Trip
 {
-    public class ViajeService 
+    public class TripService 
     {
         //private readonly IViajeRepository _viajeRepository;
         //private readonly IMapper _mapper;

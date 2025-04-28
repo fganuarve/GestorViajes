@@ -1,6 +1,6 @@
 ﻿/*using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Models.ViewModels.Vehicle;
-using GestorViajes.Services.Vehiculo;
+using GestorViajes.Services.Vehicle;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestorViajes.Controllers

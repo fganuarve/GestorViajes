@@ -1,11 +1,11 @@
 ﻿using GestorViajes.Models;
 using GestorViajes.Models.EFCore.Rove;
-using GestorViajes.Models.ViewModels.Vehiculo;
+using GestorViajes.Models.ViewModels.Vehicle;
 using System.Linq.Expressions;
 
 namespace GestorViajes.Services.Vehiculo
 {
-    public interface IVehiculoService
+    public interface IVehicleService
     {
         //Task<GenericResponse<List<VehiculoViewModel>>> List(Expression<Func<VehiculoViewModel, bool>>? predicate = null);
         //Task<GenericResponse<VehiculoViewModel>> Get(long id);

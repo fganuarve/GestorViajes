@@ -3,9 +3,9 @@ using GestorViajes.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace GestorViajes.Repositories.Vehiculos
+namespace GestorViajes.Repositories.Vehicles
 {
-    public class VehiculoRepository
+    public class VehicleRepository
     {
         //private readonly IDbContextFactory<gestionturnosContext> _context;
         //public VehiculoRepository(IDbContextFactory<gestionturnosContext> context)

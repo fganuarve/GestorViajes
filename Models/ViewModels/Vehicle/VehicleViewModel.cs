@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace GestorViajes.Models.ViewModels.Vehiculo
+namespace GestorViajes.Models.ViewModels.Vehicle
 {
-    public class VehiculoViewModel : CommonFields
+    public class VehicleViewModel : CommonFields
     {
         public long? Id { get; set; }  // nullable por si es nuevo y aun no tiene ID ???
 

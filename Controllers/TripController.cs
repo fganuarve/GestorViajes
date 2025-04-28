@@ -1,6 +1,8 @@
-﻿/*using GestorViajes.Models.EFCore.Rove;
-using GestorViajes.Models.ViewModels.Roadtrip;
-using GestorViajes.Services.Roadtrip;
+﻿using AutoMapper;
+using GestorViajes.Models.EFCore.Rove;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using GestorViajes.Models.ViewModels.TripViewModel;
+using GestorViajes.Services.Trip;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestorViajes.Controllers
@@ -142,4 +144,4 @@ namespace GestorViajes.Controllers
         }
     }
 
-}*/
+}

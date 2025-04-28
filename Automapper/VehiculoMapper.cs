@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using GestorViajes.Models.EFCore.Rove;
-using GestorViajes.Models.ViewModels.Vehiculo;
+using GestorViajes.Models.ViewModels.Vehicle;
 
 namespace GestorViajes.Automapper
 {

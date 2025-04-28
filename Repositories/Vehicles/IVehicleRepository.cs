@@ -2,9 +2,9 @@
 using GestorViajes.Models.EFCore.Rove;
 using System.Linq.Expressions;
 
-namespace GestorViajes.Repositories.Vehiculos
+namespace GestorViajes.Repositories.Vehicles
 {
-    public interface IVehiculoRepository
+    public interface IVehicleRepository
     {
         //// Listar vehiculos con filtro 
         //Task<GenericResponse<List<vehiculos>>> List(Expression<Func<vehiculos, bool>>? predicate = null);

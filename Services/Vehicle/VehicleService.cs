@@ -1,14 +1,14 @@
 ﻿using GestorViajes.Models;
 using GestorViajes.Repositories.Users;
 using System.Linq.Expressions;
-using GestorViajes.Models.ViewModels.Vehiculo;
+using GestorViajes.Models.ViewModels.Vehicle;
 using GestorViajes.Models.EFCore.Rove;
-using GestorViajes.Repositories.Vehiculos;
+using GestorViajes.Repositories.Vehicles;
 using AutoMapper;
 
 namespace GestorViajes.Services.Vehiculo
 {
-    public class VehiculoService 
+    public class VehicleService 
     {
         //private readonly IVehiculoRepository _vehiculoRepository;
         //private readonly IUserRepository _userRepository;

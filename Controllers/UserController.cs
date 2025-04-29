@@ -27,42 +27,42 @@ namespace GestorViajes.Controllers
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
+    //    [HttpPost]
+    //    public async Task<IActionResult> Login(LoginViewModel model)
+    //    {
+    //        if (!ModelState.IsValid)
+    //            return View(model);
 
-            var user = await _userService.GetByEmailAndPassword(model.Email, model.Password);
+    //        var user = await _userService.GetByEmailAndPassword(model.Email, model.Password);
 
-            if (user == null)
-            {
-                ModelState.AddModelError(string.Empty, "Credenciales incorrectas");
-                return View(model);
-            }
+    //        if (user == null)
+    //        {
+    //            ModelState.AddModelError(string.Empty, "Credenciales incorrectas");
+    //            return View(model);
+    //        }
 
-            // Autenticación con cookies
-            var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, user.Name),
-        new Claim(ClaimTypes.Email, user.Email),
-        new Claim(ClaimTypes.Role, user.Role)
-    };
+    //        // Autenticación con cookies
+    //        var claims = new List<Claim>
+    //{
+    //    new Claim(ClaimTypes.Name, user.Name),
+    //    new Claim(ClaimTypes.Email, user.Email),
+    //    new Claim(ClaimTypes.Role, user.Role)
+    //};
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
+    //        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+    //        var principal = new ClaimsPrincipal(identity);
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+    //        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-            return RedirectToAction("Index", "Home");
-        }
+    //        return RedirectToAction("Index", "Home");
+    //    }
 
-        [HttpPost]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "User");
-        }
+    //    [HttpPost]
+    //    public async Task<IActionResult> Logout()
+    //    {
+    //        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    //        return RedirectToAction("Login", "User");
+    //    }
 
         [HttpGet]
         public async Task<IActionResult> Index()

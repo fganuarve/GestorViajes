@@ -33,7 +33,7 @@ namespace GestorViajes.Repositories.Users
         {
             try
             {
-                await using var context = await _context.CreateDbContextAsync();
+                await using var context = await _contextFactory.CreateDbContextAsync();
                 var query = context.Users
                     .Include(u => u.TripRequests)
                     .Include(u => u.UserTrips)
@@ -58,7 +58,7 @@ namespace GestorViajes.Repositories.Users
         {
             try
             {
-                await using var context = await _context.CreateDbContextAsync();
+                await using var context = await _contextFactory.CreateDbContextAsync();
                 var user = await context.Users
                     .Include(u => u.TripRequests)
                     .Include(u => u.UserTrips)
@@ -83,7 +83,7 @@ namespace GestorViajes.Repositories.Users
         {
             try
             {
-                await using var context = await _context.CreateDbContextAsync();
+                await using var context = await _contextFactory.CreateDbContextAsync();
                 context.Users.Add(user);
                 await context.SaveChangesAsync();
 
@@ -99,7 +99,7 @@ namespace GestorViajes.Repositories.Users
         {
             try
             {
-                await using var context = await _context.CreateDbContextAsync();
+                await using var context = await _contextFactory.CreateDbContextAsync();
                 context.Users.Update(user);
                 await context.SaveChangesAsync();
 
@@ -115,7 +115,7 @@ namespace GestorViajes.Repositories.Users
         {
             try
             {
-                await using var context = await _context.CreateDbContextAsync();
+                await using var context = await _contextFactory.CreateDbContextAsync();
                 var user = await context.Users.FindAsync(id);
 
                 if (user == null)

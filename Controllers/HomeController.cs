@@ -13,11 +13,12 @@ namespace GestorViajes.Controllers
             _logger = logger;
         }
 
-        // Detecta si el usuario está logueado, si no, redirige a la vista Login
+        // Detecta si el usuario estáa logueado, si no, redirige a la vista Login
         public IActionResult Index()
         {
             if (!User.Identity.IsAuthenticated)
-                return RedirectToAction("Login", "Account"); // Redirige a la vista Login del controlador Account
+                // Redirige a la vista Login del controlador Account
+                return RedirectToAction("Login", "Account");
 
             // Vista principal tras el login
             return View();

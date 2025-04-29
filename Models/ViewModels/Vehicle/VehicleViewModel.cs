@@ -5,40 +5,39 @@ namespace GestorViajes.Models.ViewModels.Vehicle
 {
     public class VehicleViewModel : CommonFields
     {
-        public long? Id { get; set; }  // nullable por si es nuevo y aun no tiene ID ???
-
-        [Display(Name = "Modelo del Coche")]
-        [MaxLength(100)]
-        public string? ModeloCoche { get; set; }
+        public long? Id { get; set; }
 
         [Required(ErrorMessage = "La matrícula es un campo obligatorio")]
-        [MaxLength(20)]
         [Display(Name = "Matrícula")]
-        public string Matricula { get; set; } = string.Empty;
+        [MaxLength(20)]
+        public string Plate { get; set; }
+        [Display(Name = "Modelo")]
+        public string? Model { get; set; }
+
 
         [Required(ErrorMessage = "Debe indicar el número de plazas")]
         [Range(1, 100, ErrorMessage = "Debe ingresar un número válido de plazas")]
         [Display(Name = "Número de Plazas")]
-        public int? Plazas { get; set; }
+        public int MaxSeats { get; set; }
 
         [Required]
-        [Display(Name = "Usuario")]
-        public long UsuarioId { get; set; }
+        [Display(Name = "Owner")]
+        public long UserId { get; set; }
 
         //vehiculo se crea activo por defecto
-        public bool? Activo { get; set; } = true;
+        [Display(Name = "Active")]
+        public bool Active { get; set; }
 
-        // para mostrar info del usuario asociado
-        public UsuarioVehiculoViewModel? Usuario { get; set; }
+        // Dropdowns for forms
+        public List<SelectListItem> Users { get; set; } = new();
 
-        // Dropdown de usuario
-        public List<SelectListItem> Usuarios { get; set; } = [];
+        // Display-only summary
+        public UserSummaryViewModel? Owner { get; set; }
     }
 
-    // version del usuario para incluir dentro del vehiculo
-    public class UsuarioVehiculoViewModel
+    public class UserSummaryViewModel
     {
         public long Id { get; set; }
-        public string Nombre { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
     }
 }

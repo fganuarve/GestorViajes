@@ -47,6 +47,7 @@ namespace GestorViajes.Models.ViewModels.Trip
 
         //Pasajeros
         //Representa la relacion entre usuarios y viajes en la bd (tabla intermedia UserTrip)
+        //Collection: Mostrar/editar los pasajeros existentes
         public virtual ICollection<UserTrip> Passengers { get; set; } = [];
         //Tiene solo los datos resumidos de los pasajeros, para mostrar en una vista
         //public List<PassengerSummaryViewModel> Passengers { get; set; } = [];
@@ -59,6 +60,7 @@ namespace GestorViajes.Models.ViewModels.Trip
         //}
 
         // Dropdowns para formularios
+        //Listas: Mostrar listas desplegables en formularios
         public List<SelectListItem> Drivers { get; set; } = [];
         public List<SelectListItem> Vehicles { get; set; } = [];
 
@@ -72,12 +74,12 @@ namespace GestorViajes.Models.ViewModels.Trip
     public class DriverSummaryViewModel
     {
         public long Id { get; set; }
-        public string FullName { get; set; } = string.Empty;
+        public string FullName { get; set; }
     }
 
     public class VehicleSummaryViewModel
     {
         public long Id { get; set; }
-        public string Description { get; set; } = string.Empty; 
+        public string Description { get; set; }
     }
 }

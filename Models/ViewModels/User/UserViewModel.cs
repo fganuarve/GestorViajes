@@ -13,7 +13,7 @@ namespace GestorViajes.Models.ViewModels.User
         [Required]
         [MaxLength(50)]
         [Display(Name = "Nombre")]
-        public string FirstName { get; set; } = string.Empty;
+        public string FirstName { get; set; }
 
         
         [MaxLength(50)]
@@ -23,13 +23,13 @@ namespace GestorViajes.Models.ViewModels.User
         public string? LastName2 { get; set; }
 
         public string NationalId { get; set; }
-        public string Password { get; set; } = null!;
+        public string Password { get; set; }
 
 
         [Required]
         [EmailAddress]
         [MaxLength(100)]
-        public string Email { get; set; } = string.Empty;
+        public string Email { get; set; }
 
         
         [MaxLength(15)]
@@ -38,11 +38,11 @@ namespace GestorViajes.Models.ViewModels.User
         // Rol
         [Required]
         [Display(Name = "Rol")]
-        public string SelectedRol { get; set; } = string.Empty;
+        public string SelectedRol { get; set; }
 
 
         // Lista de roles
-        public List<SelectListItem> Roles { get; set; } = new List<SelectListItem>();
+        public List<SelectListItem> Roles { get; set; } = [];
          
     }
 }

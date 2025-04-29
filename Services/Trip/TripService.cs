@@ -102,7 +102,7 @@ namespace GestorViajes.Services.Trip
                 }
 
                 _mapper.Map(model, trip);
-                trip.ModifiedAt = DateTime.UtcNow;
+                //trip.ModifiedAt = DateTime.UtcNow;
 
                 _context.Trips.Update(trip);
                 await _context.SaveChangesAsync();
@@ -155,7 +155,7 @@ namespace GestorViajes.Services.Trip
                 }
 
                 trip.Active = false;
-                trip.ModifiedAt = DateTime.UtcNow;
+                //trip.ModifiedAt = DateTime.UtcNow;
 
                 _context.Trips.Update(trip);
                 await _context.SaveChangesAsync();

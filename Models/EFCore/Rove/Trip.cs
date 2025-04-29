@@ -22,15 +22,7 @@ public partial class Trip : CommonFields
 
     public string Origin { get; set; }
 
-    public DateTime? Date { get; set; }
-
-    public string? CreatedBy { get; set; }
-
-    public DateTime? CreatedAt { get; set; }
-
-    public DateTime? ModifiedAt { get; set; }
-
-    public string? ModifiedBy { get; set; }
+    public DateTime? Date { get; set; }    
 
     public bool Active { get; set; }
 

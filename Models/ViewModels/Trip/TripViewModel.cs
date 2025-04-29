@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using GestorViajes.Models.EFCore.Rove;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace GestorViajes.Models.ViewModels.Trip
@@ -7,73 +8,76 @@ namespace GestorViajes.Models.ViewModels.Trip
     {
         public long? Id { get; set; }
 
-        [Required]
-        [Display(Name = "Vehículo")]
-        public long VehiculoId { get; set; }
+        //Conductor
 
         [Required]
-        [Display(Name = "Conductor")]
-        public long ConductorId { get; set; }
+        [Display(Name = "Driver")]
+        public long DriverId { get; set; }
 
-        [MaxLength(100)]
-        [Display(Name = "Origen")]
-        public string? Origen { get; set; }
-
-        [MaxLength(100)]
-        [Display(Name = "Destino")]
-        public string? Destino { get; set; }
+        //Vehiculo
 
         [Required]
-        [Display(Name = "Fecha de Salida")]
-        [DataType(DataType.Date)]
-        public DateTime? FechaSalida { get; set; }
-
-        [Required]
-        [Display(Name = "Hora de Salida")]
-        [DataType(DataType.Time)]
-        public DateTime? HoraSalida { get; set; }
+        [Display(Name = "Vehicle")]
+        public long VehicleId { get; set; }
 
         [Range(1, 100)]
-        [Display(Name = "Número de Plazas")]
-        public int? Plazas { get; set; }
+        [Display(Name = "Seats")]
+        public int Seats { get; set; }
 
-        [Display(Name = "Activo")]
-        public bool? Activo { get; set; }
+        //Viaje
 
-        [Display(Name = "Estado")]
-        public string? Estado { get; set; } // Alternativamente, puedes usar un enum
+        [MaxLength(100)]
+        [Display(Name = "Origin")]
+        public string Origin { get; set; }
 
-        [Display(Name = "Creado Por")]
-        public string? CreadoPor { get; set; }
+        [MaxLength(100)]
+        [Display(Name = "Destination")]
+        public string Destination { get; set; }
 
-        [Display(Name = "Fecha de Creación")]
-        public DateTime? FechaCreacion { get; set; }
+        [Required]
+        public DateTime? Date { get; set; }
 
-        [Display(Name = "Fecha de Modificación")]
-        public DateTime? FechaModificacion { get; set; }
+        [Display(Name = "Active")]
+        public bool Active { get; set; }
 
-        [Display(Name = "Modificado Por")]
-        public string? ModificadoPor { get; set; }
+        public virtual ICollection<TripRequest> TripRequests { get; set; } = [];
 
-        // Para selects en el formulario
-        public List<SelectListItem> Conductores { get; set; } = new();
-        public List<SelectListItem> Vehiculos { get; set; } = new();
+        //[Display(Name = "Status")]
+        //public string? Status { get; set; }
 
-        // Datos extra para mostrar
-        public UsuarioResumenViewModel? Conductor { get; set; }
-        public VehiculoResumenViewModel? Vehiculo { get; set; }
-        public List<UsuarioResumenViewModel> Pasajeros { get; set; } = new();
+        //Pasajeros
+        //Representa la relacion entre usuarios y viajes en la bd (tabla intermedia UserTrip)
+        public virtual ICollection<UserTrip> Passengers { get; set; } = [];
+        //Tiene solo los datos resumidos de los pasajeros, para mostrar en una vista
+        //public List<PassengerSummaryViewModel> Passengers { get; set; } = [];
+
+        //para que eso existiese:
+        //public class PassengerSummaryViewModel
+        //{
+        //    public long Id { get; set; }
+        //    public string FullName { get; set; } = string.Empty;
+        //}
+
+        // Dropdowns para formularios
+        public List<SelectListItem> Drivers { get; set; } = [];
+        public List<SelectListItem> Vehicles { get; set; } = [];
+
+        // Display info
+        public DriverSummaryViewModel? Driver { get; set; }
+        public VehicleSummaryViewModel? Vehicle { get; set; }
+
+
     }
 
-    public class UsuarioResumenViewModel
+    public class DriverSummaryViewModel
     {
         public long Id { get; set; }
-        public string NombreCompleto { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
     }
 
-    public class VehiculoResumenViewModel
+    public class VehicleSummaryViewModel
     {
         public long Id { get; set; }
-        public string Descripcion { get; set; } = string.Empty; // ej. "Ford Fiesta - ABC123"
+        public string Description { get; set; } = string.Empty; 
     }
 }

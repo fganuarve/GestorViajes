@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Models.ViewModels.User;
 using GestorViajes.Services.User;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace GestorViajes.Controllers
 {
@@ -16,6 +19,49 @@ namespace GestorViajes.Controllers
         {
             _userService = userService;
             _mapper = mapper;
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userService.GetByEmailAndPassword(model.Email, model.Password);
+
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "Credenciales incorrectas");
+                return View(model);
+            }
+
+            // Autenticación con cookies
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.Name),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role, user.Role)
+    };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "User");
         }
 
         [HttpGet]

@@ -5,6 +5,9 @@ using GestorViajes.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using GestorViajes.Repositories.Users;
+using System.Text;
+using Microsoft.Extensions.Logging;
+using System.Security.Cryptography;
 
 namespace GestorViajes.Services.User
 {
@@ -16,16 +19,55 @@ namespace GestorViajes.Services.User
             private readonly IUserRepository _userRepository;
             private readonly RoveDbContext _context;
             private readonly IMapper _mapper;
+            private readonly ILogger<UserService> _logger;
 
             public UserService(
                 IUserRepository userRepository,
                 RoveDbContext context,
-                IMapper mapper)
+                IMapper mapper,
+                ILogger<UserService> logger)
             {
                 _userRepository = userRepository;
                 _context = context;
                 _mapper = mapper;
+                _logger = logger;
             }
+            // Metodo para autenticar usuario
+            public async Task<bool> AuthenticateUserAsync(LoginViewModel loginModel)
+            {
+                var user = await _userRepository.GetUserByEmailAsync(loginModel.Email);
+
+                if (user == null)
+                {
+                    _logger.LogWarning($"Intento de login fallido: el usuario con email {loginModel.Email} no existe.");
+                    return false; // Usuario no encontrado
+                }
+
+                // Validar contraseña
+                if (!VerifyPassword(user.Password, loginModel.Password))
+                {
+                    _logger.LogWarning($"Intento de login fallido: contraseña incorrecta para el usuario {loginModel.Email}.");
+                    return false; // Contraseña incorrecta
+                }
+
+                return true; // Autenticacion exitosa
+            }
+
+            // Metodo para verificar la contraseña usando un hash (suponiendo que las contraseñas estan almacenadas de forma segura)
+            //VerifyPassword es un metodo de apoyo interno y no necesita ser parte de la interfaz IUserService (por eso no aparece en IUserService)
+            private bool VerifyPassword(string storedPassword, string inputPassword)
+            {
+                // Aqui usar el algoritmo de hash que  se utiliza en la base de datos
+                // Suponiendo que las contraseñas estan almacenadas como SHA256 por ejemplo
+                using (var sha256 = SHA256.Create())
+                {
+                    var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(inputPassword));
+                    var hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+
+                    return storedPassword == hashString;
+                }
+            }
+
 
             public async Task<GenericResponse<List<UserViewModel>>> List(Expression<Func<Models.EFCore.Rove.User, bool>>? predicate = null)
             {

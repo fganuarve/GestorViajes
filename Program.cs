@@ -28,21 +28,26 @@ namespace GestorViajes
             builder.Services.AddControllersWithViews().AddNewtonsoftJson();
             builder.Services.AddSession();
 
-            //Autenticacion
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            // Configuracion de la autenticacion con cookies
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {     // Ruta de login
+                    options.LoginPath = "/Account/Login";
+                    // Ruta de acceso denegado
+                    options.AccessDeniedPath = "/Account/AccessDenied";
+                    // Tiempo de expiración de la cookie
+                    options.ExpireTimeSpan = TimeSpan.FromDays(30);
+                });
 
-
-
-            //Conexion a la base de datos
+            // Configuracion de la conexion a la base de datos
             builder.Services.AddDbContextFactory<RoveDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("Rove"))
             );
 
-
-            //Repositories
+            // Repositorios
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
-            builder.Services.AddScoped<ITripRepository, TripRepository>();  
+            builder.Services.AddScoped<ITripRepository, TripRepository>();
 
             // Servicios
             builder.Services.AddScoped<IUserService, UserService>();
@@ -50,33 +55,16 @@ namespace GestorViajes
             builder.Services.AddScoped<IVehicleService, VehicleService>();
             builder.Services.AddAutoMapper(typeof(Program));
 
-            //builder.Services.AddSession();
+            // Otros servicios
             builder.Services.AddHttpContextAccessor();
-
+            builder.Services.AddSession();
 
             var app = builder.Build();
-
-
-            /*//autenticacion, modificar
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            })
-            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-            {
-                options.ExpireTimeSpan = TimeSpan.FromDays(50);
-                options.LoginPath = "/Account/Login";
-                options.AccessDeniedPath = "/Account/Login";
-            });*/                     
-
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -84,10 +72,12 @@ namespace GestorViajes
             app.UseStaticFiles();
 
             app.UseRouting();
-            //Importante el orden!
+
+            // Importante el orden! Asegurarse de usar el middleware de autenticacion antes de autorizacion
             app.UseAuthentication();
             app.UseAuthorization();
 
+            // Rutas de controladores
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

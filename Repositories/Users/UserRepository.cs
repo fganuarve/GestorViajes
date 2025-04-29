@@ -8,11 +8,23 @@ namespace GestorViajes.Repositories.Users
     public class UserRepository : IUserRepository
 
     {
-        private readonly IDbContextFactory<RoveDbContext> _context;
+        private readonly IDbContextFactory<RoveDbContext> _contextFactory;
 
-        public UserRepository(IDbContextFactory<RoveDbContext> context)
+        public UserRepository(IDbContextFactory<RoveDbContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
+        }
+
+        // Buscar usuario por email
+        //Puede ser nullable:   User?
+        //T? — el primer elemento que cumple la condición, o null si no existe.
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {
+            using (var context = _contextFactory.CreateDbContext())
+            {
+                return await context.Users
+                    .FirstOrDefaultAsync(u => u.Email == email);
+            }
         }
 
         #region User CRUD

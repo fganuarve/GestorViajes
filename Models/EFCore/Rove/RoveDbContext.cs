@@ -33,19 +33,7 @@ namespace GestorViajes.Models.EFCore.Rove
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
-            // Como ahora todos heredan de CommonFields
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-            {
-                if (typeof(CommonFields).IsAssignableFrom(entityType.ClrType))
-                {
-                    modelBuilder.Entity(entityType.ClrType).Property<DateTime?>("CreatedAt");
-                    modelBuilder.Entity(entityType.ClrType).Property<string>("CreatedBy").HasMaxLength(100);
-                    modelBuilder.Entity(entityType.ClrType).Property<DateTime?>("ModifiedAt");
-                    modelBuilder.Entity(entityType.ClrType).Property<string>("ModifiedBy").HasMaxLength(100);
-                }
-            }
+            base.OnModelCreating(modelBuilder);            
 
             modelBuilder.Entity<User>(entity =>
             {

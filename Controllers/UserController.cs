@@ -21,19 +21,22 @@ namespace GestorViajes.Controllers
             _userService = userService;
             _mapper = mapper;
         }
-       
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            // Llamada al servicio para obtener los datos del usuario
             var response = await _userService.List();
+
             if (!response.Success)
             {
                 TempData["status"] = "error";
                 TempData["message"] = response.Error!.Message;
-                return View(new List<UserViewModel>());
+                return View("IndexUser", new List<UserViewModel>());
             }
 
-            return View(response.Data);
+            // Se pasa la lista de usuarios o los datos relevantes a la vista IndexUser
+            return View("IndexUser", response.Data);
         }
 
         [HttpGet]

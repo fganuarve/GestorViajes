@@ -1,0 +1,75 @@
+﻿@model GestorViajes.Models.ViewModels.Vehicle.VehicleViewModel
+
+@{
+    ViewData["Title"] = "Editar Vehículo";
+}
+
+<div class="container-fluid px-4 py-4">
+    <div class="card shadow p-4">
+        <h2 class="fw-bold mb-4">Editar Vehículo</h2>
+
+        <!-- Formulario para editar -->
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+
+            <input type="hidden" asp-for="Id" />
+            
+
+            <!-- Modelo -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Modelo</label>
+                <input type="text" class="form-control" asp-for="Model" placeholder="Modelo del vehículo" required>
+            </div>
+
+            <!-- Color -->
+            <!--<div class="mb-3">
+                <label class="form-label fw-bold">Color</label>
+                <input type="text" class="form-control" asp-for="Color" placeholder="Color del vehículo" required>
+            </div>-->
+
+            <!-- Numero de Plazas -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Número de Plazas</label>
+                <div class="input-group" style="max-width: 200px;">
+                    <button type="button" class="btn btn-outline-secondary" onclick="cambiarPlazas(-1)">-</button>
+                    <input type="text" id="plazas" name="Seats" class="form-control text-center" value="@Model.MaxSeats" readonly>
+                    <button type="button" class="btn btn-outline-secondary" onclick="cambiarPlazas(1)">+</button>
+                </div>
+                <small class="form-text text-muted">Máximo 3 plazas.</small>
+            </div>
+
+            <!-- Imagen -->
+            <!--<div class="mb-3">
+                <label class="form-label fw-bold">Imagen del Vehículo</label>
+                <input type="file" class="form-control" asp-for="ImageFile" accept="image/*">
+                <small class="form-text text-muted">Selecciona una nueva imagen del vehículo (opcional).</small>
+            </div>-->
+
+            <!-- Boton Guardar Cambios -->
+            <button type="submit" class="btn btn-primary">
+                <i class='bx bx-save'></i> Guardar Cambios
+            </button>
+        </form>
+
+        <!-- Boton Eliminar -->
+        <form asp-action="Delete" method="post" class="mt-3" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este vehículo?')">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">
+                <i class='bx bx-trash'></i> Eliminar Vehículo
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Script para controlar las plazas -->
+<script>
+    function cambiarPlazas(valor) {
+        let plazasInput = document.getElementById('plazas');
+        let plazas = parseInt(plazasInput.value);
+
+        plazas += valor;
+        if (plazas < 1) plazas = 1;
+        if (plazas > 3) plazas = 3;
+
+        plazasInput.value = plazas;
+    }
+</script>

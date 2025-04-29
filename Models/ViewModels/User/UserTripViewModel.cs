@@ -8,7 +8,7 @@
         public long TripId { get; set; }
 
         // Para mostrar en vistas
-        public string UserFullName { get; set; } = string.Empty;
-        public string TripSummary { get; set; } = string.Empty;
+        public string UserFullName { get; set; }
+        public string TripSummary { get; set; } 
     }
 }

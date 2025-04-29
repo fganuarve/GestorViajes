@@ -1,0 +1,37 @@
+﻿@model GestorViajes.Models.ViewModels.Vehicle.VehicleViewModel
+
+@{
+    ViewData["Title"] = "Detalles del Vehículo";
+}
+
+<div class="container-fluid px-4 py-4">
+    <div class="card shadow p-4">
+        <h2 class="fw-bold mb-4">Detalles del Vehículo</h2>       
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Modelo</label>
+            <p class="form-control-plaintext">@Model.Model</p>
+        </div>        
+
+        @*<div class="mb-3">
+            <label class="form-label fw-bold">Color</label>
+            <p class="form-control-plaintext">@Model.Color</p>
+        </div>*@
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Número de Plazas</label>
+            <p class="form-control-plaintext">@Model.MaxSeats</p>
+        </div>        
+
+        @*<div class="mb-3">
+            <label class="form-label fw-bold">Imagen</label><br />
+            <img src="@Model.ImageUrl" alt="Imagen del vehículo" class="img-fluid rounded" style="max-width: 300px;">
+        </div>*@
+
+        <div class="mb-3">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class='bx bx-edit'></i> Editar Vehículo
+            </a>
+        </div>
+    </div>
+</div>

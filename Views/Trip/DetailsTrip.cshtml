@@ -1,0 +1,65 @@
+﻿@model GestorViajes.Models.ViewModels.Trip.TripViewModel
+
+@{
+    ViewData["Title"] = "Detalles del Viaje";
+}
+
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h3 class="mb-4"><i class="bx bx-map-pin"></i> Detalles del Viaje</h3>
+
+        <dl class="row">
+            <dt class="col-sm-4">Conductor</dt>
+            <dd class="col-sm-8">@Model.Driver?.FullName</dd>
+
+            <dt class="col-sm-4">Vehículo</dt>
+            <dd class="col-sm-8">@Model.Vehicle?.Description</dd>
+
+            <dt class="col-sm-4">Asientos Disponibles</dt>
+            <dd class="col-sm-8">@Model.Seats</dd>
+
+            <dt class="col-sm-4">Origen</dt>
+            <dd class="col-sm-8">@Model.Origin</dd>
+
+            <dt class="col-sm-4">Destino</dt>
+            <dd class="col-sm-8">@Model.Destination</dd>
+
+            <dt class="col-sm-4">Fecha del Viaje</dt>
+            <dd class="col-sm-8">@Model.Date?.ToString("dd/MM/yyyy HH:mm")</dd>
+
+            <dt class="col-sm-4">Estado</dt>
+            <dd class="col-sm-8">
+                @if (Model.Active)
+                {
+                    <span class="badge bg-success">Activo</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Inactivo</span>
+                }
+            </dd>
+
+            <dt class="col-sm-4">Pasajeros</dt>
+            <dd class="col-sm-8">
+                @if (Model.Passengers != null && Model.Passengers.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var pasajero in Model.Passengers)
+                        {
+                            <li class="list-group-item">
+                                @pasajero.User
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <span>No hay pasajeros registrados</span>
+                }
+            </dd>
+        </dl>
+
+        <a asp-action="Index" class="btn btn-secondary mt-3"><i class="bx bx-arrow-back"></i> Volver</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary mt-3 ms-2"><i class="bx bx-edit"></i> Editar</a>
+    </div>
+</div>

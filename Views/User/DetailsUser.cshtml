@@ -1,0 +1,60 @@
+﻿@model GestorViajes.Models.ViewModels.User.UserViewModel
+
+@{
+    ViewData["Title"] = "Detalles del Usuario";
+}
+
+<div class="container-fluid px-4 py-4">
+    <div class="card shadow p-4">
+        <h2 class="fw-bold mb-4">Detalles del Usuario</h2>
+
+        <!-- Correo -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Correo Electrónico</label>
+            <input type="email" class="form-control" value="@Model.Email" readonly />
+        </div>
+
+        <!-- Nombre -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Nombre</label>
+            <input type="text" class="form-control" value="@Model.FirstName" readonly />
+        </div>
+
+        <!-- Apellido -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Primer Apellido</label>
+            <input type="text" class="form-control" value="@Model.LastName" readonly />
+        </div>
+
+        <!-- Segundo Apellido -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Segundo Apellido</label>
+            <input type="text" class="form-control" value="@Model.LastName2" readonly />
+        </div>
+
+        <!-- DNI -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">DNI</label>
+            <input type="text" class="form-control" value="@Model.NationalId" readonly />
+        </div>
+
+        <!-- Telefono -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Teléfono</label>
+            <input type="text" class="form-control" value="@Model.PhoneNumber" readonly />
+        </div>
+
+        <!-- Rol -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Rol</label>
+            <input type="text" class="form-control" value="@Model.SelectedRol" readonly />
+        </div>
+
+        <!-- Boton Editar -->
+        <div class="text-end">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                <i class='bx bx-edit-alt'></i> Editar mis datos
+            </a>
+        </div>
+    </div>
+</div>

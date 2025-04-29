@@ -19,6 +19,6 @@ public partial class Vehicle : CommonFields
 
     public virtual User Owner { get; set; } 
 
-    public virtual ICollection<Trip> Trips { get; set; } = [];
+    public virtual List<Trip> Trips { get; set; } = [];
 
 }

@@ -6,29 +6,29 @@ namespace GestorViajes.Models.EFCore.Rove;
 public partial class User : CommonFields
 {
     public long Id { get; set; }
-    public string Name { get; set; } = null!;
+    public string Name { get; set; }
 
     public string NationalId { get; set; }
 
-    public ulong Active { get; set; }
+    public bool Active { get; set; }
 
-    public string LastName1 { get; set; } = null!;
+    public string LastName1 { get; set; }
 
     public string? LastName2 { get; set; }
 
-    public string Password { get; set; } = null!;
+    public string Password { get; set; }
 
-    public string Email { get; set; } = null!;
+    public string Email { get; set; }
 
-    public string Role { get; set; } = null!;
+    public string Role { get; set; }
 
     public string? PhoneNumber { get; set; }
+    //List, no Collection
+    public virtual List<TripRequest> TripRequests { get; set; } = [];
 
-    public virtual ICollection<TripRequest> TripRequests { get; set; } = [];
+    public virtual List<UserTrip> UserTrips { get; set; } = [];
 
-    public virtual ICollection<UserTrip> UserTrips { get; set; } = [];
+    public virtual List<Vehicle> Vehicles { get; set; } = [];
 
-    public virtual ICollection<Vehicle> Vehicles { get; set; } = [];
-
-    public virtual ICollection<Trip> Trips { get; set; } = [];
+    public virtual List<Trip> Trips { get; set; } = [];
 }

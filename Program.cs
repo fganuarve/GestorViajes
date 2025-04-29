@@ -31,7 +31,7 @@ namespace GestorViajes
             // Configuracion de la autenticacion con cookies
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
-                {     // Ruta de login
+                {    // Ruta de login
                     options.LoginPath = "/Account/Login";
                     // Ruta de acceso denegado
                     options.AccessDeniedPath = "/Account/AccessDenied";

@@ -19,14 +19,14 @@
                     <label for="DriverId" class="form-label fw-bold">Conductor</label>
                     <select id="DriverId" name="DriverId" class="form-select" required>
                         <option value="">Selecciona un conductor</option>
-                        @foreach (var driver in Model.Drivers)
+                        foreach (var driver in Model.Drivers)
                         {
                             
                         }
                     </select>
                     @if (ViewData.ModelState["DriverId"]?.Errors.Any() == true)
                     {
-                        <div class="text-danger">@ViewData.ModelState["DriverId"].Errors.First().ErrorMessage</div>
+                        <div class="text-danger">ViewData.ModelState["DriverId"].Errors.First().ErrorMessage</div>
                     }
                 </div>-->
 
@@ -35,7 +35,7 @@
                     <label for="VehicleId" class="form-label fw-bold">Vehículo</label>
                     <select id="VehicleId" name="VehicleId" class="form-select" required>
                         <option value="">Selecciona un vehículo</option>
-                        @foreach (var vehicle in Model.Vehicles)
+                        foreach (var vehicle in Model.Vehicles)
                         {
                             
                         }

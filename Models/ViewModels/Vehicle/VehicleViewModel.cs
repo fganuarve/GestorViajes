@@ -26,18 +26,6 @@ namespace GestorViajes.Models.ViewModels.Vehicle
 
         //vehiculo se crea activo por defecto
         [Display(Name = "Active")]
-        public bool Active { get; set; }
-
-        // Dropdowns for forms
-        public List<SelectListItem> Users { get; set; } = new();
-
-        // Display-only summary
-        public UserSummaryViewModel? Owner { get; set; }
-    }
-
-    public class UserSummaryViewModel
-    {
-        public long Id { get; set; }
-        public string FullName { get; set; } = string.Empty;
+        public bool Active { get; set; } = true;        
     }
 }

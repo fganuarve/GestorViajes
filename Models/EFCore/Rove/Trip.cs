@@ -8,8 +8,7 @@ public partial class Trip : CommonFields
     public long Id { get; set; }
 
     //Conductor
-    public long DriverId { get; set; }
-    
+    public long DriverId { get; set; }    
     
     //Vehiculo
 
@@ -26,11 +25,11 @@ public partial class Trip : CommonFields
 
     public bool Active { get; set; }
 
-    public virtual ICollection<TripRequest> TripRequests { get; set; } = [];
+    public virtual List<TripRequest> TripRequests { get; set; } = [];
 
     public virtual User Driver { get; set; }
 
-    public virtual ICollection<UserTrip> Passengers { get; set; } = [];
+    public virtual List<UserTrip> Passengers { get; set; } = [];
 
     public virtual Vehicle Vehicle { get; set; }
 }

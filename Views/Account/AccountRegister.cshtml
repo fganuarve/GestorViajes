@@ -12,15 +12,14 @@
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://kit.fontawesome.com/574cdde0a1.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="~/css/styleLogin.css">
+    <link rel="stylesheet" href="~/css/styleRegister.css">
 </head>
 
 <body>
     <section id="auth">
         <div class="login-container">
             <div class="login-row">
-                <!-- FORMULARIO DE REGISTRO -->
-                <div id="login-form">
+                <div class="login-main register-expanded">
                     <div class="auth-text">
                         <img src="~/img/logo2.png" alt="Logo" class="logo">
                         <h1>Crear cuenta</h1>
@@ -31,58 +30,35 @@
                     <form asp-action="AccountRegister" asp-controller="Account" method="post">
                         @Html.ValidationSummary(true, "", new { @class = "error-message" })
 
-                        <div class="login-main">
-                            <!-- Nombre -->
+                        <div class="login-main register-expanded">
                             <div class="full-width">
                                 <input asp-for="FirstName" class="input-control" placeholder="Nombre" />
                                 <span asp-validation-for="FirstName" class="error-message"></span>
                             </div>
-                            <!-- Apellido -->
                             <div class="full-width">
                                 <input asp-for="LastName" class="input-control" placeholder="Primer apellido" />
                                 <span asp-validation-for="LastName" class="error-message"></span>
                             </div>
-                            <!-- Segundo apellido (opcional) -->
                             <div class="full-width">
                                 <input asp-for="LastName2" class="input-control" placeholder="Segundo apellido (opcional)" />
                                 <span asp-validation-for="LastName2" class="error-message"></span>
                             </div>
-                            <!-- DNI/NIF -->
                             <div class="full-width">
                                 <input asp-for="NationalId" class="input-control" placeholder="DNI/NIF" />
                                 <span asp-validation-for="NationalId" class="error-message"></span>
                             </div>
-                            <!-- Teléfono (opcional) -->
                             <div class="full-width">
                                 <input asp-for="PhoneNumber" class="input-control" placeholder="Teléfono (opcional)" />
                                 <span asp-validation-for="PhoneNumber" class="error-message"></span>
                             </div>
-                            <!-- Correo electrónico -->
                             <div class="full-width">
                                 <input asp-for="Email" class="input-control" placeholder="Correo electrónico" />
                                 <span asp-validation-for="Email" class="error-message"></span>
                             </div>
-                            <!-- Contraseña -->
                             <div class="full-width">
                                 <input asp-for="Password" type="password" class="input-control password" placeholder="Contraseña" />
                                 <span asp-validation-for="Password" class="error-message"></span>
                             </div>
-                            <!-- Rol -->
-                            <!--<div class="full-width">
-                                <select asp-for="SelectedRol" asp-items="Model.Roles" class="input-control"></select>
-                                <span asp-validation-for="SelectedRol" class="error-message"></span>
-                            </div>-->
-
-                            <!-- Aceptación de términos -->
-                            <!--<div class="form-element">
-                                <div class="checkbox">
-                                    <input type="checkbox" id="termsCheckbox" required />
-                                    <label for="termsCheckbox">Acepto los </label>
-                                </div>
-                                <a href="#">Términos y condiciones</a>
-                            </div>-->
-
-                            <!-- Botón de registro -->
                             <div class="full-width">
                                 <button type="submit" class="btn-submit">Registrarme</button>
                             </div>
@@ -90,7 +66,7 @@
                     </form>
                 </div>
 
-                <!-- Slider de imágenes -->
+                <!-- Slider de imágenes con flechas y paginación -->
                 <div id="main-slider">
                     <div class="swiper">
                         <div class="swiper-wrapper">
@@ -107,6 +83,15 @@
                                 <div class="slide-content"><h2>Fábrica de ultramotores</h2></div>
                             </div>
                         </div>
+
+                        <!-- Paginación personalizada -->
+                        <div class="slide-pagination">
+                            <ul class="swiper-pagination"></ul>
+                        </div>
+
+                        <!-- Flechas de navegación -->
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
                     </div>
                 </div>
             </div>
@@ -114,6 +99,21 @@
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="~/js/scriptLogin.js"></script>
+    <script>
+        var swiper = new Swiper(".swiper", {
+            slidesPerView: 1,
+            loop: true,
+            pagination: {
+                el: ".swiper-pagination",
+                renderBullet: function (index, className) {
+                    return '<li class="' + className + '"></li>';
+                },
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        });
+    </script>
 </body>
-</html>

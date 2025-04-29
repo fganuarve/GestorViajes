@@ -7,6 +7,7 @@ using GestorViajes.Services.User;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GestorViajes.Controllers
 {
@@ -54,7 +55,7 @@ namespace GestorViajes.Controllers
         {
             return View(new UserViewModel());
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateSubmit(UserViewModel model)
         {

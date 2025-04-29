@@ -1,0 +1,110 @@
+﻿@model GestorViajes.Models.ViewModels.User.UserViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro - Rove</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/styleLogin.css" />
+</head>
+<body>
+    <section id="auth">
+        <div class="login-container">
+            <div class="login-row">
+                <!-- SLIDER-->
+                <div id="main-slider">
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="~/img/urbex16.jpg" alt="Exploración 1">
+                                <div class="slide-content"><h2>Explora con Rove</h2></div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="~/img/urbex6.jpg" alt="Exploración 2">
+                                <div class="slide-content"><h2>Tu viaje empieza aquí</h2></div>
+                            </div>
+                        </div>
+                        <div class="slider-header">
+                            <a href="/" class="home-link">
+                                Volver a la página
+                                <i class='bx bx-right-arrow-alt'></i>
+                            </a>
+                        </div>
+                        <div class="slide-pagination">
+                            <ul class="swiper-pagination"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FORMULARIO DE REGISTRO -->
+                <div id="login-form">
+                    <div class="auth-text">
+                        <img src="~/img/logo2.png" alt="Logo" class="logo">
+                        <h1>Crear cuenta</h1>
+                        ¿Ya tienes cuenta?
+                        <a href="/Account/Login">Inicia sesión</a>
+                    </div>
+
+                    <form asp-action="Register" asp-controller="Account" method="post">
+                        @Html.ValidationSummary(true, "", new { @class = "error-message" })
+
+                        <div class="login-main">
+                            <div class="full-width">
+                                <input asp-for="FirstName" class="input-control" placeholder="Nombre" />
+                                <span asp-validation-for="FirstName" class="error-message"></span>
+                            </div>
+                            <div class="full-width">
+                                <input asp-for="LastName" class="input-control" placeholder="Primer apellido" />
+                                <span asp-validation-for="LastName" class="error-message"></span>
+                            </div>
+                            <div class="full-width">
+                                <input asp-for="LastName2" class="input-control" placeholder="Segundo apellido (opcional)" />
+                                <span asp-validation-for="LastName2" class="error-message"></span>
+                            </div>
+                            <div class="full-width">
+                                <input asp-for="NationalId" class="input-control" placeholder="DNI/NIF" />
+                                <span asp-validation-for="NationalId" class="error-message"></span>
+                            </div>
+                            <div class="full-width">
+                                <input asp-for="PhoneNumber" class="input-control" placeholder="Teléfono (opcional)" />
+                                <span asp-validation-for="PhoneNumber" class="error-message"></span>
+                            </div>
+                            <div class="full-width">
+                                <input asp-for="Email" class="input-control" placeholder="Correo electrónico" />
+                                <span asp-validation-for="Email" class="error-message"></span>
+                            </div>
+                            <div class="full-width">
+                                <input asp-for="Password" type="password" class="input-control password" placeholder="Contraseña" />
+                                <span asp-validation-for="Password" class="error-message"></span>
+                            </div>
+                            <div class="full-width">
+                                <select asp-for="SelectedRol" asp-items="Model.Roles" class="input-control"></select>
+                                <span asp-validation-for="SelectedRol" class="error-message"></span>
+                            </div>
+
+                            <div class="form-element">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="termsCheckbox" required />
+                                    <label for="termsCheckbox">Acepto los </label>
+                                </div>
+                                <a href="#">Términos y condiciones</a>
+                            </div>
+
+                            <div class="full-width">
+                                <button type="submit" class="btn-submit">Registrarme</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="~/js/scriptLogin.js"></script>
+</body>
+</html>

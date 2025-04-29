@@ -1,15 +1,14 @@
-﻿
-    @{
-        ViewData["Title"] = 
-        Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
 
-        var status = TempData["status"] as string ?? "";
-        var errorMsg = TempData["message"] as string ?? "";
-    }
+<section class="home-container">
+    <h1>¡Bienvenido a Rove, @User.Identity.Name!</h1>
+    <p>Has iniciado sesión como <strong>@User.FindFirst("UserId")?.Value</strong> con rol <strong>@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</strong>.</p>
 
-    @if (!string.IsNullOrWhiteSpace(status))
-    {
-        <div class="alert alert-@status">
-            @errorMsg
-        </div>
-    }
+    <div class="options">
+        <a href="/Trips" class="btn">Ver Viajes</a>
+        <a href="/Vehicles" class="btn">Mis Vehículos</a>
+        <a href="/Account/Logout" class="btn btn-logout">Cerrar Sesión</a>
+    </div>
+</section>

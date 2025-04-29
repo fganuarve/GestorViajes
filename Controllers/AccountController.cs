@@ -79,6 +79,17 @@ namespace GestorViajes.Controllers
 
             return RedirectToAction("Login", "Account");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(UserViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await _userService.Add(model);
+            return RedirectToAction("Login", "Account");
+        }
+
     }
 
 }

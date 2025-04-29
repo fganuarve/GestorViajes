@@ -12,7 +12,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://kit.fontawesome.com/574cdde0a1.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="~/css/styleLogin.css"> <!-- Asegúrate de que el archivo CSS esté en la carpeta wwwroot/css -->
+    <link rel="stylesheet" href="~/css/styleLogin.css">
 </head>
 
 <body>
@@ -23,7 +23,7 @@
                     <div class="swiper">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide">
-                                <img src="img/urbex16.jpg" alt="">
+                                <img src="~/img/urbex16.jpg" alt=""> 
                                 <div class="slide-content">
                                     <h2>
                                         Mansión Wallace
@@ -33,7 +33,7 @@
                                 </div>
                             </div>
                             <div class="swiper-slide">
-                                <img src="img/urbex6.jpg" alt="">
+                                <img src="~/img/urbex6.jpg" alt="">
                                 <div class="slide-content">
                                     <h2>
                                         Casa de Medeiros
@@ -42,13 +42,7 @@
                                     </h2>
                                 </div>
                             </div>
-                        </div>
-                        <div class="slider-header">
-                            <a href="#" class="home-link">
-                                Volver a la página
-                                <i class='bx bx-right-arrow-alt'></i>
-                            </a>
-                        </div>
+                        </div>                        
                         <div class="slide-pagination">
                             <ul class="swiper-pagination"></ul>
                         </div>
@@ -56,7 +50,7 @@
                 </div>
                 <div id="login-form">
                     <div class="auth-text">
-                        <img src="~/img/logo2.png" alt="Logo" class="logo"> <!-- Asegúrate de que la ruta de la imagen sea correcta -->
+                        <img src="~/img/logo2.png" alt="Logo" class="logo">
                         <h1>¡Bienvenido de vuelta!</h1>
                         <p>¿Todavía no tienes cuenta? <a href="#">Registro</a></p>
                     </div>
@@ -83,19 +77,11 @@
                                 </span>
                             </div>
 
-                            <!-- Mostrar errores de validación -->
+                            <!-- Mostrar errores de validacion -->
                             @Html.ValidationSummary(true, "", new { @class = "error-message" })
 
-                            <!-- Aceptación de términos -->
-                            <div class="form-element">
-                                <div class="checkbox">
-                                    <input type="checkbox" id="checkbox1" required />
-                                    <label for="checkbox1">Acepto los </label>
-                                </div>
-                                <a href="#">Términos y condiciones</a>
-                            </div>
-
-                            <!-- Botón de login -->
+                            
+                            <!-- Boton de login -->
                             <div class="full-width">
                                 <button type="submit" class="btn-submit">Entrar</button>
                             </div>
@@ -107,5 +93,5 @@
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="~/js/scriptLogin.js"></script> <!-- Asegúrate de que el archivo JS esté en la carpeta wwwroot/js -->
+    <script src="~/js/scriptLogin.js"></script>
 </body>

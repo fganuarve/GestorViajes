@@ -4,6 +4,7 @@ using GestorViajes.Models.EFCore.Rove;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestorViajes.Migrations
 {
     [DbContext(typeof(RoveDbContext))]
-    partial class RoveDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250429152054_Update_entities")]
+    partial class Update_entities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

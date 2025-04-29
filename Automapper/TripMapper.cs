@@ -31,8 +31,7 @@ namespace GestorViajes.Automapper
                 {
                     Id = src.Vehicle.Id,
                     Description = $"{src.Vehicle.Plate} - {src.Vehicle.Model}"
-                }))
-                .IncludeBase<CommonFields, CommonFields>();
+                }));
 
             // ViewModel → Entidad
             CreateMap<TripViewModel, Trip>()
@@ -47,9 +46,7 @@ namespace GestorViajes.Automapper
                 .ForMember(dest => dest.TripRequests, opt => opt.Ignore())
                 .ForMember(dest => dest.Passengers, opt => opt.Ignore())
                 .ForMember(dest => dest.Driver, opt => opt.Ignore())
-                .ForMember(dest => dest.Vehicle, opt => opt.Ignore())
-                .IncludeBase<CommonFields, CommonFields>();
-
+                .ForMember(dest => dest.Vehicle, opt => opt.Ignore());
         }
     }
 }

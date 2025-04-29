@@ -19,15 +19,11 @@ namespace GestorViajes.Controllers
             _mapper = mapper;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
+        // Esta acción mostrará la vista AccountLogin.cshtml
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return View("AccountLogin"); // Asegúrate de que la vista se llame AccountLogin.cshtml
         }
 
         [HttpPost]
@@ -35,7 +31,7 @@ namespace GestorViajes.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View("AccountLogin", model); // Reenvía a AccountLogin si hay errores
             }
 
             var user = await _userService.GetUserByCredentialsAsync(model.Email, model.Password);
@@ -44,12 +40,11 @@ namespace GestorViajes.Controllers
             {
                 // Usamos TempData para pasar el mensaje a la vista
                 TempData["message"] = "Correo electrónico o contraseña incorrectos.";
-                // Se puede usar "success", "info", "warning" con Bootstrap u otro CSS
                 TempData["status"] = "danger";
-                return RedirectToAction("Login");
+                return RedirectToAction("Login", "Account"); // Redirige a la acción Login
             }
 
-            // Autenticacion con cookies
+            // Autenticación con cookies
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Name),
@@ -66,7 +61,7 @@ namespace GestorViajes.Controllers
             TempData["message"] = "Inicio de sesión exitoso.";
             TempData["status"] = "success";
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home"); // Redirige a Home después del login exitoso
         }
 
         [HttpPost]
@@ -77,19 +72,18 @@ namespace GestorViajes.Controllers
             TempData["message"] = "Has cerrado sesión correctamente.";
             TempData["status"] = "info";
 
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Login", "Account"); // Redirige a Login tras cerrar sesión
         }
 
         [HttpPost]
         public async Task<IActionResult> Register(UserViewModel model)
         {
             if (!ModelState.IsValid)
-                return View(model);
+                return View("AccountLogin", model); // Si el modelo no es válido, se vuelve a mostrar la vista
 
             await _userService.Add(model);
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Login", "Account"); // Redirige a Login tras el registro exitoso
         }
-
     }
 
 }

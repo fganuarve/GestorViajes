@@ -16,8 +16,7 @@ namespace GestorViajes.Automapper
                 .ForMember(dest => dest.Model, opt => opt.MapFrom(src => src.Model))
                 .ForMember(dest => dest.MaxSeats, opt => opt.MapFrom(src => src.MaxSeats))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
-                .ForMember(dest => dest.Active, opt => opt.MapFrom(src => src.Active))
-                .IncludeBase<CommonFields, CommonFields>();
+                .ForMember(dest => dest.Active, opt => opt.MapFrom(src => src.Active));
 
             // ViewModel → Entidad
             CreateMap<VehicleViewModel, Vehicle>()
@@ -29,8 +28,7 @@ namespace GestorViajes.Automapper
                 .ForMember(dest => dest.Active, opt => opt.MapFrom(src => src.Active))
                 // Se carga desde contexto si es necesario
                 .ForMember(dest => dest.Owner, opt => opt.Ignore())
-                .ForMember(dest => dest.Trips, opt => opt.Ignore())
-                .IncludeBase<CommonFields, CommonFields>();
+                .ForMember(dest => dest.Trips, opt => opt.Ignore());
         }
     }
 }

@@ -17,8 +17,7 @@ namespace GestorViajes.Automapper
                 .ForMember(dest => dest.LastName2, opt => opt.MapFrom(src => src.LastName2))
                 .ForMember(dest => dest.SelectedRol, opt => opt.MapFrom(src => src.Role))
                 // Se gestiona en el controlador
-                .ForMember(dest => dest.Roles, opt => opt.Ignore()) 
-                .IncludeBase<CommonFields, CommonFields>();
+                .ForMember(dest => dest.Roles, opt => opt.Ignore());
 
             // De ViewModel a entidad
             CreateMap<UserViewModel, User>()
@@ -29,8 +28,7 @@ namespace GestorViajes.Automapper
                 .ForMember(dest => dest.TripRequests, opt => opt.Ignore())
                 .ForMember(dest => dest.UserTrips, opt => opt.Ignore())
                 .ForMember(dest => dest.Trips, opt => opt.Ignore())
-                .ForMember(dest => dest.Vehicles, opt => opt.Ignore())
-                .IncludeBase<CommonFields, CommonFields>();
+                .ForMember(dest => dest.Vehicles, opt => opt.Ignore());
         }
     }
 }

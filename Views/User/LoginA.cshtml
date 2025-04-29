@@ -1,0 +1,108 @@
+﻿@model GestorViajes.Models.ViewModels.User.LoginViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- EN ESTA SE CREA CUENTA Y SI YA SE TIENE CUENTA TE LLEVA A LOGIN (OTRA PAGINA) -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Rove - Login</title>
+
+    <!-- Iconos y estilos externos -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://kit.fontawesome.com/574cdde0a1.js" crossorigin="anonymous"></script>
+
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="~/css/styleLogin.css" asp-append-version="true" />
+</head>
+
+<body>
+    <section id="auth">
+        <div class="login-container">
+            <div class="login-row">
+
+                <!-- SLIDER -->
+                <div id="main-slider">
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="~/img/urbex7.jpg" alt="">
+                                <div class="slide-content">
+                                    <h2>Casa de Medeiros<br>Gijón</h2>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="~/img/urbex16.jpg" alt="">
+                                <div class="slide-content">
+                                    <h2>Mansión Wallace<br>León</h2>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="~/img/urbex6.jpg" alt="">
+                                <div class="slide-content">
+                                    <h2>Fábrica de ultramotores<br>Oleiros</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slider-header">
+                            <a href="/" class="home-link">Volver a la página <i class='bx bx-right-arrow-alt'></i></a>
+                        </div>
+                        <div class="slide-pagination">
+                            <ul class="swiper-pagination"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FORMULARIO -->
+                <div id="login-form">
+                    <div class="auth-text">
+                        <img src="~/img/logo3.jpg" alt="Logo" class="logo">
+                        <h1>Iniciar sesión</h1>
+                        ¿No tienes cuenta?
+                        <a href="/Account/Register">Regístrate</a>
+                    </div>
+
+                    <form asp-action="Login" method="post">
+                        <div class="login-main">
+                            <div class="full-width">
+                                <input asp-for="Email" class="input-control" placeholder="Correo electrónico" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="full-width">
+                                <input asp-for="Password" class="input-control password" placeholder="Contraseña" />
+                                <span class="icon"><i id="icon" class='bx bx-hide'></i></span>
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-element">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="checkbox1" />
+                                    <label for="checkbox1">Recuérdame</label>
+                                </div>
+                                <a href="#">¿Olvidaste tu contraseña?</a>
+                            </div>
+
+                            <div class="full-width">
+                                <button type="submit" class="btn-submit">Iniciar sesión</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="~/js/scriptLogin.js" asp-append-version="true"></script>
+</body>
+
+</html>

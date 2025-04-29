@@ -1,0 +1,474 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+body {
+    font-family: 'Outfit', serif;
+}
+
+.wrapper {
+    display: flex;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    transition: all 0.25s ease-in-out;
+    background-color: #c3c5c3;
+}
+
+#sidebar {
+    width: 90px;
+    min-width: 90px;
+    transition: all 0.25s ease-in-out;
+    background-color: #092917;
+    display: flex;
+    flex-direction: column;
+}
+
+    #sidebar.expand {
+        width: 260px;
+        min-width: 260px;
+    }
+
+    #sidebar:not(.expand) .sidebar-logo,
+    #sidebar:not(.expand) a.sidebar-link span {
+        display: none;
+    }
+
+.toggle-btn {
+    width: 30px;
+    height: 30px;
+    color: #FFF;
+    border-radius: 0.425rem;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #536F62;
+}
+
+    .toggle-btn i {
+        color: #FFF;
+    }
+
+#sidebar.expand .sidebar-logo,
+#sidebar.expand a.sidebar-link span {
+    animation: fadeIn .25s ease;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.logo {
+    display: block;
+    /*margin: 0 auto 20px auto;*/
+    width: 30px;
+    height: auto;
+}
+
+.sidebar-logo a {
+    color: #FFF;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.sidebar-nav {
+    padding: 0.7rem 0;
+    flex: 1 1 auto;
+    z-index: 10;
+}
+
+a.sidebar-link {
+    padding: .625rem 1.625rem;
+    color: #FFF;
+    display: block;
+    white-space: nowrap;
+    font-weight: 700;
+    border-left: 3px solid transparent;
+}
+
+.sidebar-link i,
+.dropdown-item i {
+    font-size: 1.1rem;
+    margin-right: .75rem;
+}
+
+a.sidebar-link:hover {
+    background-color: rgba(255, 255, 255, .075);
+    border-left: 3px solid #3bdd8c;
+}
+
+.sidebar-item {
+    position: relative;
+}
+
+#sidebar:not(.expand) .sidebar-item .sidebar-dropdown {
+    position: absolute;
+    top: 0;
+    left: 90px;
+    background-color: #054e21;
+    padding: 0;
+    min-width: 15rem;
+    display: none;
+}
+
+#sidebar:not(.expand) .sidebar-item:hover .has-dropdown + .sidebar-dropdown {
+    display: block;
+    max-height: 15em;
+    width: 100%;
+    opacity: 1;
+}
+
+#sidebar:not(.expand) .sidebar-item .sidebar-dropdown .sidebar-dropdown {
+    left: 130px;
+}
+
+#sidebar.expand .sidebar-link[data-bs-toggle="collapse"]::after {
+    border: solid;
+    border-width: 0 .075rem .075rem 0;
+    content: "";
+    display: inline-block;
+    padding: 2px;
+    position: absolute;
+    right: 1.5rem;
+    top: 1.4rem;
+    transform: rotate(-135deg);
+    transition: all .2s ease-out;
+}
+
+#sidebar.expand .sidebar-link[data-bs-toggle="collapse"].collapsed::after {
+    transform: rotate(45deg);
+    transition: all .2s ease-out;
+}
+
+.sidebar-dropdown .sidebar-link {
+    position: relative;
+    padding-left: 3rem;
+    transition: all 0.5s;
+}
+
+.sidebar-dropdown a.sidebar-link::before {
+    content: "";
+    height: 0.125rem;
+    width: 0.375rem;
+    background-color: #FFFFFF80;
+    position: absolute;
+    left: 1.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.5s;
+}
+
+.sidebar-dropdown a.sidebar-link:hover {
+    background: transparent;
+    border-left: 3px solid transparent;
+    padding-left: 3.8rem;
+    color: #7277f2;
+}
+
+.navbar {
+    background-color: #6a9b78;
+    box-shadow: 0 0 2rem 0 rgba(33, 37, 41, .1);
+}
+
+.navbar-expand .navbar-collapse {
+    min-width: 200px;
+}
+
+.avatar {
+    height: 60px;
+    width: auto;
+}
+
+.card {
+    background-color: #FFF;
+    transition: .4s;
+    cursor: pointer;
+    color: #000;
+    margin-bottom: 1rem;
+    border-color: rgba(231, 234, 243, 0.7);
+}
+
+    .card h6 {
+        text-transform: uppercase;
+        font-size: .7161rem;
+        margin-bottom: .25rem;
+    }
+
+    /*Comportamiento del card cuando paso el raton por encima*/
+    .card:hover {
+        background-color: #8baf6d;
+        color: #FFF;
+        transform: translateY(-10.5px);
+    }
+
+.table > thead tr {
+    color: #FFF;
+    text-align: left;
+}
+
+tr.highlight th {
+    background-color: #074114;
+    color: #FFF;
+}
+
+.content {
+    flex: 1 1 auto;
+}
+/* Comportamiento boton solicitudes */
+.btn-ver-solicitudes {
+    background-color: #2c6e49;
+    border-color: #2c6e49;
+    color: white;
+}
+
+    .btn-ver-solicitudes:hover {
+        background-color: #1f4d36;
+        border-color: #1f4d36;
+        color: white;
+    }
+
+
+footer {
+    background-color: #6a9b78;
+    padding: 1rem .875rem;
+}
+
+@media (min-width:768px) {
+
+    .input-group-navbar .form-control:focus {
+        outline: none;
+        box-shadow: 0 0 0 0 rgba(255, 255, 255);
+        border: none;
+        background-color: #ebebeb;
+    }
+
+    .input-group-navbar {
+        max-width: 320px;
+    }
+
+        .input-group-navbar .form-control {
+            color: #3e4455;
+            background-color: #ebebeb;
+            height: calc(2.44375rem + 2px);
+        }
+
+        .input-group-navbar .btn {
+            color: #000;
+            background-color: #ebebeb;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+            .input-group-navbar .btn:active {
+                background-color: #f5f5f5;
+            }
+
+    .navbar-expand .navbar-nav .dropdown-menu {
+        box-shadow: 0 .1rem .2rem rgba(0, 0, 0, .05);
+    }
+
+    /*Carousel*/
+    /*El ajuste de imagenes en el carousel solo se aplica en desktop, no en moviles*/
+    @media (min-width: 768px) {
+        .carousel-inner img {
+            max-height: 400px;
+            object-fit: cover;
+        }
+    }
+    /*Texto slogan del index*/
+    .text-tagline em {
+        font-size: 1.5rem; /* Aumenta el tamaño de la fuente */
+    }
+}
+
+/*html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    font-family: "Lato", sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;*/ /* Ensure content stretches even with scrolling */
+/*}
+
+html, body {
+    height: 100%;*/ /* Ensure the body and html take up full height */
+    /*margin: 0;*/ /* Remove default margin */
+    /*padding: 0;*/ /* Remove default padding */
+    /*background-color: #272d4f;*/ /* Add your desired background color */
+    /*overflow-x: hidden;*/ /* Optional: Prevent horizontal scrolling */
+/*}
+
+#toggle_icon {
+    width: 35px;
+    height: 5px;
+    background-color: white;
+    margin: 6px;
+}
+
+#sidebar_logo {
+    border-bottom: 2px solid #272d4f;
+}
+
+.sidebar {
+    height: 100%;
+    width: 160px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 16px;
+    transition: 0.2s linear;
+}
+
+    .sidebar a {
+        padding: 6px 8px 6px 16px;
+        text-decoration: none;
+        font-size: 20px;
+        color: #0077cc;*/ /*color elementos del navbar*/
+        /*display: block;
+    }
+
+        .sidebar a:hover {
+            color: #f1f1f1;
+        }
+
+.sidebar-control {
+    position: absolute;
+}
+
+.main {
+    margin-left: 160px;*/ /* Same as the width of the sidenav */
+    /*padding: 0px 10px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidebar {
+        padding-top: 15px;
+    }
+
+        .sidebar a {
+            font-size: 18px;
+        }
+}*/
+/* Estilo comun para los iconos */
+/*.icon-style {
+    font-size: 1.1 rem;
+    color: #007bff;
+    transition: color 0.3s ease, transform 0.3s ease;
+}*/
+
+    /* Color de los iconos en hover */
+    /*.icon-style:hover {
+        color: #333;
+    }*/
+/* Eliminar efectos de enlaces, que no tengan subrayado ni borde */
+/*a {
+    text-decoration: none;*/ /* Elimina el subrayado */
+    /*border: none;*/ /* Elimina borde */
+/*}*/
+/* Espaciado horizontal entre botones de sweetAlert2*/
+/*.swal2-actions {
+    gap: 15px !important;
+}*/
+
+/*Tarjetas de boostrap*/
+/* Colores de la tarjeta */
+/*.card {
+    border: 1px solid #272d4f;*/ /* Color oscuro para la tarjeta */
+    /*background-color: #1a1f34;*/ /* Fondo oscuro de la tarjeta */
+/*}
+
+.card-header {
+    background-color: #111;*/ /* Fondo oscuro para el encabezado de la tarjeta */
+    /*color: #f1f1f1;*/ /* Color claro para el texto en el encabezado */
+/*}
+
+.card-body {
+    color: #f1f1f1;*/ /* Color claro para el texto en el cuerpo de la tarjeta */
+/*}*/
+
+    /* Enlaces dentro de la tarjeta */
+    /*.card-body a {
+        color: #0077cc;*/ /* Color de los enlaces dentro de la tarjeta */
+    /*}
+
+        .card-body a:hover {
+            color: #f1f1f1;*/ /* Color de los enlaces al pasar el ratón */
+        /*}*/
+
+/* Colores de los iconos en las tarjetas */
+/*.icon-style {
+    font-size: 1.1rem;
+    color: #0077cc;*/ /* Color de los iconos */
+    /*transition: color 0.3s ease, transform 0.3s ease;
+}
+
+    .icon-style:hover {
+        color: #f1f1f1;*/ /* Color del icono al pasar el ratón */
+    /*}*/
+
+/* Botones dentro de la tarjeta */
+/*.btn-outline-primary {
+    border-color: #0077cc;
+    color: #0077cc;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #0077cc;
+        color: #fff;
+    }
+
+.btn-outline-secondary {
+    border-color: #272d4f;
+    color: #272d4f;
+}
+
+    .btn-outline-secondary:hover {
+        background-color: #272d4f;
+        color: #fff;
+    }*/
+
+/* Asegurando que la tarjeta mantenga su color y formato en pantallas pequeñas */
+/*@media (max-width: 768px) {
+    .card {
+        margin-bottom: 10px;*/ /* Añadir un poco de separación entre tarjetas */
+    /*}
+}*/
+

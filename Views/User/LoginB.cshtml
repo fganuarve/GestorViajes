@@ -1,0 +1,125 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+    ESTA VISTA SERA OTRA PAGINA DE LOGIN
+    EN ESTA SE HACE LOGIN Y SI NO SE TIENE CUENTA CREADA TE LLEVA A REGISTRO
+*@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Rove</title>
+    <!-- Boxicons CSS for icons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <!-- Swiper.js CSS for the slider -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- Font Awesome for additional icons (if needed) -->
+    <script src="https://kit.fontawesome.com/574cdde0a1.js" crossorigin="anonymous"></script>
+    <!-- Link to the custom login CSS -->
+    <link rel="stylesheet" href="~/css/styleLogin.css">
+</head>
+
+<body>
+    <section id="auth">
+        <div class="login-container">
+            <div class="login-row">
+                <!-- Main slider section -->
+                <div id="main-slider">
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="~/img/urbex16.jpg" alt="Mansión Wallace">
+                                <div class="slide-content">
+                                    <h2>
+                                        Mansión Wallace
+                                        <br>
+                                        León
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="~/img/urbex6.jpg" alt="Casa de Medeiros">
+                                <div class="slide-content">
+                                    <h2>
+                                        Casa de Medeiros
+                                        <br>
+                                        Gijón
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Slider Header -->
+                        <div class="slider-header">
+                            <a href="/" class="home-link">
+                                Volver a la página
+                                <i class='bx bx-right-arrow-alt'></i>
+                            </a>
+                        </div>
+                        <!-- Slider Pagination -->
+                        <div class="slide-pagination">
+                            <ul class="swiper-pagination"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login form section -->
+                <div id="login-form">
+                    <div class="auth-text">
+                        <img src="~/img/logo2.png" alt="Logo" class="logo"> <!-- Logo de Rove -->
+                        <h1>¡Bienvenido de vuelta!</h1>
+                        ¿Todavía no tienes cuenta?
+                        <a href="/Auth/Register">Registro</a>
+                    </div>
+
+                    <!-- Login form -->
+                    <form id="login-form" method="POST" action="/Auth/Login">
+                        <div class="login-main">
+                            <div class="full-width">
+                                <input type="email" class="input-control" name="email" placeholder="Correo electrónico" required>
+                            </div>
+                            <div class="full-width">
+                                <input type="password" class="input-control password" name="password" placeholder="Contraseña" required>
+                                <span class="icon">
+                                    <i id="icon" class='bx bx-hide'></i>
+                                </span>
+                            </div>
+
+                            <!-- Error Message -->
+                            @if (ViewBag.ErrorMessage != null)
+                            {
+                                <div class="error-message">
+                                    <p>@ViewBag.ErrorMessage</p>
+                                </div>
+                            }
+
+                            <div class="form-element">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="checkbox1" required>
+                                    <label for="checkbox1">Acepto los </label>
+                                </div>
+                                <a href="#">Términos y condiciones</a>
+                            </div>
+
+                            <div class="full-width">
+                                <button type="submit" class="btn-submit">Entrar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Swiper.js Script -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- Custom JavaScript for functionality -->
+    <script src="~/js/scriptLogin.js"></script>
+</body>
+
+</html>
+}

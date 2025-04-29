@@ -19,35 +19,6 @@
     <section id="auth">
         <div class="login-container">
             <div class="login-row">
-                <!-- SLIDER-->
-                <div id="main-slider">
-                    <div class="swiper">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <img src="~/img/urbex7.jpg" alt="Exploración 1">
-                                <div class="slide-content"><h2>Explora con Rove</h2></div>
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="~/img/urbex16.jpg" alt="Exploración 2">
-                                <div class="slide-content"><h2>Tu viaje empieza aquí</h2></div>
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="~/img/urbex6.jpg" alt="Exploración 3">
-                                <div class="slide-content"><h2>Fábrica de ultramotores</h2></div>
-                            </div>
-                        </div>
-                        <div class="slider-header">
-                            <a href="/" class="home-link">
-                                Volver a la página
-                                <i class='bx bx-right-arrow-alt'></i>
-                            </a>
-                        </div>
-                        <div class="slide-pagination">
-                            <ul class="swiper-pagination"></ul>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- FORMULARIO DE REGISTRO -->
                 <div id="login-form">
                     <div class="auth-text">
@@ -57,7 +28,7 @@
                     </div>
 
                     <!-- Formulario de registro -->
-                    <form asp-action="Register" asp-controller="Account" method="post">
+                    <form asp-action="AccountRegister" asp-controller="Account" method="post">
                         @Html.ValidationSummary(true, "", new { @class = "error-message" })
 
                         <div class="login-main">
@@ -97,19 +68,19 @@
                                 <span asp-validation-for="Password" class="error-message"></span>
                             </div>
                             <!-- Rol -->
-                            <div class="full-width">
+                            <!--<div class="full-width">
                                 <select asp-for="SelectedRol" asp-items="Model.Roles" class="input-control"></select>
                                 <span asp-validation-for="SelectedRol" class="error-message"></span>
-                            </div>
+                            </div>-->
 
                             <!-- Aceptación de términos -->
-                            <div class="form-element">
+                            <!--<div class="form-element">
                                 <div class="checkbox">
                                     <input type="checkbox" id="termsCheckbox" required />
                                     <label for="termsCheckbox">Acepto los </label>
                                 </div>
                                 <a href="#">Términos y condiciones</a>
-                            </div>
+                            </div>-->
 
                             <!-- Botón de registro -->
                             <div class="full-width">
@@ -117,6 +88,26 @@
                             </div>
                         </div>
                     </form>
+                </div>
+
+                <!-- Slider de imágenes -->
+                <div id="main-slider">
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="~/img/urbex7.jpg" alt="Exploración 1">
+                                <div class="slide-content"><h2>Explora con Rove</h2></div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="~/img/urbex16.jpg" alt="Exploración 2">
+                                <div class="slide-content"><h2>Tu viaje empieza aquí</h2></div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="~/img/urbex6.jpg" alt="Exploración 3">
+                                <div class="slide-content"><h2>Fábrica de ultramotores</h2></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

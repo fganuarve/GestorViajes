@@ -21,18 +21,16 @@
     <section id="auth">
         <div class="login-container">
             <div class="login-row">
-                <!-- Primero el formulario, luego el slider -->
                 <div id="login-form">
                     <div class="auth-text">
                         <img src="~/img/logo2.png" alt="Logo" class="logo">
                         <h1>¡Bienvenido de vuelta!</h1>
                         <p>¿Todavía no tienes cuenta? <a href="#">Registro</a></p>
                     </div>
-
                     <!-- Formulario de login -->
                     <form id="login-form" method="POST" asp-controller="Account" asp-action="Login">
                         <div class="login-main">
-                            <!-- Mostrar mensajes de TempData -->
+                            <!-- Mensajes de TempData -->
                             @if (TempData["message"] != null)
                             {
                                 <div class="alert alert-@TempData["status"]">
@@ -62,7 +60,7 @@
                     </form>
                 </div>
 
-                <!-- Ahora el slider de imágenes -->
+                <!-- Slider de imagenes -->
                 <div id="main-slider">
                     <div class="swiper">
                         <div class="swiper-wrapper">
@@ -70,14 +68,14 @@
                                 <img src="~/img/urbex16.jpg" alt="">
                                 <div class="slide-content">
                                     <h2>
-                                        Mansión Wallace
+                                        Sanatorio de Cesuras
                                         <br>
-                                        León
+                                        A Coruña
                                     </h2>
                                 </div>
                             </div>
                             <div class="swiper-slide">
-                                <img src="~/img/urbex6.jpg" alt="">
+                                <img src="~/img/urbex7.jpg" alt="">
                                 <div class="slide-content">
                                     <h2>
                                         Casa de Medeiros
@@ -86,15 +84,62 @@
                                     </h2>
                                 </div>
                             </div>
+                            <div class="swiper-slide">
+                                <img src="~/img/urbex6.jpg" alt="">
+                                <div class="slide-content">
+                                    <h2>
+                                        Taller abandonado
+                                        <br>
+                                        Baroña
+                                    </h2>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Paginación -->
                         <div class="slide-pagination">
                             <ul class="swiper-pagination"></ul>
                         </div>
+
+                        <!-- Flechas de navegación -->
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="~/js/scriptLogin.js"></script>
+    <script>
+        // Inicializar Swiper con navegación habilitada
+        var swiper = new Swiper(".swiper", {
+            slidesPerView: 1,
+            loop: true,
+            pagination: {
+                el: ".swiper-pagination",
+                renderBullet: function (index, className) {
+                    return '<li class="' + className + '"></li>';
+                },
+                clickable: true,
+            },
+            // ✅ Navegación activada
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        });
+
+        // Mostrar / ocultar contraseña
+        const passwordField = document.querySelector(".password");
+        const eyeIcon = document.querySelector("#icon");
+
+        eyeIcon.addEventListener("click", function () {
+            const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+            passwordField.setAttribute("type", type);
+            eyeIcon.classList.toggle("bx-hide");
+            eyeIcon.classList.toggle("bx-show");
+        });
+    </script>
 </body>

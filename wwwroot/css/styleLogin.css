@@ -142,6 +142,17 @@ body {
     background-color: #FFF;
 }
 
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: white;
+    font-size: 2rem;
+}
+
+
+
+
+
 /*======== Login Form Design ========*/
 
 .auth-text {

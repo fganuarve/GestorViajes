@@ -15,5 +15,7 @@ namespace GestorViajes.Services.User
         //Para exists, trabajo sobre la entidad, no sobre el ViewModel
         Task<GenericResponse<bool>> Exists(Expression<Func<Models.EFCore.Rove.User, bool>> predicate);
         Task<bool> AuthenticateUserAsync(LoginViewModel loginModel);
+        Task<Models.EFCore.Rove.User?> GetUserByCredentialsAsync(string email, string password)
+
     }
 }

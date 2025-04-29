@@ -40,33 +40,28 @@ namespace GestorViajes.Services.User
                 if (user == null)
                 {
                     _logger.LogWarning($"Intento de login fallido: el usuario con email {loginModel.Email} no existe.");
-                    return false; // Usuario no encontrado
+                    return false;
                 }
 
-                // Validar contraseña
-                if (!VerifyPassword(user.Password, loginModel.Password))
+                
+                if (user.Password != loginModel.Password)
                 {
                     _logger.LogWarning($"Intento de login fallido: contraseña incorrecta para el usuario {loginModel.Email}.");
-                    return false; // Contraseña incorrecta
+                    return false;
                 }
-
-                return true; // Autenticacion exitosa
+                // Usuario autenticado
+                return true; 
             }
-
-            // Metodo para verificar la contraseña usando un hash (suponiendo que las contraseñas estan almacenadas de forma segura)
-            //VerifyPassword es un metodo de apoyo interno y no necesita ser parte de la interfaz IUserService (por eso no aparece en IUserService)
-            private bool VerifyPassword(string storedPassword, string inputPassword)
+            public async Task<Models.EFCore.Rove.User?> GetUserByCredentialsAsync(string email, string password)
             {
-                // Aqui usar el algoritmo de hash que  se utiliza en la base de datos
-                // Suponiendo que las contraseñas estan almacenadas como SHA256 por ejemplo
-                using (var sha256 = SHA256.Create())
-                {
-                    var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(inputPassword));
-                    var hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+                var user = await _userRepository.GetUserByEmailAsync(email);
 
-                    return storedPassword == hashString;
-                }
+                if (user != null && user.Password == password)
+                    return user;
+
+                return null;
             }
+
 
 
             public async Task<GenericResponse<List<UserViewModel>>> List(Expression<Func<Models.EFCore.Rove.User, bool>>? predicate = null)

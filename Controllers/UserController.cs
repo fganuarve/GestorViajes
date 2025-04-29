@@ -20,50 +20,7 @@ namespace GestorViajes.Controllers
             _userService = userService;
             _mapper = mapper;
         }
-
-        [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-    //    [httppost]
-    //    public async task<iactionresult> login(loginviewmodel model)
-    //    {
-    //        if (!modelstate.isvalid)
-    //            return view(model);
-
-    //        var user = await _userservice.getbyemailandpassword(model.email, model.password);
-
-    //        if (user == null)
-    //        {
-    //            modelstate.addmodelerror(string.empty, "credenciales incorrectas");
-    //            return view(model);
-    //        }
-
-    //        // autenticación con cookies
-    //        var claims = new list<claim>
-    //{
-    //    new claim(claimtypes.name, user.name),
-    //    new claim(claimtypes.email, user.email),
-    //    new claim(claimtypes.role, user.role)
-    //};
-
-    //        var identity = new claimsidentity(claims, cookieauthenticationdefaults.authenticationscheme);
-    //        var principal = new claimsprincipal(identity);
-
-    //        await httpcontext.signinasync(cookieauthenticationdefaults.authenticationscheme, principal);
-
-    //        return redirecttoaction("index", "home");
-    //    }
-
-    //    [httppost]
-    //    public async task<iactionresult> logout()
-    //    {
-    //        await httpcontext.signoutasync(cookieauthenticationdefaults.authenticationscheme);
-    //        return redirecttoaction("login", "user");
-    //    }
-
+       
         [HttpGet]
         public async Task<IActionResult> Index()
         {

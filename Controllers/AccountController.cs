@@ -19,7 +19,7 @@ namespace GestorViajes.Controllers
             _mapper = mapper;
         }
 
-        // Esta accion mostrará la vista AccountLogin.cshtml
+        // Muestra la vista AccountLogin.cshtml
         [HttpGet]
         public IActionResult Login()
         {   
@@ -45,7 +45,7 @@ namespace GestorViajes.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            // Autenticación con cookies
+            // Autenticacion con cookies
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Name),
@@ -80,23 +80,23 @@ namespace GestorViajes.Controllers
         [HttpGet]
         public IActionResult AccountRegister()
         {
-            return View();  // Asegúrate de que la vista "AccountRegister.cshtml" exista
+            return View();
         }
 
-        // Acción POST para manejar el envío del formulario de registro
+        // Accion POST para el envio del formulario de registro
         [HttpPost]
         public async Task<IActionResult> AccountRegister(UserViewModel model)
         {
             if (ModelState.IsValid)
             {
-                // Lógica para registrar al usuario (guardar en la base de datos)
+                // Logica para registrar al usuario (es decir, guardarlo en la base de datos)
                 await _userService.Add(model);
 
-                // Redirigir al login después del registro exitoso
+                // Redirigir al login despues del registro o.k
                 return RedirectToAction("Login", "Account");
             }
 
-            // Si el modelo no es válido, regresar a la vista de registro
+            // Si el modelo no es valido, regresar a la vista de registro
             return View(model);
         }
     }

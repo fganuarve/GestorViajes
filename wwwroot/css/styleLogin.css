@@ -41,7 +41,7 @@ body {
     background: linear-gradient(to right, #103102, #061a03);
 }
 
-/* ======= Wrapper ======== */
+/*  Wrapper  */
 
 .login-container {
     max-width: 1200px;
@@ -153,7 +153,7 @@ body {
 
 
 
-/*======== Login Form Design ========*/
+/* Login Form  */
 
 .auth-text {
     color: #FFF;
@@ -294,14 +294,14 @@ body {
     padding: 30px;
 }
 
-/* ======= Ajustes de alineación para el formulario ======= */
+/*  Ajustes de alineacion para el formulario */
 
 #login-form {
     width: 100%;
     padding: 0 60px;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Alineación centrada */
+    align-items: center; 
     justify-content: center;
     text-align: center;
 }
@@ -315,17 +315,17 @@ body {
     color: #565353;
     outline: 0;
     padding: 0.825rem;
-    width: 100%; /* Hacer que el campo ocupe el 100% */
-    max-width: 400px; /* Limitar el tamaño máximo de los campos */
+    width: 100%;
+    max-width: 400px;
     font-weight: 500;
     border-radius: 5px;
     transition: all 0.4s;
 }
 
-/* Ajuste al botón de enviar */
+/* Ajuste al boton de enviar */
 .btn-submit {
     width: 100%;
-    max-width: 400px; /* Asegúrate de que el botón tenga el mismo ancho máximo */
+    max-width: 400px;
     padding: 15px 30px;
     border-radius: 3px;
     color: #fff;
@@ -340,7 +340,7 @@ body {
     margin-top: 20px;
 }
 
-/* En pantallas grandes, ajustamos el ancho tanto del formulario como del slider */
+/* Ajuste para que sea responsive la aplicacion */
 @media (min-width: 1200px) {
     #main-slider {
         width: 45%;
@@ -363,7 +363,7 @@ body {
     }
 }
 
-/* ============ Custom Checkbox Style =========== */
+/* Custom Checkbox Style */
 
 .form-element .checkbox input[type="checkbox"] {
     display: none;
@@ -414,17 +414,17 @@ body {
         font-size: 10px;
     }
 
-/* Más ancho o aireado solo en el formulario de registro */
+/* Formulario */
 .register-expanded {
-    max-width: 100%; /* Si está limitado, esto lo expande */
-    gap: 1.5rem; /* Si usas grid o flexbox con gap */
+    max-width: 100%;
+    gap: 1.5rem; 
 }
 .login-main {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centra horizontalmente */
-    gap: 0.1 rem; /* Separación entre campos */
-    padding: 1.5rem; /* Espacio interno */
+    align-items: center; 
+    gap: 0.1 rem;
+    padding: 1.5rem;
 }
     .login-main .full-width {
         width: 100%;

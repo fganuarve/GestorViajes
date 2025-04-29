@@ -1,0 +1,44 @@
+﻿@model GestorViajes.Models.ViewModels.User.LoginViewModel
+
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+
+<!-- Mostrar mensajes de TempData -->
+@if (TempData["message"] != null)
+{
+    <div class="alert alert-@TempData["status"]">
+        @TempData["message"]
+    </div>
+}
+
+<!-- Formulario de Login -->
+<form id="login-form" method="POST" asp-controller="Account" asp-action="Login">
+    <div class="login-main">
+        <div class="full-width">
+            <input type="email" class="input-control" name="email" placeholder="Correo electrónico" required />
+        </div>
+        <div class="full-width">
+            <input type="password" class="input-control password" name="password" placeholder="Contraseña" required />
+            <span class="icon">
+                <i id="icon" class='bx bx-hide'></i>
+            </span>
+        </div>
+
+        <!-- Mostrar errores de validacion -->
+        @Html.ValidationSummary(true, "", new { @class = "error-message" })
+
+        <div class="form-element">
+            <div class="checkbox">
+                <input type="checkbox" id="checkbox1" required />
+                <label for="checkbox1">Acepto los </label>
+            </div>
+            <a href="#">Términos y condiciones</a>
+        </div>
+
+        <div class="full-width">
+            <button type="submit" class="btn-submit">Entrar</button>
+        </div>
+    </div>
+</form>
+

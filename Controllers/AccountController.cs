@@ -10,7 +10,6 @@ namespace GestorViajes.Controllers
 {
     public class AccountController : Controller
     {
-
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
@@ -19,6 +18,7 @@ namespace GestorViajes.Controllers
             _userService = userService;
             _mapper = mapper;
         }
+
         public IActionResult Index()
         {
             return View();
@@ -34,17 +34,22 @@ namespace GestorViajes.Controllers
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
+            {
                 return View(model);
+            }
 
             var user = await _userService.GetUserByCredentialsAsync(model.Email, model.Password);
 
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Credenciales incorrectas");
-                return View(model);
+                // Usamos TempData para pasar el mensaje a la vista
+                TempData["message"] = "Correo electrónico o contraseña incorrectos.";
+                // Se puede usar "success", "info", "warning" con Bootstrap u otro CSS
+                TempData["status"] = "danger";
+                return RedirectToAction("Login");
             }
 
-            // Autenticación con cookies
+            // Autenticacion con cookies
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Name),
@@ -58,6 +63,9 @@ namespace GestorViajes.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
+            TempData["message"] = "Inicio de sesión exitoso.";
+            TempData["status"] = "success";
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -65,6 +73,10 @@ namespace GestorViajes.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            TempData["message"] = "Has cerrado sesión correctamente.";
+            TempData["status"] = "info";
+
             return RedirectToAction("Login", "Account");
         }
     }

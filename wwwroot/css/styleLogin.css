@@ -30,21 +30,18 @@ a {
 
 img {
     width: 100%;
-    object-fit: cover;
+    height: 100%;
     vertical-align: middle;
 }
 
 body {
     font-family: 'Poppins', sans-serif;
     background: #012411;
-    /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #012003, #334e3e);
-    /* Chromergb(220, 241, 223) Safari 5.1-6 */
     background: linear-gradient(to right, #103102, #061a03);
-    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
-/* ======= Wraper ======== */
+/* ======= Wrapper ======== */
 
 .login-container {
     max-width: 1200px;
@@ -75,7 +72,7 @@ body {
 
 #login-form {
     width: 100%;
-    padding: 0 60px;
+    padding: 0 5px;
 }
 
 .slider-header {
@@ -91,12 +88,10 @@ body {
 
 .logo {
     display: block;
-    margin: 0 auto 20px auto;  
-    width: 350px; /* Tamaño del logo */
-    height: auto; /* Mantener la proporcion del logo */
+    margin: 0 auto 20px auto;
+    width: 350px;
+    height: auto;
 }
-
-
 
 .home-link {
     background-color: #ffffff1c;
@@ -160,10 +155,10 @@ body {
     color: #565353;
 }
 
-.auth-text a {
-    color: rgb(76, 52, 231);
-    font-weight: 400;
-}
+    .auth-text a {
+        color: rgb(76, 52, 231);
+        font-weight: 400;
+    }
 
 .half-width,
 .full-width {
@@ -193,9 +188,9 @@ body {
     transition: all 0.4s;
 }
 
-.input-control:focus-visible {
-    border-color: #4826fa;
-}
+    .input-control:focus-visible {
+        border-color: #4826fa;
+    }
 
 .icon {
     position: absolute;
@@ -221,21 +216,20 @@ body {
 }
 
 .form-element {
-    /* padding: 0 10px; */
     margin-bottom: 1rem;
     display: flex;
     justify-content: space-between;
 }
 
-.form-element .checkbox label {
-    color: #565353;
-}
+    .form-element .checkbox label {
+        color: #565353;
+    }
 
-.form-element a {
-    color: rgb(76, 52, 231);
-    margin-left: 5px;
-    font-weight: 400;
-}
+    .form-element a {
+        color: rgb(76, 52, 231);
+        margin-left: 5px;
+        font-weight: 400;
+    }
 
 .social-auth {
     position: relative;
@@ -270,53 +264,81 @@ body {
     font-size: 14px;
 }
 
-.google-btn img,
-.apple-btn img {
-    width: 18px;
-}
+    .google-btn img,
+    .apple-btn img {
+        width: 18px;
+    }
 
 #login-form .login-row {
     padding: 30px;
 }
 
-/* .btn-submit::before {
-    top: 0;
-    width: 0;
-    left: auto;
-    right: 0;
-    z-index: -1;
-    bottom: 0;
-    content: "";
-    position: absolute;
-    transition: all 0.3s ease-in-out;
-    background-color: #445372;
-}
-
-.btn-submit:hover::before {
-    left: 0;
-    width: 100%;
-    right: auto;
-} */
-
 /* Estilo general para el contenedor de la fila */
 .login-row {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center; /* Centra el contenido horizontalmente */
+    justify-content: center;
     align-items: center;
     background-color: #FFF;
-    padding: 30px; /* Espaciado para no estar tan pegado a los bordes */
+    padding: 30px;
+}
+
+/* ======= Ajustes de alineación para el formulario ======= */
+
+#login-form {
+    width: 100%;
+    padding: 0 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Alineación centrada */
+    justify-content: center;
+    text-align: center;
+}
+
+/* Ajuste a los campos de formulario */
+.input-control {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    background-color: #FFF;
+    border: 1px solid #d3d8e9;
+    color: #565353;
+    outline: 0;
+    padding: 0.825rem;
+    width: 100%; /* Hacer que el campo ocupe el 100% */
+    max-width: 400px; /* Limitar el tamaño máximo de los campos */
+    font-weight: 500;
+    border-radius: 5px;
+    transition: all 0.4s;
+}
+
+/* Ajuste al botón de enviar */
+.btn-submit {
+    width: 100%;
+    max-width: 400px; /* Asegúrate de que el botón tenga el mismo ancho máximo */
+    padding: 15px 30px;
+    border-radius: 3px;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    background-color: #536F62;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 1001;
+    transition: ease all 0.35s;
+    margin-top: 20px;
 }
 
 /* En pantallas grandes, ajustamos el ancho tanto del formulario como del slider */
 @media (min-width: 1200px) {
     #main-slider {
-        width: 35%; /* Ajusta el tamaño del slider para que ocupe menos espacio */
+        width: 45%;
         margin-bottom: 0;
     }
 
     #login-form {
-        width: 65%; /* El formulario ocupa el 65% del ancho */
+        width: 55%;
+        padding: 0 5px;
     }
 
     .half-width {
@@ -341,42 +363,42 @@ body {
     margin-bottom: 5px;
 }
 
-.form-element .checkbox label {
-    padding-left: 20px;
-    color: #565353;
-    margin-bottom: 0;
-    font-size: 15px;
-    position: relative;
-}
+    .form-element .checkbox label {
+        padding-left: 20px;
+        color: #565353;
+        margin-bottom: 0;
+        font-size: 15px;
+        position: relative;
+    }
 
-.form-element .checkbox input[type="checkbox"]:checked+label::before {
-    background-color: #4826fa;
-    border-color: #4826fa;
-}
+    .form-element .checkbox input[type="checkbox"]:checked + label::before {
+        background-color: #4826fa;
+        border-color: #4826fa;
+    }
 
-.form-element .checkbox label::before {
-    content: "";
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    top: 1px;
-    left: 0;
-    margin-left: -5px;
-    border: 1px solid #d3d8e9;
-}
+    .form-element .checkbox label::before {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        top: 1px;
+        left: 0;
+        margin-left: -5px;
+        border: 1px solid #d3d8e9;
+    }
 
-.form-element .checkbox input[type="checkbox"]:checked+label::after {
-    font-family: 'Font Awesome 5 Free';
-    content: "\f00c";
-    font-weight: 900;
-    color: #FFF;
-    left: 15px;
-    top: 4px;
-}
+    .form-element .checkbox input[type="checkbox"]:checked + label::after {
+        font-family: 'Font Awesome 5 Free';
+        content: "\f00c";
+        font-weight: 900;
+        color: #FFF;
+        left: 15px;
+        top: 4px;
+    }
 
-.form-element .checkbox label::after {
-    position: absolute;
-    margin-left: -20px;
-    padding-left: 3px;
-    font-size: 10px;
-}
+    .form-element .checkbox label::after {
+        position: absolute;
+        margin-left: -20px;
+        padding-left: 3px;
+        font-size: 10px;
+    }

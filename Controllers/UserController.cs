@@ -9,132 +9,121 @@ namespace GestorViajes.Controllers
 {
     public class UserController : Controller
     {
-        //private readonly IUserService _userService;
-        //private readonly IMapper _mapper;
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        //public UserController(
-        //    IUserService userService,
-        //    IMapper mapper)
-        //{
-        //    _userService = userService;
-        //    _mapper = mapper;
-        //}
+        public UserController(IUserService userService, IMapper mapper)
+        {
+            _userService = userService;
+            _mapper = mapper;
+        }
 
-        //// Lista de usuarios
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var response = await _userService.List();
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error!.Message;
+                return View(new List<UserViewModel>());
+            }
 
-        //// Formulario de creacion
-        //[HttpGet]
-        //public IActionResult Create()
-        //{
-        //    var model = new UserViewModel
-        //    {
-        //        Roles = GetAvailableRoles()
-        //    };
-        //    return View(model);
-        //}
+            return View(response.Data);
+        }
 
-        //// Procesa la creacion
-        //[HttpPost]
-        //public async Task<IActionResult> Create(UserViewModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        model.Roles = GetAvailableRoles();
-        //        return View(model);
-        //    }
+        [HttpGet]
+        public async Task<IActionResult> Details(long id)
+        {
+            var response = await _userService.GetById(id);
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error?.Message ?? "No se pudo obtener el usuario";
+                return RedirectToAction(nameof(Index));
+            }
 
-        //    // Pasar el UserViewModel directamente al servicio
-        //    var serviceResponse = await _userService.Add(model);
+            return View(response.Data);
+        }
 
-        //    if (!serviceResponse.Success)
-        //    {
-        //        TempData["status"] = "error";
-        //        TempData["mensaje"] = serviceResponse.Error!.Message;
-        //        return View(model);
-        //    }
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View(new UserViewModel());
+        }
 
-        //    TempData["status"] = "success";
-        //    TempData["mensaje"] = "Usuario creado exitosamente.";
-        //    return RedirectToAction(nameof(Index));
-        //}
+        [HttpPost]
+        public async Task<IActionResult> CreateSubmit(UserViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = "Datos inválidos. Verifica e intenta de nuevo.";
+                return View("Create", model);
+            }
 
-        //// Formulario de edicion
-        //[HttpGet]
-        //public async Task<IActionResult> Edit(long id)
-        //{
-        //    // Obtener el usuario por ID, pasando solo el ID y no una expresión lambda
-        //    var userResponse = await _userService.Get(id);
+            var response = await _userService.Add(model);
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error?.Message;
+                return View("Create", model);
+            }
 
-        //    if (!userResponse.Success)
-        //    {
-        //        TempData["status"] = "error";
-        //        TempData["mensaje"] = userResponse.Error!.Message;
-        //        return RedirectToAction(nameof(Index));
-        //    }
+            TempData["status"] = "success";
+            TempData["message"] = "Usuario creado correctamente.";
+            return RedirectToAction(nameof(Index));
+        }
 
-        //    var model = _mapper.Map<UserViewModel>(userResponse.Data);
-        //    model.Roles = GetAvailableRoles();
+        [HttpGet]
+        public async Task<IActionResult> Edit(long id)
+        {
+            var response = await _userService.GetById(id);
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error?.Message;
+                return RedirectToAction(nameof(Index));
+            }
 
-        //    return View(model);
-        //}
+            return View(response.Data);
+        }
 
-        //// Procesa la edicion
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(UserViewModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        model.Roles = GetAvailableRoles();
-        //        TempData["status"] = "error";
-        //        TempData["mensaje"] = "Error al editar el usuario.";
-        //        return View(model);
-        //    }
+        [HttpPost]
+        public async Task<IActionResult> EditSubmit(UserViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Edit", model);
+            }
 
-        //    // Pasar el UserViewModel directamente al servicio
-        //    var serviceResponse = await _userService.Edit(model);
+            var response = await _userService.Update(model);
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error?.Message;
+                return View("Edit", model);
+            }
 
-        //    if (!serviceResponse.Success)
-        //    {
-        //        TempData["status"] = "error";
-        //        TempData["mensaje"] = serviceResponse.Error!.Message;
-        //        return RedirectToAction(nameof(Index));
-        //    }
+            TempData["status"] = "success";
+            TempData["message"] = "Usuario actualizado correctamente.";
+            return RedirectToAction(nameof(Index));
+        }
 
-        //    TempData["status"] = "success";
-        //    TempData["mensaje"] = "Usuario editado exitosamente.";
-        //    return RedirectToAction(nameof(Index));
-        //}
+        [HttpPost]
+        public async Task<IActionResult> Delete(long id)
+        {
+            var response = await _userService.Delete(id);
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error?.Message;
+                return RedirectToAction(nameof(Index));
+            }
 
-        //// Eliminar usuario
-        //[HttpPost]
-        //public async Task<IActionResult> Delete(long id)
-        //{
-        //    var serviceResponse = await _userService.Delete(id);
-
-        //    if (!serviceResponse.Success)
-        //    {
-        //        TempData["status"] = "error";
-        //        TempData["mensaje"] = serviceResponse.Error!.Message;
-        //        return RedirectToAction(nameof(Index));
-        //    }
-
-        //    TempData["status"] = "success";
-        //    TempData["mensaje"] = "Usuario eliminado exitosamente.";
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //// Roles disponibles
-        //private List<SelectListItem> GetAvailableRoles()
-        //{
-        //    return new List<SelectListItem>
-        //    {
-        //        new SelectListItem { Value = "Admin", Text = "Administrador" },
-        //        new SelectListItem { Value = "User", Text = "Usuario" }
-        //    };
-        //}
+            TempData["status"] = "success";
+            TempData["message"] = "Usuario eliminado correctamente.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

@@ -9,23 +9,16 @@ using GestorViajes.Services.Vehicle;
 
 namespace GestorViajes.Controllers
 {
+
     public class TripController : Controller
     {
-        /*private readonly ITripService _tripService;
+        private readonly ITripService _tripService;
         private readonly IMapper _mapper;
-        private readonly IUserService _userService;
-        private readonly IVehicleService _vehicleService;
 
-        public TripController(
-            ITripService tripService,
-            IMapper mapper,
-            IUserService userService,
-            IVehicleService vehicleService)
+        public TripController(ITripService tripService, IMapper mapper)
         {
             _tripService = tripService;
             _mapper = mapper;
-            _userService = userService;
-            _vehicleService = vehicleService;
         }
 
         [HttpGet]
@@ -35,9 +28,10 @@ namespace GestorViajes.Controllers
             if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "Error al cargar los viajes.";
+                TempData["message"] = response.Error?.Message ?? "No se pudieron cargar los viajes.";
                 return View(new List<TripViewModel>());
             }
+
             return View(response.Data);
         }
 
@@ -48,43 +42,17 @@ namespace GestorViajes.Controllers
             if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "No se encontró el viaje.";
+                TempData["message"] = response.Error?.Message ?? "Viaje no encontrado.";
                 return RedirectToAction(nameof(Index));
             }
 
-            var tripViewModel = _mapper.Map<TripViewModel>(response.Data);
-            return View(tripViewModel);
+            return View(response.Data);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            var usersResponse = await _userService.List();
-            var vehiclesResponse = await _vehicleService.List();
-
-            if (!usersResponse.Success || !vehiclesResponse.Success)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = "Error al cargar datos para crear viaje.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var model = new TripViewModel
-            {
-                Drivers = usersResponse.Data.Select(u => new SelectListItem
-                {
-                    Value = u.Id.ToString(),
-                    Text = $"{u.Name} {u.LastName1}"
-                }).ToList(),
-
-                Vehicles = vehiclesResponse.Data.Select(v => new SelectListItem
-                {
-                    Value = v.Id.ToString(),
-                    Text = v.Plate
-                }).ToList()
-            };
-
-            return View(model);
+            return View(new TripViewModel());
         }
 
         [HttpPost]
@@ -93,20 +61,20 @@ namespace GestorViajes.Controllers
             if (!ModelState.IsValid)
             {
                 TempData["status"] = "error";
-                TempData["message"] = "Datos inválidos al crear el viaje.";
-                return RedirectToAction(nameof(Create));
+                TempData["message"] = "Datos inválidos. Revisa los campos.";
+                return View("Create", model);
             }
 
             var response = await _tripService.Add(model);
             if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "Error al crear viaje.";
-                return RedirectToAction(nameof(Create));
+                TempData["message"] = response.Error?.Message;
+                return View("Create", model);
             }
 
             TempData["status"] = "success";
-            TempData["message"] = "Viaje creado exitosamente.";
+            TempData["message"] = "Viaje creado correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -117,35 +85,11 @@ namespace GestorViajes.Controllers
             if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "Error al cargar el viaje.";
+                TempData["message"] = response.Error?.Message ?? "Viaje no encontrado.";
                 return RedirectToAction(nameof(Index));
             }
 
-            var tripViewModel = _mapper.Map<TripViewModel>(response.Data);
-
-            // Cargar listas de drivers y vehículos para el dropdown
-            var usersResponse = await _userService.List();
-            var vehiclesResponse = await _vehicleService.List();
-
-            if (usersResponse.Success)
-            {
-                tripViewModel.Drivers = usersResponse.Data.Select(u => new SelectListItem
-                {
-                    Value = u.Id.ToString(),
-                    Text = $"{u.Name} {u.LastName1}"
-                }).ToList();
-            }
-
-            if (vehiclesResponse.Success)
-            {
-                tripViewModel.Vehicles = vehiclesResponse.Data.Select(v => new SelectListItem
-                {
-                    Value = v.Id.ToString(),
-                    Text = v.Plate
-                }).ToList();
-            }
-
-            return View(tripViewModel);
+            return View(response.Data);
         }
 
         [HttpPost]
@@ -153,21 +97,19 @@ namespace GestorViajes.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["status"] = "error";
-                TempData["message"] = "Datos inválidos al editar el viaje.";
                 return View("Edit", model);
             }
 
-            var response = await _tripService.Edit(model);
+            var response = await _tripService.Update(model);
             if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "Error al actualizar viaje.";
+                TempData["message"] = response.Error?.Message;
                 return View("Edit", model);
             }
 
             TempData["status"] = "success";
-            TempData["message"] = "Viaje actualizado exitosamente.";
+            TempData["message"] = "Viaje actualizado correctamente.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -178,14 +120,45 @@ namespace GestorViajes.Controllers
             if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "Error al eliminar viaje.";
+                TempData["message"] = response.Error?.Message ?? "No se pudo eliminar el viaje.";
                 return RedirectToAction(nameof(Index));
             }
 
             TempData["status"] = "success";
             TempData["message"] = "Viaje eliminado correctamente.";
             return RedirectToAction(nameof(Index));
-        }*/
-    }
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> Terminate(long id)
+        {
+            var response = await _tripService.Terminate(id);
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error?.Message ?? "No se pudo finalizar el viaje.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["status"] = "success";
+            TempData["message"] = "Viaje finalizado correctamente.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ByDriver(long driverId)
+        {
+            var response = await _tripService.ListByDriver(driverId);
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error?.Message ?? "No se pudieron cargar los viajes del conductor.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View("Index", response.Data);
+        }
+    }
 }
+
+

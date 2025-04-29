@@ -4,41 +4,108 @@
     ViewData["Title"] = "Iniciar sesión";
 }
 
-<!-- Mostrar mensajes de TempData -->
-@if (TempData["message"] != null)
-{
-    <div class="alert alert-@TempData["status"]">
-        @TempData["message"]
-    </div>
-}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://kit.fontawesome.com/574cdde0a1.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="~/css/styleLogin.css"> <!-- Asegúrate de que el archivo CSS esté en la carpeta wwwroot/css -->
+</head>
 
-<!-- Formulario de Login -->
-<form id="login-form" method="POST" asp-controller="Account" asp-action="Login">
-    <div class="login-main">
-        <div class="full-width">
-            <input type="email" class="input-control" name="email" placeholder="Correo electrónico" required />
-        </div>
-        <div class="full-width">
-            <input type="password" class="input-control password" name="password" placeholder="Contraseña" required />
-            <span class="icon">
-                <i id="icon" class='bx bx-hide'></i>
-            </span>
-        </div>
+<body>
+    <section id="auth">
+        <div class="login-container">
+            <div class="login-row">
+                <div id="main-slider">
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="img/urbex16.jpg" alt="">
+                                <div class="slide-content">
+                                    <h2>
+                                        Mansión Wallace
+                                        <br>
+                                        León
+                                    </h2>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="img/urbex6.jpg" alt="">
+                                <div class="slide-content">
+                                    <h2>
+                                        Casa de Medeiros
+                                        <br>
+                                        Gijón
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slider-header">
+                            <a href="#" class="home-link">
+                                Volver a la página
+                                <i class='bx bx-right-arrow-alt'></i>
+                            </a>
+                        </div>
+                        <div class="slide-pagination">
+                            <ul class="swiper-pagination"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div id="login-form">
+                    <div class="auth-text">
+                        <img src="~/img/logo2.png" alt="Logo" class="logo"> <!-- Asegúrate de que la ruta de la imagen sea correcta -->
+                        <h1>¡Bienvenido de vuelta!</h1>
+                        <p>¿Todavía no tienes cuenta? <a href="#">Registro</a></p>
+                    </div>
 
-        <!-- Mostrar errores de validacion -->
-        @Html.ValidationSummary(true, "", new { @class = "error-message" })
+                    <!-- Formulario de login -->
+                    <form id="login-form" method="POST" asp-controller="Account" asp-action="Login">
+                        <div class="login-main">
+                            <!-- Mostrar mensajes de TempData -->
+                            @if (TempData["message"] != null)
+                            {
+                                <div class="alert alert-@TempData["status"]">
+                                    @TempData["message"]
+                                </div>
+                            }
 
-        <div class="form-element">
-            <div class="checkbox">
-                <input type="checkbox" id="checkbox1" required />
-                <label for="checkbox1">Acepto los </label>
+                            <!-- Campos del formulario -->
+                            <div class="full-width">
+                                <input type="email" class="input-control" name="email" placeholder="Correo electrónico" required />
+                            </div>
+                            <div class="full-width">
+                                <input type="password" class="input-control password" name="password" placeholder="Contraseña" required />
+                                <span class="icon">
+                                    <i id="icon" class='bx bx-hide'></i>
+                                </span>
+                            </div>
+
+                            <!-- Mostrar errores de validación -->
+                            @Html.ValidationSummary(true, "", new { @class = "error-message" })
+
+                            <!-- Aceptación de términos -->
+                            <div class="form-element">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="checkbox1" required />
+                                    <label for="checkbox1">Acepto los </label>
+                                </div>
+                                <a href="#">Términos y condiciones</a>
+                            </div>
+
+                            <!-- Botón de login -->
+                            <div class="full-width">
+                                <button type="submit" class="btn-submit">Entrar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <a href="#">Términos y condiciones</a>
         </div>
+    </section>
 
-        <div class="full-width">
-            <button type="submit" class="btn-submit">Entrar</button>
-        </div>
-    </div>
-</form>
-
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="~/js/scriptLogin.js"></script> <!-- Asegúrate de que el archivo JS esté en la carpeta wwwroot/js -->
+</body>

@@ -3,6 +3,7 @@ using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Models.ViewModels.Vehicle;
 using GestorViajes.Services.Vehicle;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace GestorViajes.Controllers
 {
@@ -18,8 +19,6 @@ namespace GestorViajes.Controllers
         }
 
         [HttpGet]
-        //Importante el metodo en el controlador debe coincidir con el nombre de la vista
-        //no es Index! se debe llamar IndexVehicle como en la vista
         public async Task<IActionResult> IndexVehicle()
         {
             var response = await _vehicleService.List();
@@ -31,74 +30,84 @@ namespace GestorViajes.Controllers
             }
 
             return View(response.Data);
-            //return View("IndexVehicle", modelo);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(long id)
+        public async Task<IActionResult> DetailsVehicle(long id)
         {
             var response = await _vehicleService.Get(id);
             if (!response.Success)
             {
                 TempData["status"] = "error";
                 TempData["message"] = response.Error?.Message ?? "Vehículo no encontrado.";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(IndexVehicle));
             }
 
             return View(response.Data);
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult CreateVehicle()
         {
             return View(new VehicleViewModel());
-            //Tambien podria ser return View("CreateVehicle", new VehicleViewModel());
-            //pero de forma convencional, con  return View(new VehicleViewModel()); es suficiente
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSubmit(VehicleViewModel model)
+        public async Task<IActionResult> CreateVehicleSubmit(VehicleViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 TempData["status"] = "error";
                 TempData["message"] = "Datos inválidos. Verifica e intenta nuevamente.";
-                return View("Create", model);
+                return View("CreateVehicle", model);
             }
+
+            // Obtener ID del usuario autenticado desde los claims de forma segura
+            //uso TryParse en caso de que el claim venga vacio o mal formado
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!long.TryParse(userIdClaim, out var userId))
+            {
+                TempData["status"] = "error";
+                TempData["message"] = "No se pudo determinar el usuario autenticado.";
+                return View("CreateVehicle", model);
+            }
+
+            model.UserId = userId;
 
             var response = await _vehicleService.Add(model);
             if (!response.Success)
             {
                 TempData["status"] = "error";
                 TempData["message"] = response.Error?.Message;
-                return View("Create", model);
+                return View("CreateVehicle", model);
             }
 
             TempData["status"] = "success";
             TempData["message"] = "Vehículo creado correctamente.";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(IndexVehicle));
         }
 
+
         [HttpGet]
-        public async Task<IActionResult> Edit(long id)
+        public async Task<IActionResult> EditVehicle(long id)
         {
             var response = await _vehicleService.Get(id);
             if (!response.Success)
             {
                 TempData["status"] = "error";
                 TempData["message"] = response.Error?.Message;
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(IndexVehicle));
             }
 
             return View(response.Data);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditSubmit(VehicleViewModel model)
+        public async Task<IActionResult> EditVehicleSubmit(VehicleViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View("Edit", model);
+                return View("EditVehicle", model);
             }
 
             var response = await _vehicleService.Update(model);
@@ -106,28 +115,28 @@ namespace GestorViajes.Controllers
             {
                 TempData["status"] = "error";
                 TempData["message"] = response.Error?.Message;
-                return View("Edit", model);
+                return View("EditVehicle", model);
             }
 
             TempData["status"] = "success";
             TempData["message"] = "Vehículo actualizado correctamente.";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(IndexVehicle));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(long id)
+        public async Task<IActionResult> DeleteVehicle(long id)
         {
             var response = await _vehicleService.Delete(id);
             if (!response.Success)
             {
                 TempData["status"] = "error";
                 TempData["message"] = response.Error?.Message;
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(IndexVehicle));
             }
 
             TempData["status"] = "success";
             TempData["message"] = "Vehículo eliminado correctamente.";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(IndexVehicle));
         }
 
         [HttpGet]
@@ -138,10 +147,10 @@ namespace GestorViajes.Controllers
             {
                 TempData["status"] = "error";
                 TempData["message"] = response.Error?.Message ?? "No se pudieron cargar los vehículos del usuario.";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(IndexVehicle));
             }
 
-            return View("Index", response.Data);
+            return View("IndexVehicle", response.Data);
         }
     }
 }

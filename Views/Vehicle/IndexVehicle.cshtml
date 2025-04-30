@@ -15,8 +15,8 @@
 <!-- Encabezado -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold">Mis Vehículos</h2>
-    <a href="@Url.Action("Create", "Vehicle")" class="btn btn-primary">
-        <i class='bx bx-plus'></i> Crear nuevo vehículo
+    <a href="@Url.Action("CreateVehicle", "Vehicle")" class="btn btn-primary">
+        <i class='bx bx-plus'></i> Añadir vehículo
     </a>
 </div>
 
@@ -33,7 +33,9 @@ else
         <table class="table table-striped table-hover align-middle">
             <thead class="table-dark">
                 <tr>
+                    <th>Matrícula</th>
                     <th>Modelo</th>
+                    <th>Color</th>
                     <th>Plazas</th>
                     <th>Acciones</th>
                 </tr>
@@ -42,10 +44,12 @@ else
                 @foreach (var vehicle in Model)
                 {
                     <tr>
+                        <td>@vehicle.Plate</td>
                         <td>@vehicle.Model</td>
+                        <td>@vehicle.Color</td>
                         <td>@vehicle.MaxSeats</td>
                         <td>
-                            <a href="@Url.Action("Edit", "Vehicle", new { id = vehicle.Id })" class="btn btn-sm btn-warning me-1">
+                            <a href="@Url.Action("EditVehicle", "Vehicle", new { id = vehicle.Id })" class="btn btn-sm btn-warning me-1">
                                 <i class='bx bx-edit'></i> Editar
                             </a>
                             <a href="@Url.Action("Delete", "Vehicle", new { id = vehicle.Id })" class="btn btn-sm btn-danger">

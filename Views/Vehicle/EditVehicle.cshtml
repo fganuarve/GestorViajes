@@ -4,7 +4,8 @@
     ViewData["Title"] = "Editar Vehículo";
 }
 
-<!-- Mostrar mensajes -->
+<h2 class="mb-4">Editar Vehículo</h2>
+
 @if (TempData["message"] != null)
 {
     <div class="alert alert-@(TempData["status"])">
@@ -12,32 +13,62 @@
     </div>
 }
 
-<!-- Encabezado -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold">Editar Vehículo</h2>
-    <a href="@Url.Action("Index", "Vehicle")" class="btn btn-secondary">
-        <i class='bx bx-arrow-back'></i> Volver a la lista
-    </a>
-</div>
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<!-- Formulario de Edición -->
-<form asp-action="EditSubmit" method="post">
+<form asp-action="EditVehicleSubmit" asp-controller="Vehicle" method="post">
+    @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
+
+    <!-- Matrícula -->
+    <div class="mb-3">
+        <label class="form-label fw-bold">Matrícula</label>
+        <input type="text" class="form-control" asp-for="Plate" required />
+        <span asp-validation-for="Plate" class="text-danger"></span>
+    </div>
 
     <!-- Modelo -->
     <div class="mb-3">
         <label class="form-label fw-bold">Modelo</label>
         <input type="text" class="form-control" asp-for="Model" required />
+        <span asp-validation-for="Model" class="text-danger"></span>
+    </div>
+
+    <!-- Color -->
+    <div class="mb-3">
+        <label class="form-label fw-bold">Color</label>
+        <input type="text" class="form-control" asp-for="Color" required />
+        <span asp-validation-for="Color" class="text-danger"></span>
     </div>
 
     <!-- Número de Plazas -->
     <div class="mb-3">
         <label class="form-label fw-bold">Número de Plazas</label>
-        <input type="number" class="form-control" asp-for="MaxSeats" min="1" max="3" required />
+        <div class="input-group" style="max-width: 200px;">
+            <button type="button" class="btn btn-outline-secondary" onclick="cambiarPlazas(-1)">-</button>
+            <input type="text" id="plazas" asp-for="MaxSeats" class="form-control text-center" readonly />
+            <button type="button" class="btn btn-outline-secondary" onclick="cambiarPlazas(1)">+</button>
+        </div>
+        <span asp-validation-for="MaxSeats" class="text-danger"></span>
+        <small class="form-text text-muted">Máximo 3 plazas.</small>
     </div>
 
-    <!-- Botón Guardar Cambios -->
-    <button type="submit" class="btn btn-primary">
-        Guardar Cambios
-    </button>
+    <!-- Botón -->
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
 </form>
+
+<script>
+    function cambiarPlazas(valor) {
+        let plazasInput = document.getElementById('plazas');
+        let plazas = parseInt(plazasInput.value) || 1;
+
+        plazas += valor;
+        if (plazas < 1) plazas = 1;
+        if (plazas > 3) plazas = 3;
+
+        plazasInput.value = plazas;
+    }
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

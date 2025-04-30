@@ -18,7 +18,7 @@ namespace GestorViajes.Automapper
                 .ForMember(dest => dest.MaxSeats, opt => opt.MapFrom(src => src.MaxSeats))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.Active, opt => opt.MapFrom(src => src.Active))
-                .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Color)); // ✅ NUEVO
+                .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Color));
 
             // ViewModel → Entidad
             CreateMap<VehicleViewModel, Vehicle>()
@@ -28,7 +28,7 @@ namespace GestorViajes.Automapper
                 .ForMember(dest => dest.MaxSeats, opt => opt.MapFrom(src => src.MaxSeats))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.Active, opt => opt.MapFrom(src => src.Active))
-                .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Color)) // ✅ NUEVO
+                .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Color))
                 .ForMember(dest => dest.Owner, opt => opt.Ignore())
                 .ForMember(dest => dest.Trips, opt => opt.Ignore());
 

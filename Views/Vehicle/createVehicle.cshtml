@@ -6,25 +6,37 @@
 
 <h2 class="mb-4">Crear Vehículo</h2>
 
-<!-- Mostrar mensajes de error o exito -->
 @if (TempData["message"] != null)
 {
-    <div class="alert alert-@(TempData["status"])">
-        @TempData["message"]
-    </div>
+<div class="alert alert-@(TempData[" status"])">
+    @TempData["message"]
+</div>
 }
 
-<!-- Mostrar errores de validación -->
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<form asp-action="CreateSubmit" asp-controller="Vehicle" method="post" enctype="multipart/form-data">
+<form asp-action="CreateVehicleSubmit" asp-controller="Vehicle" method="post">
     @Html.AntiForgeryToken()
+
+    <!-- Matrícula -->
+    <div class="mb-3">
+        <label class="form-label fw-bold">Matrícula</label>
+        <input type="text" class="form-control" asp-for="Plate" placeholder="Ej: 1234-ABC" required />
+        <span asp-validation-for="Plate" class="text-danger"></span>
+    </div>
 
     <!-- Modelo -->
     <div class="mb-3">
         <label class="form-label fw-bold">Modelo</label>
-        <input type="text" class="form-control" asp-for="Model" placeholder="Modelo del vehículo" required>
+        <input type="text" class="form-control" asp-for="Model" placeholder="Ej: Toyota Corolla" required />
         <span asp-validation-for="Model" class="text-danger"></span>
+    </div>
+
+    <!-- Color -->
+    <div class="mb-3">
+        <label class="form-label fw-bold">Color</label>
+        <input type="text" class="form-control" asp-for="Color" placeholder="Ej: Rojo, Azul, Negro..." required />
+        <span asp-validation-for="Color" class="text-danger"></span>
     </div>
 
     <!-- Número de Plazas -->
@@ -32,40 +44,18 @@
         <label class="form-label fw-bold">Número de Plazas</label>
         <div class="input-group" style="max-width: 200px;">
             <button type="button" class="btn btn-outline-secondary" onclick="cambiarPlazas(-1)">-</button>
-            <input type="text" id="plazas" name="Seats" asp-for="MaxSeats" class="form-control text-center" readonly>
+            <input type="text" id="plazas" asp-for="MaxSeats" name="MaxSeats" class="form-control text-center" readonly />
             <button type="button" class="btn btn-outline-secondary" onclick="cambiarPlazas(1)">+</button>
         </div>
         <span asp-validation-for="MaxSeats" class="text-danger"></span>
         <small class="form-text text-muted">Máximo 3 plazas.</small>
     </div>
 
-    <!-- Vehículo (selección de tipo o marca) -->
-    <div class="mb-3">
-        <label class="form-label fw-bold">Seleccionar Vehículo</label>
-        <select class="form-select" asp-for="Id" required>
-            <option selected disabled>Elige tu vehículo</option>
-            <option value="1">Toyota Corolla</option>
-            <option value="2">Seat León</option>
-            <option value="3">Ford Fiesta</option>
-        </select>
-        <span asp-validation-for="Id" class="text-danger"></span>
-    </div>
-
-    <!-- Adjuntar Imagen (opcional) -->
-    @* Descomenta si se usa en el modelo *@
-    <!--
-    <div class="mb-3">
-        <label class="form-label fw-bold">Adjuntar Imagen</label>
-        <input type="file" class="form-control" asp-for="Imagen" accept="image/*">
-        <small class="form-text text-muted">Selecciona una imagen para asociar con el vehículo (opcional).</small>
-        <span asp-validation-for="Imagen" class="text-danger"></span>
-    </div>
-    -->
-    <!-- Botón Crear Vehículo -->
+    <!-- Botón -->
     <button type="submit" class="btn btn-success">Crear Vehículo</button>
 </form>
 
-<!-- Script para controlar las plazas -->
+<!-- Script de control de plazas -->
 <script>
     function cambiarPlazas(valor) {
         let plazasInput = document.getElementById('plazas');
@@ -80,5 +70,5 @@
 </script>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+<partial name="_ValidationScriptsPartial" />
 }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 
 namespace GestorViajes.Controllers
 {
@@ -15,11 +16,13 @@ namespace GestorViajes.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public UserController(IUserService userService, IMapper mapper)
+        public UserController(IUserService userService, IMapper mapper, IHttpContextAccessor contextAccessor)
         {
             _userService = userService;
             _mapper = mapper;
+            _contextAccessor = contextAccessor;
         }
 
         [HttpGet]
@@ -39,20 +42,16 @@ namespace GestorViajes.Controllers
             return View(response.Data);
         }
 
-        //Uso claims para saber de que usuario que este logueado boy a obtener los detalles de la vista DetailsUser
+        //Uso contextAccesor para saber de que usuario que este logueado voy a obtener los detalles de la vista DetailsUser
         [HttpGet]
         public async Task<IActionResult> DetailsUser()
         {
-            // Obtener ID del usuario autenticado desde los claims
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (!long.TryParse(userIdClaim, out var userId))
+            // Obtener ID del usuario autenticado
+            var user = _contextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            if (!long.TryParse(user, out var userId))
             {
-                TempData["status"] = "error";
-                TempData["message"] = "No se pudo determinar el usuario autenticado.";
-                return RedirectToAction(nameof(Index));
+                throw new Exception("No se pudo obtener el ID del usuario autenticado.");
             }
-
             var response = await _userService.GetById(userId);
             if (!response.Success)
             {

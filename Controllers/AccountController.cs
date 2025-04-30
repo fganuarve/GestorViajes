@@ -12,11 +12,13 @@ namespace GestorViajes.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public AccountController(IUserService userService, IMapper mapper)
+        public AccountController(IUserService userService, IMapper mapper, IHttpContextAccessor contextAccessor)
         {
             _userService = userService;
             _mapper = mapper;
+            _contextAccessor = contextAccessor;
         }
 
         // Muestra la vista AccountLogin.cshtml
@@ -56,8 +58,8 @@ namespace GestorViajes.Controllers
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            //IMPORTANTE! usar contextAccesor!! y usando ! le digo que se que no es nulo
+            await _contextAccessor.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
             TempData["message"] = "Inicio de sesión exitoso.";
             TempData["status"] = "success";
@@ -68,13 +70,19 @@ namespace GestorViajes.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            // Cerrar sesion
+            await _contextAccessor.HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Eliminar manualmente la cookie de autenticacin
+            //utilizar context accesor!
+            _contextAccessor.HttpContext!.Response.Cookies.Delete(".AspNetCore.Cookies");
 
             TempData["message"] = "Has cerrado sesión correctamente.";
             TempData["status"] = "info";
-            // Redirige a Login tras cerrar sesion
+
             return RedirectToAction("Login", "Account");
         }
+
 
         [HttpGet]
         public IActionResult AccountRegister()

@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Editar Usuario";
+    //no aplico Layout aqui
+    //Layout = "_Layout";
 }
 
 @if (TempData["message"] != null)
@@ -51,20 +53,61 @@
         @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
     </div>
 
-    <div class="mb-3">
-        <label class="form-label fw-bold">Rol</label>
-        @Html.DropDownListFor(m => m.SelectedRol, Model.Roles, "Selecciona un rol", new { @class = "form-select", required = "required" })
-    </div>
-
-    <button type="submit" class="btn btn-success w-100">
+    <button type="submit" class="btn btn-success w-100 mb-3">
         <i class='bx bx-save'></i> Guardar Cambios
     </button>
-    <hr class="my-4" />
-    <form asp-action="Delete" method="post" onsubmit="return confirm('¿Estás seguro de que deseas borrar tu cuenta? Esta acción no se puede deshacer.');">
-        <input type="hidden" name="id" value="@Model.Id" />
-        <button type="submit" class="btn btn-danger w-100">
-            <i class='bx bx-trash'></i> Borrar mi cuenta
-        </button>
-    </form>
 
+    <a asp-controller="User" asp-action="DetailsUser" class="btn btn-secondary w-100 mb-3">
+        <i class='bx bx-arrow-back'></i> Atrás
+    </a>
 </form>
+
+<form id="deleteForm" asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="button" class="btn btn-danger w-100" onclick="confirmDelete()">
+        <i class='bx bx-trash'></i> Borrar mi cuenta
+    </button>
+</form>
+
+<!-- Estilo para SweetAlert2 para tener espaciado entre botones -->
+<style>
+    .swal2-actions button {
+        margin: 0 5px;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: "btn btn-danger"
+            },
+            buttonsStyling: false
+        });
+
+        function confirmDelete() {
+            swalWithBootstrapButtons.fire({
+                title: "¿Estás seguro?",
+                text: "¡No podrás revertir esto!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, borrar",
+                cancelButtonText: "No, cancelar",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("deleteForm").submit();
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire({
+                        title: "Cancelado",
+                        text: "Tu cuenta está a salvo :)",
+                        icon: "error"
+                    });
+                }
+            });
+        }
+    </script>
+}
+

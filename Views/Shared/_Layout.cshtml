@@ -3,8 +3,6 @@
 <!-- Las que no queremos que apliquen layout tenemos que especificarlo -->
 <!DOCTYPE html>
 <html lang="en">
-
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -30,7 +28,7 @@
             </div>
             <ul class="sidebar-nav">
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
+                    <a asp-controller="User" asp-action="IndexUser" class="sidebar-link">
                         <i class='bx bxs-home'></i>
                         <span>Home</span>
                     </a>
@@ -70,6 +68,13 @@
                                 Mis Viajes
                             </a>
                             <form id="tripMyTripsForm" asp-controller="Trip" asp-action="MyTrips" method="get" style="display: none;"></form>
+                        </li>
+                        <!-- Unirme a un viaje -->
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link" onclick="document.getElementById('tripCreateForm').submit(); return false;">
+                                Unirme a un viaje
+                            </a>
+                            <form id="tripCreateForm" asp-controller="Trip" asp-action="CreateTrip" method="get" style="display: none;"></form>
                         </li>
                     </ul>
                 </li>
@@ -158,7 +163,7 @@
                                 <img src="img/logo3.png" class="avatar img-fluid" alt="Usuario">
                             </a>
                             <div class="dropdown-menu dropdown-menu-end rounded-0 border-0 shadow mt-3">
-                                <<a asp-controller="User" asp-action="DetailsUser" class="dropdown-item">
+                                <a asp-controller="User" asp-action="DetailsUser" class="dropdown-item">
                                     <i class='bx bx-smile'></i> <span>Perfil</span>
                                 </a>
                                 <a href="#" class="dropdown-item">

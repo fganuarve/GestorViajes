@@ -39,20 +39,31 @@ namespace GestorViajes.Controllers
             return View(response.Data);
         }
 
-
+        //Uso claims para saber de que usuario que este logueado boy a obtener los detalles de la vista DetailsUser
         [HttpGet]
-        public async Task<IActionResult> DetailsUser(long id)
+        public async Task<IActionResult> DetailsUser()
         {
-            var response = await _userService.GetById(id);
+            // Obtener ID del usuario autenticado desde los claims
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!long.TryParse(userIdClaim, out var userId))
+            {
+                TempData["status"] = "error";
+                TempData["message"] = "No se pudo determinar el usuario autenticado.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var response = await _userService.GetById(userId);
             if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "No se pudo obtener el usuario";
+                TempData["message"] = response.Error?.Message ?? "No se pudo obtener el usuario.";
                 return RedirectToAction(nameof(Index));
             }
 
             return View(response.Data);
         }
+
 
         [HttpGet]
         public IActionResult CreateUser()

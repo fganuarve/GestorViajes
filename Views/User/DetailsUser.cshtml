@@ -1,60 +1,37 @@
 ﻿@model GestorViajes.Models.ViewModels.User.UserViewModel
 
 @{
-    ViewData["Title"] = "Detalles del Usuario";
+    ViewData["Title"] = "Detalles de mi cuenta";
 }
 
-<div class="container-fluid px-4 py-4">
-    <div class="card shadow p-4">
-        <h2 class="fw-bold mb-4">Detalles del Usuario</h2>
+<h2 class="mb-4">Detalles de mi cuenta</h2>
 
-        <!-- Correo -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">Correo Electrónico</label>
-            <input type="email" class="form-control" value="@Model.Email" readonly />
-        </div>
+<div class="card shadow-sm p-4">
+    <dl class="row">
+        <dt class="col-sm-3">Nombre</dt>
+        <dd class="col-sm-9">@Model.FirstName</dd>
 
-        <!-- Nombre -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">Nombre</label>
-            <input type="text" class="form-control" value="@Model.FirstName" readonly />
-        </div>
+        <dt class="col-sm-3">Primer Apellido</dt>
+        <dd class="col-sm-9">@Model.LastName</dd>
 
-        <!-- Apellido -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">Primer Apellido</label>
-            <input type="text" class="form-control" value="@Model.LastName" readonly />
-        </div>
+        <dt class="col-sm-3">Segundo Apellido</dt>
+        <dd class="col-sm-9">@Model.LastName2</dd>
 
-        <!-- Segundo Apellido -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">Segundo Apellido</label>
-            <input type="text" class="form-control" value="@Model.LastName2" readonly />
-        </div>
+        <dt class="col-sm-3">DNI / NIE</dt>
+        <dd class="col-sm-9">@Model.NationalId</dd>
 
-        <!-- DNI -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">DNI</label>
-            <input type="text" class="form-control" value="@Model.NationalId" readonly />
-        </div>
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
 
-        <!-- Telefono -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">Teléfono</label>
-            <input type="text" class="form-control" value="@Model.PhoneNumber" readonly />
-        </div>
+        <dt class="col-sm-3">Teléfono</dt>
+        <dd class="col-sm-9">@Model.PhoneNumber</dd>
 
-        <!-- Rol -->
-        <div class="mb-3">
-            <label class="form-label fw-bold">Rol</label>
-            <input type="text" class="form-control" value="@Model.SelectedRol" readonly />
-        </div>
+        <dt class="col-sm-3">Rol</dt>
+        <dd class="col-sm-9">@Model.SelectedRol</dd>
+    </dl>
 
-        <!-- Boton Editar -->
-        <div class="text-end">
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
-                <i class='bx bx-edit-alt'></i> Editar mis datos
-            </a>
-        </div>
+    <div class="mt-4">
+        <a asp-action="IndexUser" asp-controller="User" class="btn btn-secondary">Atrás</a>
+        <a asp-action="EditUser" asp-controller="User" asp-route-id="@Model.Id" class="btn btn-primary ms-2">Editar mi cuenta</a>
     </div>
 </div>

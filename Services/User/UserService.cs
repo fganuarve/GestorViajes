@@ -162,8 +162,6 @@ namespace GestorViajes.Services.User
             }
 
 
-
-
             public async Task<GenericResponse<UserViewModel>> Update(UserViewModel model)
             {
                 var response = new GenericResponse<UserViewModel>();
@@ -186,7 +184,11 @@ namespace GestorViajes.Services.User
                 }
                 return response;
             }
+            
 
+
+
+            //borrado total, solo deberia ser realizado por admin
             public async Task<GenericResponse<bool>> Delete(long id)
             {
                 var response = new GenericResponse<bool>();

@@ -34,6 +34,7 @@ else
                     <th>Modelo</th>
                     <th>Color</th>
                     <th>Plazas</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -46,17 +47,39 @@ else
                         <td>@vehicle.Color</td>
                         <td>@vehicle.MaxSeats</td>
                         <td>
+                            @if (vehicle.Active)
+                            {
+                                <span class="badge bg-success">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactivo</span>
+                            }
+                        </td>
+                        <td>
                             <a href="@Url.Action("EditVehicle", "Vehicle", new { id = vehicle.Id })" class="btn btn-sm btn-warning me-1">
                                 <i class='bx bx-edit'></i> Editar
                             </a>
 
-                            <button type="button" class="btn btn-sm btn-danger" onclick="confirmarEliminacion(@vehicle.Id)">
-                                <i class='bx bx-trash'></i> Eliminar
-                            </button>
+                            @if (vehicle.Active)
+                            {
+                                <button type="button" class="btn btn-sm btn-danger" onclick="confirmarEliminacion(@vehicle.Id)">
+                                    <i class='bx bx-trash'></i> Eliminar
+                                </button>
 
-                            <form id="form-eliminar-@vehicle.Id" method="post" asp-action="DeleteVehicle" asp-controller="Vehicle" asp-route-id="@vehicle.Id" style="display: none;">
-                                @Html.AntiForgeryToken()
-                            </form>
+                                <form id="form-eliminar-@vehicle.Id" method="post" asp-action="DeleteVehicle" asp-controller="Vehicle" asp-route-id="@vehicle.Id" style="display: none;">
+                                    @Html.AntiForgeryToken()
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" asp-action="ReactivateVehicle" asp-controller="Vehicle" asp-route-id="@vehicle.Id" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class='bx bx-revision'></i> Reactivar
+                                    </button>
+                                </form>
+                            }
                         </td>
                     </tr>
                 }

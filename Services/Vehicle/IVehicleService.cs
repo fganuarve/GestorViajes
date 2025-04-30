@@ -17,5 +17,8 @@ namespace GestorViajes.Services.Vehicle
         //Para exists, trabajo sobre la entidad, no sobre el ViewModel
         Task<GenericResponse<bool>> Exists(Expression<Func<Models.EFCore.Rove.Vehicle, bool>> predicate);
         Task<List<VehicleSummaryViewModel>> ListDropdownByUser(long userId);
+
+        Task<GenericResponse<bool>> DeactivateVehicle(long vehicleId);
+        Task<GenericResponse<bool>> ReactivateVehicle(long vehicleId);
     }
 }

@@ -139,6 +139,28 @@ namespace GestorViajes.Controllers
             return RedirectToAction(nameof(IndexVehicle));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReactivateVehicle(long id)
+        {
+            var response = await _vehicleService.ReactivateVehicle(id);
+
+            if (response.Error != null)
+            {
+                TempData["message"] = "Ocurrió un error al reactivar el vehículo.";
+                TempData["status"] = "danger";
+            }
+            else
+            {
+                TempData["message"] = "Vehículo reactivado correctamente.";
+                TempData["status"] = "success";
+            }
+
+            return RedirectToAction("MyVehicles");
+        }
+
+
+
         [HttpGet]
         public async Task<IActionResult> ByUser(long userId)
         {

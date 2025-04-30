@@ -129,6 +129,74 @@ namespace GestorViajes.Services.Vehicle
             return response;
         }
 
+        //soft felete de vehiculo, solo por user
+        public async Task<GenericResponse<bool>> DeactivateVehicle(long vehicleId)
+        {
+            var response = new GenericResponse<bool>();
+
+            try
+            {
+                var vehicleResult = await _vehicleRepository.Get(vehicleId);
+                if (vehicleResult.Error != null || vehicleResult.Data == null)
+                {
+                    response.Error = vehicleResult.Error ?? new ErrorResponse("Vehículo no encontrado.");
+                    return response;
+                }
+
+                var vehicle = vehicleResult.Data;
+                vehicle.Active = false;
+                vehicle.LastUpdatedBy = "user"; // puedes personalizar con contexto
+
+                var updateResult = await _vehicleRepository.Update(vehicle);
+                if (updateResult.Error != null)
+                {
+                    response.Error = updateResult.Error;
+                    return response;
+                }
+
+                response.Data = true;
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorResponse(ex);
+            }
+
+            return response;
+        }
+        public async Task<GenericResponse<bool>> ReactivateVehicle(long vehicleId)
+        {
+            var response = new GenericResponse<bool>();
+
+            try
+            {
+                var vehicleResult = await _vehicleRepository.Get(vehicleId);
+                if (vehicleResult.Error != null || vehicleResult.Data == null)
+                {
+                    response.Error = vehicleResult.Error ?? new ErrorResponse("Vehículo no encontrado.");
+                    return response;
+                }
+
+                var vehicle = vehicleResult.Data;
+                vehicle.Active = true;
+                vehicle.LastUpdatedBy = "user"; // puedes personalizar con contexto
+
+                var updateResult = await _vehicleRepository.Update(vehicle);
+                if (updateResult.Error != null)
+                {
+                    response.Error = updateResult.Error;
+                    return response;
+                }
+
+                response.Data = true;
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorResponse(ex);
+            }
+
+            return response;
+        }
+        //borrado total, solo deberia ser realizado por un admin
         public async Task<GenericResponse<bool>> Delete(long id)
         {
             var response = new GenericResponse<bool>();

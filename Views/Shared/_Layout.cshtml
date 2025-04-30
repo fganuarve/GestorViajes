@@ -32,6 +32,12 @@
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link">
                         <i class='bx bxs-user-account'></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class='bx bxs-user-account'></i>
                         <span>Perfil</span>
                     </a>
                 </li>
@@ -40,8 +46,32 @@
                         <i class='bx bxs-car'></i>
                         <span>Mis Vehículos</span>
                     </a>
-                    <form id="vehicleIndexForm" asp-controller="Vehicle" asp-action="IndexVehicle" method="get" style="display: none;">
-                    </form>
+                    <form id="vehicleIndexForm" asp-controller="Vehicle" asp-action="IndexVehicle" method="get" style="display: none;"></form>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                       data-bs-target="#tripsDropdown" aria-expanded="false" aria-controls="tripsDropdown">
+                        <i class='bx bxs-car'></i>
+                        <span>Viajes</span>
+                    </a>
+                    <ul id="tripsDropdown" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+
+                        <!-- Publicar Viaje -->
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link" onclick="document.getElementById('tripCreateForm').submit(); return false;">
+                                Publicar Viaje
+                            </a>
+                            <form id="tripCreateForm" asp-controller="Trip" asp-action="CreateTrip" method="get" style="display: none;"></form>
+                        </li>
+
+                        <!-- Mis Viajes -->
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link" onclick="document.getElementById('tripMyTripsForm').submit(); return false;">
+                                Mis Viajes
+                            </a>
+                            <form id="tripMyTripsForm" asp-controller="Trip" asp-action="MyTrips" method="get" style="display: none;"></form>
+                        </li>
+                    </ul>
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link">
@@ -49,24 +79,6 @@
                         <span>Comunidad</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                       data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
-                        <i class='bx bxs-car'></i>
-                        <span>Viajes</span>
-                    </a>
-                    <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
-                                Publicar Viaje
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
-                                Mis Viajes
-                            </a>
-                        </li>
-                    </ul>
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -112,11 +124,11 @@
             </ul>
             <!-- Boton logout inicialmente -->
             @*<div class="sidebar-footer">
-            <a href="#" class="sidebar-link">
-                <i class='bx bx-log-out'></i>
-                <span>Logout</span>
-            </a>
-            </div>*@
+                <a href="#" class="sidebar-link">
+                    <i class='bx bx-log-out'></i>
+                    <span>Logout</span>
+                </a>
+                </div>*@
             <!-- Boton logout ahora funciona con la logica de logout -->
             <div class="sidebar-footer">
                 <a href="#" class="sidebar-link" onclick="document.getElementById('logoutForm').submit(); return false;">

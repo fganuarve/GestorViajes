@@ -8,6 +8,7 @@ using GestorViajes.Repositories.Users;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
+using Castle.Components.DictionaryAdapter.Xml;
 
 namespace GestorViajes.Services.User
 {
@@ -126,7 +127,11 @@ namespace GestorViajes.Services.User
                     var user = _mapper.Map<Models.EFCore.Rove.User>(model);
 
                     
-                    // El rol se debería haber asignado en el controlador
+                    // El rol se preasigno en el viremodel
+                    //le digo que es activo a true
+                    user.Active = true;
+                    user.CreatedBy = "self";
+                    user.LastUpdatedBy = "self";
 
                     // Llamada al repositorio para guardar el usuario
                     var result = await _userRepository.Add(user);

@@ -79,7 +79,7 @@ namespace GestorViajes.Controllers
         [HttpGet]
         public IActionResult AccountRegister()
         {
-            return View();
+            return View(new UserViewModel());
         }
 
         [HttpPost]

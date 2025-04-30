@@ -172,10 +172,8 @@ namespace GestorViajes.Controllers
                 TempData["message"] = "Vehículo desactivado correctamente.";
                 TempData["status"] = "success";
             }
-
-            return RedirectToAction("MyVehicles");
+            return RedirectToAction("IndexVehicle");
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -195,7 +193,7 @@ namespace GestorViajes.Controllers
             {
                 TempData["message"] = "No tienes permiso para modificar este vehículo.";
                 TempData["status"] = "danger";
-                return RedirectToAction("MyVehicles");
+                return RedirectToAction("IndexVehicle");
             }
 
             var response = await _vehicleService.ReactivateVehicle(id);
@@ -210,8 +208,7 @@ namespace GestorViajes.Controllers
                 TempData["message"] = "Vehículo reactivado correctamente.";
                 TempData["status"] = "success";
             }
-
-            return RedirectToAction("MyVehicles");
+            return RedirectToAction("IndexVehicle");
         }
 
 

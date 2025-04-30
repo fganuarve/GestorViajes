@@ -1,5 +1,6 @@
 ﻿using GestorViajes.Models;
 using GestorViajes.Models.EFCore.Rove;
+using GestorViajes.Models.ViewModels.Trip;
 using GestorViajes.Models.ViewModels.Vehicle;
 using System.Linq.Expressions;
 
@@ -15,5 +16,6 @@ namespace GestorViajes.Services.Vehicle
         Task<GenericResponse<List<VehicleViewModel>>> ListByUser(long userId);
         //Para exists, trabajo sobre la entidad, no sobre el ViewModel
         Task<GenericResponse<bool>> Exists(Expression<Func<Models.EFCore.Rove.Vehicle, bool>> predicate);
+        Task<List<VehicleSummaryViewModel>> ListDropdownByUser(long userId);
     }
 }

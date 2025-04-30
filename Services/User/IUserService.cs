@@ -1,5 +1,6 @@
 ﻿using GestorViajes.Models;
 using GestorViajes.Models.EFCore.Rove;
+using GestorViajes.Models.ViewModels.Trip;
 using GestorViajes.Models.ViewModels.User;
 using System.Linq.Expressions;
 

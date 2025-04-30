@@ -36,6 +36,14 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" onclick="document.getElementById('vehicleIndexForm').submit(); return false;">
+                        <i class='bx bxs-car'></i>
+                        <span>Mis Vehículos</span>
+                    </a>
+                    <form id="vehicleIndexForm" asp-controller="Vehicle" asp-action="IndexVehicle" method="get" style="display: none;">
+                    </form>
+                </li>
+                <li class="sidebar-item">
                     <a href="#" class="sidebar-link">
                         <i class='bx bxs-photo-album'></i>
                         <span>Comunidad</span>

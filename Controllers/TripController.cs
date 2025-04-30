@@ -6,6 +6,7 @@ using GestorViajes.Services.Trip;
 using Microsoft.AspNetCore.Mvc;
 using GestorViajes.Services.User;
 using GestorViajes.Services.Vehicle;
+using GestorViajes.Services.User.GestorViajes.Services.User;
 
 namespace GestorViajes.Controllers
 {
@@ -13,16 +14,22 @@ namespace GestorViajes.Controllers
     public class TripController : Controller
     {
         private readonly ITripService _tripService;
+        private readonly IVehicleService _vehicleService;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public TripController(ITripService tripService, IMapper mapper)
+        public TripController(ITripService tripService, IMapper mapper, IVehicleService vehicleService, IUserService userService)
         {
             _tripService = tripService;
             _mapper = mapper;
+            _vehicleService = vehicleService;
+            _userService = userService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        //Importante el metodo en el controlador debe coincidir con el nombre de la vista
+        //no es Index! es IndexTrip!
+        public async Task<IActionResult> IndexTrip()
         {
             var response = await _tripService.List();
             if (!response.Success)
@@ -50,19 +57,37 @@ namespace GestorViajes.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> CreateTrip()
         {
+            var userIdClaim = User.FindFirst("UserId");
+            if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out var userId))
+            {
+                TempData["status"] = "error";
+                TempData["message"] = "No se pudo identificar al usuario.";
+                return RedirectToAction("IndexTrip");
+            }
+
+            ViewBag.Vehicles = new SelectList(
+                await _vehicleService.ListDropdownByUser(userId), "Id", "Description"
+            );
+
             return View(new TripViewModel());
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> CreateSubmit(TripViewModel model)
+        public async Task<IActionResult> CreateTrip(TripViewModel model)
         {
+            var userId = long.Parse(User.FindFirst("UserId").Value);
+            model.DriverId = userId; // Asignar el conductor actual
+
             if (!ModelState.IsValid)
             {
                 TempData["status"] = "error";
                 TempData["message"] = "Datos inválidos. Revisa los campos.";
-                return View("Create", model);
+
+                ViewBag.Vehicles = new SelectList(await _vehicleService.ListDropdownByUser(userId), "Id", "Description");
+                return View(model);
             }
 
             var response = await _tripService.Add(model);
@@ -70,13 +95,17 @@ namespace GestorViajes.Controllers
             {
                 TempData["status"] = "error";
                 TempData["message"] = response.Error?.Message;
-                return View("Create", model);
+
+                ViewBag.Vehicles = new SelectList(await _vehicleService.ListDropdownByUser(userId), "Id", "Description");
+                return View(model);
             }
 
             TempData["status"] = "success";
             TempData["message"] = "Viaje creado correctamente.";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(IndexTrip));
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> Edit(long id)
@@ -127,23 +156,7 @@ namespace GestorViajes.Controllers
             TempData["status"] = "success";
             TempData["message"] = "Viaje eliminado correctamente.";
             return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Terminate(long id)
-        {
-            var response = await _tripService.Terminate(id);
-            if (!response.Success)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "No se pudo finalizar el viaje.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            TempData["status"] = "success";
-            TempData["message"] = "Viaje finalizado correctamente.";
-            return RedirectToAction(nameof(Index));
-        }
+        }        
 
         [HttpGet]
         public async Task<IActionResult> ByDriver(long driverId)

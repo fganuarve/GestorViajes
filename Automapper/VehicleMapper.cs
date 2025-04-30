@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GestorViajes.Models;
 using GestorViajes.Models.EFCore.Rove;
+using GestorViajes.Models.ViewModels.Trip;
 using GestorViajes.Models.ViewModels.Vehicle;
 
 namespace GestorViajes.Automapper
@@ -29,6 +30,9 @@ namespace GestorViajes.Automapper
                 // Se carga desde contexto si es necesario
                 .ForMember(dest => dest.Owner, opt => opt.Ignore())
                 .ForMember(dest => dest.Trips, opt => opt.Ignore());
+
+                CreateMap<Vehicle, VehicleSummaryViewModel>();
+
         }
     }
 }

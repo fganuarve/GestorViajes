@@ -6,6 +6,7 @@ using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Repositories.Vehicles;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using GestorViajes.Models.ViewModels.Trip;
 
 namespace GestorViajes.Services.Vehicle
 {
@@ -45,6 +46,17 @@ namespace GestorViajes.Services.Vehicle
             }
             return response;
         }
+        public async Task<List<VehicleSummaryViewModel>> ListDropdownByUser(long userId)
+        {
+            var result = await _vehicleRepository.List(v => v.UserId == userId && v.Active);
+
+            if (result.Error != null || result.Data == null)
+                return new List<VehicleSummaryViewModel>();
+
+            return _mapper.Map<List<VehicleSummaryViewModel>>(result.Data);
+        }
+
+
 
         public async Task<GenericResponse<VehicleViewModel>> Get(long id)
         {

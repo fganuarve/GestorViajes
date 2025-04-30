@@ -23,6 +23,8 @@ namespace GestorViajes.Controllers
         }
 
         [HttpGet]
+        //Importante el metodo en el controlador debe coincidir con el nombre de la vista
+        //no es Index! es IndexUser!!
         public async Task<IActionResult> IndexUser()
         {
             var response = await _userService.List();

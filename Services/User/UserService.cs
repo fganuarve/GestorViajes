@@ -9,6 +9,10 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 using Castle.Components.DictionaryAdapter.Xml;
+using GestorViajes.Models.ViewModels.Trip;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Data;
+using GestorViajes.Repositories.Vehicles;
 
 namespace GestorViajes.Services.User
 {
@@ -18,6 +22,7 @@ namespace GestorViajes.Services.User
         public class UserService : IUserService
         {
             private readonly IUserRepository _userRepository;
+            private readonly IVehicleRepository _vehicleRepository;
             private readonly RoveDbContext _context;
             private readonly IMapper _mapper;
             private readonly ILogger<UserService> _logger;
@@ -26,12 +31,14 @@ namespace GestorViajes.Services.User
                 IUserRepository userRepository,
                 RoveDbContext context,
                 IMapper mapper,
-                ILogger<UserService> logger)
+                ILogger<UserService> logger,
+                IVehicleRepository vehicleRepository)
             {
                 _userRepository = userRepository;
                 _context = context;
                 _mapper = mapper;
                 _logger = logger;
+                _vehicleRepository = vehicleRepository;
             }
             // Metodo para autenticar usuario
             // en lugar de usar user.Password == password
@@ -67,14 +74,8 @@ namespace GestorViajes.Services.User
 
                 return null;
             }
-
-            public async Task<UserViewModel?> GetUserByEmailAsync(string email)
-            {
-                var user = await _userRepository.GetUserByEmailAsync(email);
-                return user == null ? null : _mapper.Map<UserViewModel>(user);
-            }
-
-
+            //Listar usuarios
+            //no sirve para poblar un dropdown de conductores
             public async Task<GenericResponse<List<UserViewModel>>> List(Expression<Func<Models.EFCore.Rove.User, bool>>? predicate = null)
             {
                 var response = new GenericResponse<List<UserViewModel>>();
@@ -94,7 +95,15 @@ namespace GestorViajes.Services.User
                     response.Error = new ErrorResponse(ex);
                 }
                 return response;
+            }                    
+
+
+            public async Task<UserViewModel?> GetUserByEmailAsync(string email)
+            {
+                var user = await _userRepository.GetUserByEmailAsync(email);
+                return user == null ? null : _mapper.Map<UserViewModel>(user);
             }
+
 
 
             public async Task<GenericResponse<UserViewModel>> GetById(long id)
@@ -126,7 +135,7 @@ namespace GestorViajes.Services.User
                     // Mapeo del modelo ViewModel a la entidad User
                     var user = _mapper.Map<Models.EFCore.Rove.User>(model);
 
-                    
+
                     // El rol se preasigno en el viremodel
                     //le digo que es activo a true
                     user.Active = true;

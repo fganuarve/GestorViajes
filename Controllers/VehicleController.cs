@@ -18,7 +18,9 @@ namespace GestorViajes.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        //Importante el metodo en el controlador debe coincidir con el nombre de la vista
+        //no es Index! se debe llamar IndexVehicle como en la vista
+        public async Task<IActionResult> IndexVehicle()
         {
             var response = await _vehicleService.List();
             if (!response.Success)

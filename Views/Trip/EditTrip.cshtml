@@ -1,117 +1,32 @@
 ﻿@model GestorViajes.Models.ViewModels.Trip.TripViewModel
 
 @{
-    ViewData["Title"] = "Editar Viaje";
+    ViewData["Title"] = "Detalles del Viaje";
 }
 
-<div class="container mt-5">
-    <div class="card shadow p-4">
-        <h3 class="mb-4"><i class="bx bx-map-pin"></i> Editar Viaje</h3>
+<h2 class="mb-4">Detalles del Viaje</h2>
 
-        <form asp-action="Edit" method="post">
-            @Html.AntiForgeryToken()
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Origen</dt>
+            <dd class="col-sm-9">@Model.Origin</dd>
 
-            <input type="hidden" name="Id" value="@Model.Id" />
+            <dt class="col-sm-3">Destino</dt>
+            <dd class="col-sm-9">@Model.Destination</dd>
 
-            <div class="row">
-                <!-- Conductor -->
-                <!--<div class="col-md-6 mb-3">
-                    <label for="DriverId" class="form-label fw-bold">Conductor</label>
-                    <select id="DriverId" name="DriverId" class="form-select" required>
-                        <option value="">Selecciona un conductor</option>
-                        foreach (var driver in Model.Drivers)
-                        {
-                            
-                        }
-                    </select>
-                    @if (ViewData.ModelState["DriverId"]?.Errors.Any() == true)
-                    {
-                        <div class="text-danger">ViewData.ModelState["DriverId"].Errors.First().ErrorMessage</div>
-                    }
-                </div>-->
+            @*<dt class="col-sm-3">Fecha</dt>
+            <dd class="col-sm-9">@Model.Date.ToString("dd/MM/yyyy")</dd>
 
-                <!-- Vehiculo -->
-                <!--<div class="col-md-6 mb-3">
-                    <label for="VehicleId" class="form-label fw-bold">Vehículo</label>
-                    <select id="VehicleId" name="VehicleId" class="form-select" required>
-                        <option value="">Selecciona un vehículo</option>
-                        foreach (var vehicle in Model.Vehicles)
-                        {
-                            
-                        }
-                    </select>
-                    @if (ViewData.ModelState["VehicleId"]?.Errors.Any() == true)
-                    {
-                        <div class="text-danger">@ViewData.ModelState["VehicleId"].Errors.First().ErrorMessage</div>
-                    }
-                </div>-->
+            <dt class="col-sm-3">Precio</dt>
+            <dd class="col-sm-9">@Model.Price.ToString("C")</dd>
 
-                <!-- Asientos -->
-                <div class="col-md-6 mb-3">
-                    <label for="Seats" class="form-label fw-bold">Asientos Disponibles</label>
-                    <input type="number" id="Seats" name="Seats" class="form-control" value="@Model.Seats" min="1" max="100" required />
-                    @if (ViewData.ModelState["Seats"]?.Errors.Any() == true)
-                    {
-                        <div class="text-danger">@ViewData.ModelState["Seats"].Errors.First().ErrorMessage</div>
-                    }
-                </div>
+            <dt class="col-sm-3">Descripción</dt>
+            <dd class="col-sm-9">@Model.Description</dd>*@
+        </dl>
 
-                <!-- Origen -->
-                <div class="col-md-6 mb-3">
-                    <label for="Origin" class="form-label fw-bold">Origen</label>
-                    <input type="text" id="Origin" name="Origin" class="form-control" value="@Model.Origin" required />
-                    @if (ViewData.ModelState["Origin"]?.Errors.Any() == true)
-                    {
-                        <div class="text-danger">@ViewData.ModelState["Origin"].Errors.First().ErrorMessage</div>
-                    }
-                </div>
-
-                <!-- Destino -->
-                <div class="col-md-6 mb-3">
-                    <label for="Destination" class="form-label fw-bold">Destino</label>
-                    <input type="text" id="Destination" name="Destination" class="form-control" value="@Model.Destination" required />
-                    @if (ViewData.ModelState["Destination"]?.Errors.Any() == true)
-                    {
-                        <div class="text-danger">@ViewData.ModelState["Destination"].Errors.First().ErrorMessage</div>
-                    }
-                </div>
-
-                <!-- Fecha del Viaje -->
-                <div class="col-md-6 mb-3">
-                    <label for="Date" class="form-label fw-bold">Fecha del Viaje</label>
-                    <input type="datetime-local" id="Date" name="Date" class="form-control" value="@Model.Date?.ToString("yyyy-MM-ddTHH:mm")" required />
-                    @if (ViewData.ModelState["Date"]?.Errors.Any() == true)
-                    {
-                        <div class="text-danger">@ViewData.ModelState["Date"].Errors.First().ErrorMessage</div>
-                    }
-                </div>
-
-                <!-- Estado Activo -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Estado</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="Active" name="Active" checked="@Model.Active" />
-                        <label class="form-check-label" for="Active">Activo</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-4">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bx bx-save"></i> Guardar Cambios
-                </button>
-                <a href="@Url.Action("Index", "Trip")" class="btn btn-secondary ms-2">
-                    <i class="bx bx-arrow-back"></i> Volver
-                </a>
-            </div>
-        </form>
-
-        <!-- Boton para Eliminar el Viaje -->
-        <form action="@Url.Action("Delete", "Trip")" method="post" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este viaje?')">
-            <input type="hidden" name="id" value="@Model.Id" />
-            <button type="submit" class="btn btn-danger mt-3">
-                <i class="bx bx-trash"></i> Eliminar Viaje
-            </button>
-        </form>
+        <a asp-action="IndexTrip" class="btn btn-secondary mt-3">
+            <i class='bx bx-arrow-back'></i> Volver a la lista
+        </a>
     </div>
 </div>

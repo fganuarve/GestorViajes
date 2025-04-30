@@ -89,6 +89,13 @@ namespace GestorViajes.Services.Vehicle
             {
                 var vehicle = _mapper.Map<Models.EFCore.Rove.Vehicle>(model);
 
+                // Establezco manualmente los campos comunes para que se cree correctamente el vehiculo
+                vehicle.Active = true;
+                vehicle.CreatedAt = DateTime.UtcNow;
+                vehicle.LastUpdateAt = DateTime.UtcNow;
+                vehicle.CreatedBy = model.UserId.ToString();
+                vehicle.LastUpdatedBy = model.UserId.ToString();
+
                 _context.Vehicles.Add(vehicle);
                 await _context.SaveChangesAsync();
 
@@ -99,8 +106,10 @@ namespace GestorViajes.Services.Vehicle
             {
                 response.Error = new ErrorResponse(ex);
             }
+
             return response;
         }
+
 
         public async Task<GenericResponse<VehicleViewModel>> Update(VehicleViewModel model)
         {

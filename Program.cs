@@ -80,7 +80,7 @@ namespace GestorViajes
             // Rutas de controladores
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=User}/{action=IndexUser}/{id?}");
 
             app.Run();
         }

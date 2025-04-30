@@ -34,11 +34,11 @@ namespace GestorViajes.Models.ViewModels.User
         
         [MaxLength(15)]
         public string? PhoneNumber { get; set; }
-                
+
         // Rol
         [Required]
         [Display(Name = "Rol")]
-        public string SelectedRol { get; set; }
+        public string SelectedRol { get; set; } = "user";
 
 
         // Lista de roles

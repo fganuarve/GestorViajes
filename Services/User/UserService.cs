@@ -33,6 +33,8 @@ namespace GestorViajes.Services.User
                 _logger = logger;
             }
             // Metodo para autenticar usuario
+            // en lugar de usar user.Password == password
+            //se utiliza una forma mejor de comparar que no haya espacios en la contraseña
             public async Task<bool> AuthenticateUserAsync(LoginViewModel loginModel)
             {
                 var user = await _userRepository.GetUserByEmailAsync(loginModel.Email);
@@ -43,24 +45,28 @@ namespace GestorViajes.Services.User
                     return false;
                 }
 
-                
-                if (user.Password != loginModel.Password)
+                if (!string.Equals(user.Password?.Trim(), loginModel.Password?.Trim(), StringComparison.Ordinal))
                 {
                     _logger.LogWarning($"Intento de login fallido: contraseña incorrecta para el usuario {loginModel.Email}.");
                     return false;
                 }
+
                 // Usuario autenticado
-                return true; 
+                return true;
             }
+
             public async Task<Models.EFCore.Rove.User?> GetUserByCredentialsAsync(string email, string password)
             {
                 var user = await _userRepository.GetUserByEmailAsync(email);
 
-                if (user != null && user.Password == password)
+                if (user != null && string.Equals(user.Password?.Trim(), password?.Trim(), StringComparison.Ordinal))
+                {
                     return user;
+                }
 
                 return null;
             }
+
 
 
 

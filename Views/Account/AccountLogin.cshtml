@@ -1,8 +1,6 @@
 ﻿@model GestorViajes.Models.ViewModels.User.LoginViewModel
 @{
     Layout = null;
-}
-@{
     ViewData["Title"] = "Iniciar sesión";
 }
 
@@ -27,6 +25,7 @@
                         <h1>¡Bienvenido de vuelta!</h1>
                         <p>¿Todavía no tienes cuenta? <a asp-controller="Account" asp-action="AccountRegister">Regístrate</a></p>
                     </div>
+
                     <!-- Formulario de login -->
                     <form id="login-form" method="POST" asp-controller="Account" asp-action="Login">
                         <div class="login-main">
@@ -38,21 +37,25 @@
                                 </div>
                             }
 
-                            <!-- Campos del formulario -->
+                            <!-- Email -->
                             <div class="full-width">
-                                <input type="email" class="input-control" name="email" placeholder="Correo electrónico" required />
+                                @Html.TextBoxFor(m => m.Email, new { @class = "input-control", placeholder = "Correo electrónico", type = "email", required = "required" })
+                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "error-message" })
                             </div>
+
+                            <!-- Contraseña -->
                             <div class="full-width">
-                                <input type="password" class="input-control password" name="password" placeholder="Contraseña" required />
+                                @Html.PasswordFor(m => m.Password, new { @class = "input-control password", placeholder = "Contraseña", required = "required" })
                                 <span class="icon">
                                     <i id="icon" class='bx bx-hide'></i>
                                 </span>
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "error-message" })
                             </div>
 
-                            <!-- Mostrar errores de validacion -->
+                            <!-- Errores generales -->
                             @Html.ValidationSummary(true, "", new { @class = "error-message" })
 
-                            <!-- Boton de login -->
+                            <!-- Botón de login -->
                             <div class="full-width">
                                 <button type="submit" class="btn-submit">Entrar</button>
                             </div>
@@ -60,7 +63,7 @@
                     </form>
                 </div>
 
-                <!-- Slider de imagenes -->
+                <!-- Slider de imágenes -->
                 <div id="main-slider">
                     <div class="swiper">
                         <div class="swiper-wrapper">
@@ -96,12 +99,12 @@
                             </div>
                         </div>
 
-                        <!-- Paginacion -->
+                        <!-- Paginación -->
                         <div class="slide-pagination">
                             <ul class="swiper-pagination"></ul>
                         </div>
 
-                        <!-- Flechas de navegacion -->
+                        <!-- Flechas de navegación -->
                         <div class="swiper-button-prev"></div>
                         <div class="swiper-button-next"></div>
                     </div>
@@ -113,7 +116,7 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-        // Inicializar Swiper con navegacion habilitada
+        // Inicializar Swiper
         var swiper = new Swiper(".swiper", {
             slidesPerView: 1,
             loop: true,
@@ -124,14 +127,13 @@
                 },
                 clickable: true,
             },
-            //Navegacion activada
             navigation: {
                 nextEl: ".swiper-button-next",
                 prevEl: ".swiper-button-prev",
             },
         });
 
-        // Mostrar / ocultar contrasenya
+        // Mostrar / ocultar contraseña
         const passwordField = document.querySelector(".password");
         const eyeIcon = document.querySelector("#icon");
 

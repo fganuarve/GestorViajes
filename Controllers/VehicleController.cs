@@ -151,9 +151,9 @@ namespace GestorViajes.Controllers
                 return RedirectToAction("MyVehicles");
             }
 
-            // Validar que el vehiculo pertenece al usuario que esta logueado!!
-            var vehicle = await _vehicleService.GetByIdAsync(id);
-            if (vehicle == null || vehicle.UserId != userId)
+            // Validar que el vehículo pertenece al usuario autenticado
+            var vehicleResult = await _vehicleService.Get(id);
+            if (vehicleResult.Error != null || vehicleResult.Data == null || vehicleResult.Data.UserId != userId)
             {
                 TempData["message"] = "No tienes permiso para modificar este vehículo.";
                 TempData["status"] = "danger";
@@ -189,9 +189,9 @@ namespace GestorViajes.Controllers
                 return RedirectToAction("MyVehicles");
             }
 
-            //Se debe validar que el vehículo pertenece al usuario autenticado
-            var vehicle = await _vehicleService.GetByIdAsync(id);
-            if (vehicle == null || vehicle.UserId != userId)
+            // Validar que el vehículo pertenece al usuario autenticado
+            var vehicleResult = await _vehicleService.Get(id);
+            if (vehicleResult.Error != null || vehicleResult.Data == null || vehicleResult.Data.UserId != userId)
             {
                 TempData["message"] = "No tienes permiso para modificar este vehículo.";
                 TempData["status"] = "danger";
@@ -213,6 +213,7 @@ namespace GestorViajes.Controllers
 
             return RedirectToAction("MyVehicles");
         }
+
 
         [HttpGet]
         public async Task<IActionResult> ByUser(long userId)

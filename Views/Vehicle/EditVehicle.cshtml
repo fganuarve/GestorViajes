@@ -52,8 +52,11 @@
         <small class="form-text text-muted">Máximo 3 plazas.</small>
     </div>
 
-    <!-- Botón -->
-    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    <!-- Botones -->
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <a asp-action="IndexVehicle" asp-controller="Vehicle" class="btn btn-secondary">Atrás</a>
+    </div>
 </form>
 
 <script>

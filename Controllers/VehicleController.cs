@@ -122,7 +122,7 @@ namespace GestorViajes.Controllers
             TempData["message"] = "Vehículo actualizado correctamente.";
             return RedirectToAction(nameof(IndexVehicle));
         }
-
+        //borrado que deberia hacer solo un admin
         [HttpPost]
         public async Task<IActionResult> DeleteVehicle(long id)
         {
@@ -141,8 +141,63 @@ namespace GestorViajes.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeactivateVehicle(long id)
+        {
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+            if (!long.TryParse(userIdClaim, out var userId))
+            {
+                TempData["message"] = "No se pudo determinar el usuario autenticado.";
+                TempData["status"] = "danger";
+                return RedirectToAction("MyVehicles");
+            }
+
+            // Validar que el vehiculo pertenece al usuario que esta logueado!!
+            var vehicle = await _vehicleService.GetByIdAsync(id);
+            if (vehicle == null || vehicle.UserId != userId)
+            {
+                TempData["message"] = "No tienes permiso para modificar este vehículo.";
+                TempData["status"] = "danger";
+                return RedirectToAction("MyVehicles");
+            }
+
+            var response = await _vehicleService.DeactivateVehicle(id);
+
+            if (response.Error != null)
+            {
+                TempData["message"] = "Ocurrió un error al desactivar el vehículo.";
+                TempData["status"] = "danger";
+            }
+            else
+            {
+                TempData["message"] = "Vehículo desactivado correctamente.";
+                TempData["status"] = "success";
+            }
+
+            return RedirectToAction("MyVehicles");
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ReactivateVehicle(long id)
         {
+            var userIdClaim = User.FindFirst("UserId")?.Value;
+            if (!long.TryParse(userIdClaim, out var userId))
+            {
+                TempData["message"] = "No se pudo determinar el usuario autenticado.";
+                TempData["status"] = "danger";
+                return RedirectToAction("MyVehicles");
+            }
+
+            //Se debe validar que el vehículo pertenece al usuario autenticado
+            var vehicle = await _vehicleService.GetByIdAsync(id);
+            if (vehicle == null || vehicle.UserId != userId)
+            {
+                TempData["message"] = "No tienes permiso para modificar este vehículo.";
+                TempData["status"] = "danger";
+                return RedirectToAction("MyVehicles");
+            }
+
             var response = await _vehicleService.ReactivateVehicle(id);
 
             if (response.Error != null)
@@ -158,8 +213,6 @@ namespace GestorViajes.Controllers
 
             return RedirectToAction("MyVehicles");
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> ByUser(long userId)

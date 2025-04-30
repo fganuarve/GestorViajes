@@ -41,7 +41,7 @@ namespace GestorViajes.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Details(long id)
+        public async Task<IActionResult> DetailsUser(long id)
         {
             var response = await _userService.GetById(id);
             if (!response.Success)
@@ -55,13 +55,13 @@ namespace GestorViajes.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult CreateUser()
         {
             return View(new UserViewModel());
         }
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> CreateSubmit(UserViewModel model)
+        public async Task<IActionResult> CreateUserSubmit(UserViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -84,7 +84,7 @@ namespace GestorViajes.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(long id)
+        public async Task<IActionResult> EditUser(long id)
         {
             var response = await _userService.GetById(id);
             if (!response.Success)
@@ -98,7 +98,7 @@ namespace GestorViajes.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditSubmit(UserViewModel model)
+        public async Task<IActionResult> EditUserSubmit(UserViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -119,7 +119,7 @@ namespace GestorViajes.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(long id)
+        public async Task<IActionResult> DeleteUser(long id)
         {
             var response = await _userService.Delete(id);
             if (!response.Success)
@@ -133,5 +133,36 @@ namespace GestorViajes.Controllers
             TempData["message"] = "Usuario eliminado correctamente.";
             return RedirectToAction(nameof(Index));
         }
+        [HttpPost]
+        public async Task<IActionResult> DeactivateUser(long id)
+        {
+            var response = await _userService.Deactivate(id);
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error?.Message;
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["status"] = "success";
+            TempData["message"] = "Usuario desactivado correctamente.";
+            return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        public async Task<IActionResult> ReactivateUser(long id)
+        {
+            var response = await _userService.Reactivate(id);
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error?.Message;
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["status"] = "success";
+            TempData["message"] = "Usuario reactivado correctamente.";
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

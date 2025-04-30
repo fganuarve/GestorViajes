@@ -117,8 +117,8 @@
                     <form id="aboutForm" asp-controller="Home" asp-action="About" method="get" style="display: none;"></form>
                 </li>
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
-                        <i class='bx bxs-cog'></i>
+                    <a asp-controller="User" asp-action="DetailsUser" class="sidebar-link">
+                        <i class='bx bxs-smile'></i>
                         <span>Perfil</span>
                     </a>
                 </li>
@@ -158,8 +158,8 @@
                                 <img src="img/logo3.png" class="avatar img-fluid" alt="Usuario">
                             </a>
                             <div class="dropdown-menu dropdown-menu-end rounded-0 border-0 shadow mt-3">
-                                <a href="#" class="dropdown-item">
-                                    <i class='bx bx-data'></i> <span>Perfil</span>
+                                <<a asp-controller="User" asp-action="DetailsUser" class="dropdown-item">
+                                    <i class='bx bx-smile'></i> <span>Perfil</span>
                                 </a>
                                 <a href="#" class="dropdown-item">
                                     <i class='bx bx-cog'></i> <span>Configuración</span>

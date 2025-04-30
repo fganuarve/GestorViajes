@@ -184,8 +184,67 @@ namespace GestorViajes.Services.User
                 }
                 return response;
             }
-            
+            public async Task<GenericResponse<bool>> Deactivate(long id)
+            {
+                var response = new GenericResponse<bool>();
+                try
+                {
+                    var result = await _userRepository.GetById(id);
+                    if (result.Error != null || result.Data == null)
+                    {
+                        response.Error = result.Error ?? new ErrorResponse("Usuario no encontrado");
+                        return response;
+                    }
 
+                    var user = result.Data;
+                    user.Active = false;
+
+                    var updateResult = await _userRepository.Update(user);
+                    if (updateResult.Error != null)
+                    {
+                        response.Error = updateResult.Error;
+                        return response;
+                    }
+
+                    response.Data = true;
+                }
+                catch (Exception ex)
+                {
+                    response.Error = new ErrorResponse(ex);
+                }
+                return response;
+            }
+
+            public async Task<GenericResponse<bool>> Reactivate(long id)
+            {
+                var response = new GenericResponse<bool>();
+                try
+                {
+                    var result = await _userRepository.GetById(id);
+                    if (result.Error != null || result.Data == null)
+                    {
+                        response.Error = result.Error ?? new ErrorResponse("Usuario no encontrado");
+                        return response;
+                    }
+
+                    var user = result.Data;
+                    user.Active = true;
+
+                    var updateResult = await _userRepository.Update(user);
+                    if (updateResult.Error != null)
+                    {
+                        response.Error = updateResult.Error;
+                        return response;
+                    }
+
+                    response.Data = true;
+                }
+                catch (Exception ex)
+                {
+                    response.Error = new ErrorResponse(ex);
+                }
+                return response;
+            }
 
 
             //borrado total, solo deberia ser realizado por admin

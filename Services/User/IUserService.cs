@@ -18,6 +18,9 @@ namespace GestorViajes.Services.User
         Task<bool> AuthenticateUserAsync(LoginViewModel loginModel);
         Task<Models.EFCore.Rove.User?> GetUserByCredentialsAsync(string email, string password);
         Task<UserViewModel?> GetUserByEmailAsync(string email);
+        Task<GenericResponse<bool>> Reactivate(long id);
+        Task<GenericResponse<bool>> Deactivate(long id);
+
 
     }
 }

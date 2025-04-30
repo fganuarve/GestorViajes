@@ -4,34 +4,36 @@
     ViewData["Title"] = "Detalles del Vehículo";
 }
 
-<div class="container-fluid px-4 py-4">
-    <div class="card shadow p-4">
-        <h2 class="fw-bold mb-4">Detalles del Vehículo</h2>       
+<!-- Mostrar mensajes si hay -->
+@if (TempData["message"] != null)
+{
+    <div class="alert alert-@(TempData["status"])">
+        @TempData["message"]
+    </div>
+}
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">Modelo</label>
-            <p class="form-control-plaintext">@Model.Model</p>
-        </div>        
+<!-- Encabezado -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Detalles del Vehículo</h2>
+    <a href="@Url.Action("Index", "Vehicle")" class="btn btn-secondary">
+        <i class='bx bx-arrow-back'></i> Volver a la lista
+    </a>
+</div>
 
-        @*<div class="mb-3">
-            <label class="form-label fw-bold">Color</label>
-            <p class="form-control-plaintext">@Model.Color</p>
-        </div>*@
+<!-- Detalles del vehículo -->
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Modelo</dt>
+            <dd class="col-sm-9">@Model.Model</dd>
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">Número de Plazas</label>
-            <p class="form-control-plaintext">@Model.MaxSeats</p>
-        </div>        
+            <dt class="col-sm-3">Número de Plazas</dt>
+            <dd class="col-sm-9">@Model.MaxSeats</dd>
 
-        @*<div class="mb-3">
-            <label class="form-label fw-bold">Imagen</label><br />
-            <img src="@Model.ImageUrl" alt="Imagen del vehículo" class="img-fluid rounded" style="max-width: 300px;">
-        </div>*@
+            <dt class="col-sm-3">ID</dt>
+            <dd class="col-sm-9">@Model.Id</dd>
 
-        <div class="mb-3">
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
-                <i class='bx bx-edit'></i> Editar Vehículo
-            </a>
-        </div>
+            @* Si tienes más propiedades como Imagen o Color, las puedes añadir aquí *@
+        </dl>
     </div>
 </div>

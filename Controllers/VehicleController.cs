@@ -29,6 +29,7 @@ namespace GestorViajes.Controllers
             }
 
             return View(response.Data);
+            //return View("IndexVehicle", modelo);
         }
 
         [HttpGet]
@@ -49,6 +50,8 @@ namespace GestorViajes.Controllers
         public IActionResult Create()
         {
             return View(new VehicleViewModel());
+            //Tambien podria ser return View("CreateVehicle", new VehicleViewModel());
+            //pero de forma convencional, con  return View(new VehicleViewModel()); es suficiente
         }
 
         [HttpPost]

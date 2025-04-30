@@ -13,6 +13,8 @@ public partial class Vehicle : CommonFields
 
     public string? Model { get; set; }
 
+    public string? Color { get; set; }
+
     public int MaxSeats { get; set; }
 
     public long UserId { get; set; }

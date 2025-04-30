@@ -12,8 +12,11 @@ namespace GestorViajes.Models.ViewModels.Vehicle
         [MaxLength(20)]
         public string Plate { get; set; }
         [Display(Name = "Modelo")]
+        [MaxLength(20)]
         public string? Model { get; set; }
-
+        [Display(Name = "Color")]
+        [MaxLength(20)]
+        public string? Color { get; set; }
 
         [Required(ErrorMessage = "Debe indicar el número de plazas")]
         [Range(1, 100, ErrorMessage = "Debe ingresar un número válido de plazas")]

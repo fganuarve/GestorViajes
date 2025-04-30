@@ -102,12 +102,25 @@
                     </a>
                 </li>
             </ul>
+            <!-- Boton logout inicialmente -->
+            @*<div class="sidebar-footer">
+            <a href="#" class="sidebar-link">
+                <i class='bx bx-log-out'></i>
+                <span>Logout</span>
+            </a>
+            </div>*@
+            <!-- Boton logout ahora funciona con la logica de logout -->
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-link">
+                <a href="#" class="sidebar-link" onclick="document.getElementById('logoutForm').submit(); return false;">
                     <i class='bx bx-log-out'></i>
                     <span>Logout</span>
                 </a>
+
+                <form id="logoutForm" asp-controller="Account" asp-action="Logout" method="post" style="display: none;">
+                    @Html.AntiForgeryToken()
+                </form>
             </div>
+
         </aside>
 
         <!-- Main Content -->

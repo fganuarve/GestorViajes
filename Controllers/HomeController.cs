@@ -44,5 +44,11 @@ namespace GestorViajes.Controllers
         {
             return View();
         }
+        //Para generar vista de "Ayuda"
+        [HttpGet]
+        public IActionResult Help()
+        {
+            return View();
+        }
     }
 }

@@ -158,17 +158,19 @@
                                 <img src="img/logo3.png" class="avatar img-fluid" alt="Usuario">
                             </a>
                             <div class="dropdown-menu dropdown-menu-end rounded-0 border-0 shadow mt-3">
-                                <a href="#" class="dropdown-item"><i class='bx bx-data'></i> <span>Perfil</span></a>
                                 <a href="#" class="dropdown-item">
-                                    <i class='bx bx-cog'></i>
-                                    <span>Configuración</span>
+                                    <i class='bx bx-data'></i> <span>Perfil</span>
+                                </a>
+                                <a href="#" class="dropdown-item">
+                                    <i class='bx bx-cog'></i> <span>Configuración</span>
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a href="#" class="dropdown-item">
-                                    <i class='bx bx-help-circle'></i>
-                                    <span>Ayuda</span>
+                                <a href="#" class="dropdown-item" onclick="document.getElementById('helpForm').submit(); return false;">
+                                    <i class='bx bx-help-circle'></i> <span>Ayuda</span>
                                 </a>
+                                <form id="helpForm" asp-controller="Home" asp-action="Help" method="get" style="display: none;"></form>
                             </div>
+
                         </li>
                     </ul>
                 </div>

@@ -120,32 +120,34 @@ namespace GestorViajes.Services.User
             public async Task<GenericResponse<UserViewModel>> Add(UserViewModel model)
             {
                 var response = new GenericResponse<UserViewModel>();
-
                 try
                 {
-                    // El formulario de registro asigna el rol por defecto User cuyo valor es 1
-                    model.SelectedRol = "user";
-
+                    // Mapeo del modelo ViewModel a la entidad User
                     var user = _mapper.Map<Models.EFCore.Rove.User>(model);
 
-                    // user.Password = _passwordHasher.HashPassword(user.Password);
+                    
+                    // El rol se debería haber asignado en el controlador
 
+                    // Llamada al repositorio para guardar el usuario
                     var result = await _userRepository.Add(user);
+
                     if (result.Error != null)
                     {
-                        response.Error = result.Error;
+                        response.Error = result.Error;  // En caso de error
                         return response;
                     }
 
+                    // Mapeo de la entidad User de vuelta a UserViewModel
                     response.Data = _mapper.Map<UserViewModel>(result.Data);
                 }
                 catch (Exception ex)
                 {
-                    response.Error = new ErrorResponse(ex);
+                    response.Error = new ErrorResponse(ex);  // Manejo de excepciones
                 }
-
                 return response;
             }
+
+
 
 
             public async Task<GenericResponse<UserViewModel>> Update(UserViewModel model)

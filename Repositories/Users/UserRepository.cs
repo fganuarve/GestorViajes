@@ -84,16 +84,17 @@ namespace GestorViajes.Repositories.Users
             try
             {
                 await using var context = await _contextFactory.CreateDbContextAsync();
-                context.Users.Add(user);
-                await context.SaveChangesAsync();
+                context.Users.Add(user);  // Añadir el usuario al contexto
+                await context.SaveChangesAsync();  // Guardar los cambios en la base de datos
 
-                return new GenericResponse<User>() { Data = user };
+                return new GenericResponse<User>() { Data = user };  // Devolver el usuario agregado
             }
             catch (Exception ex)
             {
-                return new GenericResponse<User>() { Error = new ErrorResponse(ex) };
+                return new GenericResponse<User>() { Error = new ErrorResponse(ex) };  // En caso de error
             }
         }
+
 
         public async Task<GenericResponse<User>> Update(User user)
         {

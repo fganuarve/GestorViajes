@@ -85,31 +85,33 @@ namespace GestorViajes.Controllers
         [HttpPost]
         public async Task<IActionResult> AccountRegister(UserViewModel model)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(model);
+                var response = await _userService.Add(model);
+
+                // Verificamos si hubo algún error al crear el usuario
+                if (response.Error != null)
+                {
+                    TempData["message"] = "Hubo un problema al crear tu cuenta. Por favor, intenta nuevamente.";
+                    TempData["status"] = "danger";  // Error
+                    return View(model);
+                }
+
+                // Si el usuario se ha registrado correctamente
+                TempData["message"] = "Tu cuenta ha sido creada correctamente.";
+                TempData["status"] = "success";  // Éxito
+
+                // Redirigir a Login después de crear la cuenta
+                return RedirectToAction("Login", "Account");
             }
 
-            // Verificar si ya existe un usuario con ese email
-            var existingUser = await _userService.GetUserByEmailAsync(model.Email);
-            if (existingUser != null)
-            {
-                ModelState.AddModelError("Email", "Ya existe una cuenta registrada con este correo.");
-                return View(model);
-            }
-
-            // Registrar usuario
-            var response = await _userService.Add(model);
-
-            if (response.Error != null)
-            {
-                ModelState.AddModelError("", "Hubo un error al registrar el usuario: " + response.Error.Message);
-                return View(model);
-            }
-
-            // Redirigir al login tras registro exitoso
-            return RedirectToAction("Login", "Account");
+            // Si el modelo no es válido, mostrar el mensaje de error
+            TempData["message"] = "Hubo un problema al crear tu cuenta. Por favor, verifica los datos.";
+            TempData["status"] = "danger";  // Error
+            return View(model);
         }
+
+
 
     }
 

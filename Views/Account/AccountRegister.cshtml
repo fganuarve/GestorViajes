@@ -24,6 +24,14 @@
                     ¿Ya tienes cuenta? <a href="/Account/Login">Inicia sesión</a>
                 </div>
 
+                <!-- Mostrar mensajes de éxito o error -->
+                @if (TempData["message"] != null)
+                {
+                    <div class="alert alert-@TempData["status"]">
+                        @TempData["message"]
+                    </div>
+                }
+
                 <!-- Formulario de registro -->
                 <form asp-action="AccountRegister" asp-controller="Account" method="post">
                     @Html.ValidationSummary(true, "", new { @class = "error-message" })

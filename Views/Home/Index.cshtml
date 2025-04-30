@@ -1,14 +1,9 @@
-﻿@{
+﻿<!--ESTA VISTA NO LA ESTOY UTILIZANDO, viene por defecto al crear un proyecto-->
+@{
     ViewData["Title"] = "Inicio";
 }
 
 <section class="home-container">
     <h1>¡Bienvenido a Rove, @User.Identity.Name!</h1>
     <p>Has iniciado sesión como <strong>@User.FindFirst("UserId")?.Value</strong> con rol <strong>@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</strong>.</p>
-
-    <div class="options">
-        <a href="/Trips" class="btn">Ver Viajes</a>
-        <a href="/Vehicles" class="btn">Mis Vehículos</a>
-        <a href="/Account/Logout" class="btn btn-logout">Cerrar Sesión</a>
-    </div>
 </section>

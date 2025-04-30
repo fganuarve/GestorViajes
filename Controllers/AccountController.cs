@@ -107,7 +107,8 @@ namespace GestorViajes.Controllers
 
             // Si el modelo no es válido, mostrar el mensaje de error
             TempData["message"] = "Hubo un problema al crear tu cuenta. Por favor, verifica los datos.";
-            TempData["status"] = "danger";  // Error
+            // Error
+            TempData["status"] = "danger";
             return View(model);
         }
 

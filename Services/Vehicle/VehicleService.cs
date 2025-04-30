@@ -14,19 +14,19 @@ namespace GestorViajes.Services.Vehicle
     {
         private readonly IVehicleRepository _vehicleRepository;
         private readonly IUserRepository _userRepository;
-        private readonly RoveDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public VehicleService(
             IVehicleRepository vehicleRepository,
             IUserRepository userRepository,
-            RoveDbContext context,
-            IMapper mapper)
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             _vehicleRepository = vehicleRepository;
             _userRepository = userRepository;
-            _context = context;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<GenericResponse<List<VehicleViewModel>>> List()
@@ -34,11 +34,10 @@ namespace GestorViajes.Services.Vehicle
             var response = new GenericResponse<List<VehicleViewModel>>();
             try
             {
-                var vehicles = await _context.Vehicles
-                    .Include(v => v.Owner)
-                    .ToListAsync();
+                var result = await _vehicleRepository.List();
+                if (result.Error != null) return result.ConvertError<List<VehicleViewModel>>();
 
-                response.Data = _mapper.Map<List<VehicleViewModel>>(vehicles);
+                response.Data = _mapper.Map<List<VehicleViewModel>>(result.Data);
             }
             catch (Exception ex)
             {
@@ -46,34 +45,20 @@ namespace GestorViajes.Services.Vehicle
             }
             return response;
         }
-        public async Task<List<VehicleSummaryViewModel>> ListDropdownByUser(long userId)
-        {
-            var result = await _vehicleRepository.List(v => v.UserId == userId && v.Active);
-
-            if (result.Error != null || result.Data == null)
-                return new List<VehicleSummaryViewModel>();
-
-            return _mapper.Map<List<VehicleSummaryViewModel>>(result.Data);
-        }
-
-
 
         public async Task<GenericResponse<VehicleViewModel>> Get(long id)
         {
             var response = new GenericResponse<VehicleViewModel>();
             try
             {
-                var vehicle = await _context.Vehicles
-                    .Include(v => v.Owner)
-                    .FirstOrDefaultAsync(v => v.Id == id);
-
-                if (vehicle == null)
+                var result = await _vehicleRepository.GetById(id);
+                if (result.Error != null || result.Data == null)
                 {
                     response.Error = new ErrorResponse("Vehículo no encontrado.");
                     return response;
                 }
 
-                response.Data = _mapper.Map<VehicleViewModel>(vehicle);
+                response.Data = _mapper.Map<VehicleViewModel>(result.Data);
             }
             catch (Exception ex)
             {
@@ -89,45 +74,47 @@ namespace GestorViajes.Services.Vehicle
             {
                 var vehicle = _mapper.Map<Models.EFCore.Rove.Vehicle>(model);
 
-                // Establezco manualmente los campos comunes para que se cree correctamente el vehiculo
                 vehicle.Active = true;
                 vehicle.CreatedAt = DateTime.UtcNow;
                 vehicle.LastUpdateAt = DateTime.UtcNow;
-                vehicle.CreatedBy = model.UserId.ToString();
-                vehicle.LastUpdatedBy = model.UserId.ToString();
 
-                _context.Vehicles.Add(vehicle);
-                await _context.SaveChangesAsync();
+                var userIdClaim = _httpContextAccessor.HttpContext?.User.Claims
+                    .FirstOrDefault(c => c.Type == "UserId")?.Value;
 
-                model.Id = vehicle.Id;
+                if (!long.TryParse(userIdClaim, out var userId))
+                    return response.ConvertError<VehicleViewModel>("No se ha podido encontrar el usuario");
+
+                vehicle.UserId = userId;
+                vehicle.CreatedBy = userId.ToString();
+                vehicle.LastUpdatedBy = userId.ToString();
+
+                var result = await _vehicleRepository.Add(vehicle);
+                if (result.Error != null) return result.ConvertError<VehicleViewModel>();
+
+                model.Id = result.Data.Id;
                 response.Data = model;
             }
             catch (Exception ex)
             {
                 response.Error = new ErrorResponse(ex);
             }
-
             return response;
         }
-
 
         public async Task<GenericResponse<VehicleViewModel>> Update(VehicleViewModel model)
         {
             var response = new GenericResponse<VehicleViewModel>();
             try
             {
-                var vehicle = await _context.Vehicles.FindAsync(model.Id);
+                var result = await _vehicleRepository.GetById(model.Id);
+                if (result.Error != null || result.Data == null)
+                    return response.ConvertError<VehicleViewModel>("Vehículo no encontrado.");
 
-                if (vehicle == null)
-                {
-                    response.Error = new ErrorResponse("Vehículo no encontrado.");
-                    return response;
-                }
-
+                var vehicle = result.Data;
                 _mapper.Map(model, vehicle);
 
-                _context.Vehicles.Update(vehicle);
-                await _context.SaveChangesAsync();
+                var updateResult = await _vehicleRepository.Update(vehicle);
+                if (updateResult.Error != null) return updateResult.ConvertError<VehicleViewModel>();
 
                 response.Data = model;
             }
@@ -138,28 +125,24 @@ namespace GestorViajes.Services.Vehicle
             return response;
         }
 
-        //soft felete de vehiculo, solo por user
         public async Task<GenericResponse<bool>> DeactivateVehicle(long id)
         {
             var response = new GenericResponse<bool>();
             try
             {
-                var vehicle = await _context.Vehicles.FindAsync(id);
-                if (vehicle == null)
-                {
-                    response.Error = new ErrorResponse("Vehículo no encontrado.");
-                    return response;
-                }
+                var result = await _vehicleRepository.GetById(id);
+                if (result.Error != null || result.Data == null)
+                    return response.ConvertError<bool>("Vehículo no encontrado.");
 
-                vehicle.Active = false;
-                await _context.SaveChangesAsync();
+                result.Data.Active = false;
+                await _vehicleRepository.Update(result.Data);
+
                 response.Data = true;
             }
             catch (Exception ex)
             {
                 response.Error = new ErrorResponse(ex);
             }
-
             return response;
         }
 
@@ -168,43 +151,33 @@ namespace GestorViajes.Services.Vehicle
             var response = new GenericResponse<bool>();
             try
             {
-                var vehicle = await _context.Vehicles.FindAsync(id);
-                if (vehicle == null)
-                {
-                    response.Error = new ErrorResponse("Vehículo no encontrado.");
-                    return response;
-                }
+                var result = await _vehicleRepository.GetById(id);
+                if (result.Error != null || result.Data == null)
+                    return response.ConvertError<bool>("Vehículo no encontrado.");
 
-                vehicle.Active = true;
-                await _context.SaveChangesAsync();
+                result.Data.Active = true;
+                await _vehicleRepository.Update(result.Data);
+
                 response.Data = true;
             }
             catch (Exception ex)
             {
                 response.Error = new ErrorResponse(ex);
             }
-
             return response;
         }
 
-        //borrado total, solo deberia ser realizado por un admin
         public async Task<GenericResponse<bool>> Delete(long id)
         {
             var response = new GenericResponse<bool>();
             try
             {
-                var vehicle = await _context.Vehicles.FindAsync(id);
+                var result = await _vehicleRepository.GetById(id);
+                if (result.Error != null || result.Data == null)
+                    return response.ConvertError<bool>("Vehículo no encontrado.");
 
-                if (vehicle == null)
-                {
-                    response.Error = new ErrorResponse("Vehículo no encontrado.");
-                    return response;
-                }
-
-                _context.Vehicles.Remove(vehicle);
-                await _context.SaveChangesAsync();
-
-                response.Data = true;
+                var deleteResult = await _vehicleRepository.Delete(result.Data);
+                response.Data = deleteResult.Data;
             }
             catch (Exception ex)
             {
@@ -218,12 +191,10 @@ namespace GestorViajes.Services.Vehicle
             var response = new GenericResponse<List<VehicleViewModel>>();
             try
             {
-                var vehicles = await _context.Vehicles
-                    .Where(v => v.UserId == userId)
-                    .Include(v => v.Owner)
-                    .ToListAsync();
+                var result = await _vehicleRepository.List(v => v.UserId == userId);
+                if (result.Error != null) return result.ConvertError<List<VehicleViewModel>>();
 
-                response.Data = _mapper.Map<List<VehicleViewModel>>(vehicles);
+                response.Data = _mapper.Map<List<VehicleViewModel>>(result.Data);
             }
             catch (Exception ex)
             {
@@ -234,16 +205,7 @@ namespace GestorViajes.Services.Vehicle
 
         public async Task<GenericResponse<bool>> Exists(Expression<Func<Models.EFCore.Rove.Vehicle, bool>> predicate)
         {
-            var response = new GenericResponse<bool>();
-            try
-            {
-                response.Data = await _context.Vehicles.AnyAsync(predicate);
-            }
-            catch (Exception ex)
-            {
-                response.Error = new ErrorResponse(ex);
-            }
-            return response;
+            return await _vehicleRepository.Exists(predicate);
         }
     }
 }

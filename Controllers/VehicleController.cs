@@ -3,7 +3,6 @@ using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Models.ViewModels.Vehicle;
 using GestorViajes.Services.Vehicle;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace GestorViajes.Controllers
 {
@@ -50,55 +49,21 @@ namespace GestorViajes.Controllers
         public IActionResult CreateVehicle()
         {
             return View(new VehicleViewModel
-            {    // Valor por defecto
-                MaxSeats = 3,
-                //Plate = "8091LXM"
+            {    
             });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateVehicleSubmit(VehicleViewModel model)
-        {
-            Console.WriteLine($"PLATE RECIBIDO: {model.Plate}");
-            var userIdClaim = User.FindFirst("UserId")?.Value;
-            if (!long.TryParse(userIdClaim, out var userId))
-            {
-                TempData["status"] = "error";
-                TempData["message"] = "No se pudo determinar el usuario autenticado.";
-                return View("CreateVehicle", model);
-            }
+        public async Task<IActionResult> CreateVehicleSubmit(VehicleViewModel input)
+        {            
+            var response = await _vehicleService.Add(input);
 
-            // Validación manual de MaxSeats
-            if (model.MaxSeats < 1 || model.MaxSeats > 3)
-            {
-                ModelState.AddModelError(nameof(model.MaxSeats), "Debe ingresar un número válido de plazas entre 1 y 3.");
-            }
-
-            // Forzar borrado del error de "Plate" si tú sabes que viene bien
-            ModelState.Remove(nameof(model.Plate));
-
-            if (!ModelState.IsValid)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = "Datos inválidos. Verifica e intenta nuevamente.";
-                return View("CreateVehicle", model);
-            }
-
-            model.UserId = userId;
-            model.CreatedAt = DateTime.UtcNow;
-            model.LastUpdateAt = DateTime.UtcNow;
-            model.CreatedBy = userId.ToString();
-            model.LastUpdatedBy = userId.ToString();
-            model.Active = true;
-
-            var response = await _vehicleService.Add(model);
-
-            if (response.Error != null)
+            if (!response.Success)
             {
                 TempData["status"] = "error";
                 TempData["message"] = "Error al registrar el vehículo.";
-                return View("CreateVehicle", model);
+                return View("CreateVehicle", input);
             }
 
             TempData["status"] = "success";

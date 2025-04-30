@@ -61,8 +61,8 @@ namespace GestorViajes.Controllers
 
             TempData["message"] = "Inicio de sesión exitoso.";
             TempData["status"] = "success";
-            // Redirige a Home despues del login exitoso
-            return RedirectToAction("Index", "Home");
+            // Redirige a IndexUser.cshtml de User  -> importante!!!
+            return RedirectToAction("IndexUser", "User");
         }
 
         [HttpPost]

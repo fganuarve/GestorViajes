@@ -67,7 +67,11 @@ namespace GestorViajes.Services.User
                 return null;
             }
 
-
+            public async Task<UserViewModel?> GetUserByEmailAsync(string email)
+            {
+                var user = await _userRepository.GetUserByEmailAsync(email);
+                return user == null ? null : _mapper.Map<UserViewModel>(user);
+            }
 
 
             public async Task<GenericResponse<List<UserViewModel>>> List(Expression<Func<Models.EFCore.Rove.User, bool>>? predicate = null)
@@ -116,9 +120,15 @@ namespace GestorViajes.Services.User
             public async Task<GenericResponse<UserViewModel>> Add(UserViewModel model)
             {
                 var response = new GenericResponse<UserViewModel>();
+
                 try
                 {
+                    // El formulario de registro asigna el rol por defecto User cuyo valor es 1
+                    model.SelectedRol = "user";
+
                     var user = _mapper.Map<Models.EFCore.Rove.User>(model);
+
+                    // user.Password = _passwordHasher.HashPassword(user.Password);
 
                     var result = await _userRepository.Add(user);
                     if (result.Error != null)
@@ -133,8 +143,10 @@ namespace GestorViajes.Services.User
                 {
                     response.Error = new ErrorResponse(ex);
                 }
+
                 return response;
             }
+
 
             public async Task<GenericResponse<UserViewModel>> Update(UserViewModel model)
             {

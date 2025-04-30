@@ -76,29 +76,41 @@ namespace GestorViajes.Controllers
             return RedirectToAction("Login", "Account");
         }
 
-        // Acción GET para la vista de registro
         [HttpGet]
         public IActionResult AccountRegister()
         {
             return View();
         }
 
-        // Accion POST para el envio del formulario de registro
         [HttpPost]
         public async Task<IActionResult> AccountRegister(UserViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Logica para registrar al usuario (es decir, guardarlo en la base de datos)
-                await _userService.Add(model);
-
-                // Redirigir al login despues del registro o.k
-                return RedirectToAction("Login", "Account");
+                return View(model);
             }
 
-            // Si el modelo no es valido, regresar a la vista de registro
-            return View(model);
+            // Verificar si ya existe un usuario con ese email
+            var existingUser = await _userService.GetUserByEmailAsync(model.Email);
+            if (existingUser != null)
+            {
+                ModelState.AddModelError("Email", "Ya existe una cuenta registrada con este correo.");
+                return View(model);
+            }
+
+            // Registrar usuario
+            var response = await _userService.Add(model);
+
+            if (response.Error != null)
+            {
+                ModelState.AddModelError("", "Hubo un error al registrar el usuario: " + response.Error.Message);
+                return View(model);
+            }
+
+            // Redirigir al login tras registro exitoso
+            return RedirectToAction("Login", "Account");
         }
+
     }
 
 }

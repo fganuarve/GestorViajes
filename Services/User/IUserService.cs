@@ -16,6 +16,7 @@ namespace GestorViajes.Services.User
         Task<GenericResponse<bool>> Exists(Expression<Func<Models.EFCore.Rove.User, bool>> predicate);
         Task<bool> AuthenticateUserAsync(LoginViewModel loginModel);
         Task<Models.EFCore.Rove.User?> GetUserByCredentialsAsync(string email, string password);
+        Task<UserViewModel?> GetUserByEmailAsync(string email);
 
     }
 }

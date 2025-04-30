@@ -16,7 +16,7 @@ namespace GestorViajes.Automapper
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName1))
                 .ForMember(dest => dest.LastName2, opt => opt.MapFrom(src => src.LastName2))
                 .ForMember(dest => dest.SelectedRol, opt => opt.MapFrom(src => src.Role))
-                // Se gestiona en el controlador
+                // Ignoramos los roles al mapear a UserViewModel
                 .ForMember(dest => dest.Roles, opt => opt.Ignore());
 
             // De ViewModel a entidad
@@ -24,6 +24,7 @@ namespace GestorViajes.Automapper
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(dest => dest.LastName1, opt => opt.MapFrom(src => src.LastName))
                 .ForMember(dest => dest.LastName2, opt => opt.MapFrom(src => src.LastName2))
+                // Si el rol es un string, lo mapeamos directamente
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.SelectedRol))
                 .ForMember(dest => dest.TripRequests, opt => opt.Ignore())
                 .ForMember(dest => dest.UserTrips, opt => opt.Ignore())
@@ -31,4 +32,5 @@ namespace GestorViajes.Automapper
                 .ForMember(dest => dest.Vehicles, opt => opt.Ignore());
         }
     }
+
 }

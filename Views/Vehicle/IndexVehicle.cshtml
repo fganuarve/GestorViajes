@@ -4,7 +4,6 @@
     ViewData["Title"] = "Mis Vehículos";
 }
 
-<!-- Mostrar mensajes de estado -->
 @if (TempData["message"] != null)
 {
     <div class="alert alert-@(TempData["status"])">
@@ -12,7 +11,6 @@
     </div>
 }
 
-<!-- Encabezado -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold">Mis Vehículos</h2>
     <a href="@Url.Action("CreateVehicle", "Vehicle")" class="btn btn-primary">
@@ -20,7 +18,6 @@
     </a>
 </div>
 
-<!-- Tabla de vehículos -->
 @if (!Model.Any())
 {
     <div class="alert alert-info">
@@ -52,13 +49,54 @@ else
                             <a href="@Url.Action("EditVehicle", "Vehicle", new { id = vehicle.Id })" class="btn btn-sm btn-warning me-1">
                                 <i class='bx bx-edit'></i> Editar
                             </a>
-                            <a href="@Url.Action("Delete", "Vehicle", new { id = vehicle.Id })" class="btn btn-sm btn-danger">
+
+                            <button type="button" class="btn btn-sm btn-danger" onclick="confirmarEliminacion(@vehicle.Id)">
                                 <i class='bx bx-trash'></i> Eliminar
-                            </a>
+                            </button>
+
+                            <form id="form-eliminar-@vehicle.Id" method="post" asp-action="DeleteVehicle" asp-controller="Vehicle" asp-route-id="@vehicle.Id" style="display: none;">
+                                @Html.AntiForgeryToken()
+                            </form>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function confirmarEliminacion(id) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn btn-success me-2",
+                    cancelButton: "btn btn-danger"
+                },
+                buttonsStyling: false
+            });
+
+            swalWithBootstrapButtons.fire({
+                title: "¿Estás seguro?",
+                text: "¡Esta acción no se puede deshacer!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(`form-eliminar-${id}`).submit();
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire(
+                        "Cancelado",
+                        "Tu vehículo está a salvo :)",
+                        "error"
+                    );
+                }
+            });
+        }
+    </script>
 }

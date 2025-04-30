@@ -62,9 +62,8 @@ namespace GestorViajes.Controllers
                 return View("CreateVehicle", model);
             }
 
-            // Obtener ID del usuario autenticado desde los claims de forma segura
-            //uso TryParse en caso de que el claim venga vacio o mal formado
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            // Usar el claim "UserId" que se establecio en el Login con context accesor
+            var userIdClaim = User.FindFirst("UserId")?.Value;
             if (!long.TryParse(userIdClaim, out var userId))
             {
                 TempData["status"] = "error";
@@ -86,6 +85,7 @@ namespace GestorViajes.Controllers
             TempData["message"] = "Vehículo creado correctamente.";
             return RedirectToAction(nameof(IndexVehicle));
         }
+
 
 
         [HttpGet]

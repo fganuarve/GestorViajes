@@ -43,11 +43,12 @@ namespace GestorViajes.Controllers
         }
 
         //Uso contextAccesor para saber de que usuario que este logueado voy a obtener los detalles de la vista DetailsUser
+        //Se almacena el ID del usuario autenticado en un claim personalizado llamado "UserId"
         [HttpGet]
         public async Task<IActionResult> DetailsUser()
         {
             // Obtener ID del usuario autenticado
-            var user = _contextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+            var user = _contextAccessor.HttpContext!.User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
             if (!long.TryParse(user, out var userId))
             {
                 throw new Exception("No se pudo obtener el ID del usuario autenticado.");

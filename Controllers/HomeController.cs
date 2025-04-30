@@ -38,5 +38,11 @@ namespace GestorViajes.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        //Para generar la vista "Sobre nosotros"
+        [HttpGet]
+        public IActionResult About()
+        {
+            return View();
+        }
     }
 }

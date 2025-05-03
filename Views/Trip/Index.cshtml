@@ -1,0 +1,137 @@
+﻿@model IEnumerable<GestorViajes.Models.ViewModels.Trip.TripViewModel>
+@inject GestorViajes.Services.Users.IUserService _userService
+@{
+	ViewData["Title"] = "Mis Viajes";
+	var current = await _userService.CurrentUser();
+}
+
+<!-- Mostrar mensajes de estado -->
+@if (TempData["message"] != null)
+{
+	<div class="alert alert-@(TempData["status"])">
+		@TempData["message"]
+	</div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+	<h2>Mis Viajes</h2>
+	<a class="btn btn-primary" asp-controller="Trip" asp-action="Create">
+		<i class='bx bx-plus'></i> Publicar Nuevo Viaje
+	</a>
+	<a class="btn btn-primary" asp-controller="Trip" asp-action="Index"
+	   asp-route-status="@((int)GestorViajes.Models.EFCore.Rove.TripStatus.Available)">
+		<i class='bx bx-search'></i> Buscar viajes disponibles
+	</a>
+</div>
+
+<!-- Tabla de viajes -->
+@if (Model != null && Model.Any())
+{
+	<div class="table-responsive">
+		<table class="table table-striped table-bordered align-middle">
+			<thead class="table-dark">
+				<tr>
+					<th>Origen</th>
+					<th>Destino</th>
+					<th>Fecha</th>
+					<th>Posición</th>
+					<th>Estado</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var trip in Model)
+				{
+					<tr>
+						<td>@trip.Origin</td>
+						<td>@trip.Destination</td>
+						<td>@trip.Date.ToString("dd/MM/yyyy")</td>
+						<td>
+							@if (trip.DriverId == current.Id)
+							{
+								<span>Conductor</span>
+							}
+							else
+							{
+								<span>Pasajero</span>
+							}
+						</td>
+						<td>
+							@if (trip.Status == (int)GestorViajes.Models.EFCore.Rove.TripStatus.Available)
+							{
+								<span class="badge bg-success">@trip.StatusDescription</span>
+							}
+							else if (trip.Status == (int)GestorViajes.Models.EFCore.Rove.TripStatus.Full)
+							{
+								<span class="badge bg-warning text-dark">@trip.StatusDescription</span>
+							}
+							else
+							{
+								<span class="badge bg-danger">@trip.StatusDescription</span>
+							}
+						</td>
+						<td>
+							<a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@trip.Id">
+								<i class='bx bx-show'></i> Detalles
+							</a>
+							@if (trip.Status == (int)GestorViajes.Models.EFCore.Rove.TripStatus.Available)
+							{
+								@if (trip.DriverId == current.Id)
+								{
+									<a class="btn btn-sm btn-warning" asp-action="Finalizar" asp-route-id="@trip.Id">
+										<i class='bx bx-edit'></i> Finalizar viaje
+									</a>
+									<a class="btn btn-sm btn-warning" asp-action="Cancelar" asp-route-id="@trip.Id">
+										<i class='bx bx-edit'></i> Cancelar viaje
+									</a>
+								}
+								else if (trip.Passengers.Any(x => x.UserId == current.Id))
+								{
+									<a class="btn btn-sm btn-warning" asp-action="ExitTrip" asp-route-id="@trip.Id">
+										<i class='bx bx-edit'></i> Salir del viaje
+									</a>
+								}
+								else
+								{
+									if (trip.Passengers.Count < trip.Seats)
+									{
+										<a class="btn btn-sm btn-warning" asp-action="JoinTrip" asp-route-id="@trip.Id">
+											<i class='bx bx-edit'></i> Unirme al viaje
+										</a>
+									}
+									else
+									{
+										<a class="btn btn-sm btn-secondary disabled" tabindex="-1" aria-disabled="true">
+											<i class='bx bx-block'></i> El viaje está lleno
+										</a>
+									}
+								}
+							}
+							else if (trip.Status == (int)GestorViajes.Models.EFCore.Rove.TripStatus.Full)
+							{
+								@if (trip.DriverId == current.Id)
+								{
+									<a class="btn btn-sm btn-warning" asp-action="Finalizar" asp-route-id="@trip.Id">
+										<i class='bx bx-edit'></i> Finalizar viaje
+									</a>
+								}
+								else if (trip.Passengers.Any(x => x.UserId == current.Id))
+								{
+									<a class="btn btn-sm btn-warning" asp-action="ExitTrip" asp-route-id="@trip.Id">
+										<i class='bx bx-edit'></i> Salir del viaje
+									</a>
+								}
+							}
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}
+else
+{
+	<div class="alert alert-info">
+		No se encontraron viajes publicados.
+	</div>
+}

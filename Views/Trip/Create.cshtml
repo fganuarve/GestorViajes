@@ -1,0 +1,93 @@
+﻿@model GestorViajes.Models.ViewModels.Trip.TripViewModel
+
+@{
+    ViewData["Title"] = "Crear Viaje";
+}
+
+<h2 class="mb-4">Crear Viaje</h2>
+
+<!-- Mostrar mensajes de error o éxito -->
+@if (TempData["message"] != null)
+{
+    <div class="alert alert-@(TempData["status"])">
+        @TempData["message"]
+    </div>
+}
+
+<form asp-action="Create" method="post">
+    <!-- Vehículo -->
+    <div class="form-group mb-3">
+        <label asp-for="VehicleId" class="form-label fw-bold"></label>
+        <select asp-for="VehicleId" asp-items="Model.Vehicles" class="form-control" required>
+            <option value="">Selecciona un vehículo</option>
+        </select>
+        <span asp-validation-for="VehicleId" class="text-danger"></span>
+    </div>
+
+    <!-- Plazas -->
+    <div class="form-group mb-3">
+        <label asp-for="Seats" class="form-label fw-bold"></label>
+        <input asp-for="Seats" type="number" class="form-control" min="1" max="100" required />
+        <span asp-validation-for="Seats" class="text-danger"></span>
+    </div>
+
+    <!-- Origen -->
+    <div class="form-group mb-3">
+        <label asp-for="Origin" class="form-label fw-bold"></label>
+        <input asp-for="Origin" type="text" class="form-control" maxlength="100" required />
+        <span asp-validation-for="Origin" class="text-danger"></span>
+    </div>
+
+    <!-- Destino -->
+    <div class="form-group mb-3">
+        <label asp-for="Destination" class="form-label fw-bold"></label>
+        <input asp-for="Destination" type="text" class="form-control" maxlength="100" required />
+        <span asp-validation-for="Destination" class="text-danger"></span>
+    </div>
+
+    <!-- Fecha -->
+    <div class="form-group mb-3">
+        <label asp-for="Date" class="form-label fw-bold"></label>
+        <input asp-for="Date" type="date" class="form-control" required />
+        <span asp-validation-for="Date" class="text-danger"></span>
+    </div>
+
+    <!-- Botones -->
+    <button type="submit" class="btn btn-success">
+        <i class="bx bx-plus"></i> Crear Viaje
+    </button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancelar</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function(){
+        $("#VehicleId").on("change", function () {
+            var vehicleId = $(this).val();
+            $.ajax({
+                url: '@Url.Action("GetVehicleDetails", "Vehicle")',
+                type: 'GET',
+                data: { id: vehicleId },
+                success: function (response) {
+					if (response.success) {
+						$("#Seats").attr("min", "1");
+                        $("#Seats").attr("max", response.data.maxSeats);
+						$("#Seats").val(response.data.maxSeats);
+                    } else {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: "Error al obtener los detalles del vehículo."
+						});
+                    }
+                },
+                error: function () {
+                    alert("Error al obtener los detalles del vehículo.");
+                }
+            });
+        })
+    });
+</script>

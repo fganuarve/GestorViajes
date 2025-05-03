@@ -1,0 +1,171 @@
+﻿@model IEnumerable<GestorViajes.Models.ViewModels.Vehicle.VehicleViewModel>
+
+@{
+    ViewData["Title"] = "Mis Vehículos";
+}
+
+@if (TempData["message"] != null)
+{
+    <div class="alert alert-@(TempData["status"])">
+        @TempData["message"]
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Mis Vehículos</h2>
+    <a href="@Url.Action("Create", "Vehicle")" class="btn btn-primary">
+        <i class='bx bx-plus'></i> Añadir vehículo
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Aún no tienes vehículos registrados.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+		<table class="table table-striped table-hover align-middle">
+			<thead class="table-dark">
+				<tr>
+					<th>Matrícula</th>
+					<th>Modelo</th>
+					<th>Color</th>
+					<th>Plazas</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var vehicle in Model)
+				{
+					<tr>
+						<td>@vehicle.Plate</td>
+						<td>@vehicle.Model</td>
+						<td>@vehicle.Color</td>
+						<td>@vehicle.MaxSeats</td>
+						<td>
+							@if (vehicle.Active)
+							{
+								<span class="badge bg-success">Activo</span>
+							}
+							else
+							{
+								<span class="badge bg-secondary">Inactivo</span>
+							}
+						</td>
+						<td>
+							<a href="@Url.Action("Edit", "Vehicle", new { id = vehicle.Id })" class="btn btn-sm btn-warning me-1">
+								<i class='bx bx-edit'></i> Editar
+							</a>
+
+							<form id="form-@(vehicle.Active ? "desactivar" : "reactivar")-@vehicle.Id"
+								  method="post"
+								  asp-action="ToggleVehicle"
+								  asp-controller="Vehicle"
+								  asp-route-id="@vehicle.Id"
+								  class="d-inline">
+								@Html.AntiForgeryToken()
+								<button type="button"
+										class="btn btn-sm @(vehicle.Active ? "btn-danger" : "btn-success")"
+										onclick="@(vehicle.Active ? $"confirmarDesactivacion({vehicle.Id})" : $"confirmarReactivacion({vehicle.Id})")">
+									<i class='bx @(vehicle.Active ? "bx-trash" : "bx-revision")'></i>
+									@(vehicle.Active ? "Desactivar" : "Reactivar")
+								</button>
+							</form>
+							@if (!vehicle.Active)
+							{
+								<form id="form-delete-@vehicle.Id"
+									  method="post"
+									  asp-action="Delete"
+									  asp-controller="Vehicle"
+									  asp-route-id="@vehicle.Id"
+									  class="d-inline">
+									@Html.AntiForgeryToken()
+									<button type="button"
+											class="btn btn-sm btn-info me-1"
+											onclick="confirmarEliminacion(@vehicle.Id)">
+										<i class='bx bx-detail'></i> Eliminar
+									</button>
+								</form>
+							}
+
+						</td>
+					</tr>
+				}
+			</tbody>
+
+		</table>
+    </div>
+}
+<!-- Estilo para SweetAlert2 para tener espaciado entre botones -->
+<style>
+    .swal2-actions button {
+        margin: 0 5px;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+		const swalWithBootstrapButtons = Swal.mixin({
+			customClass: {
+				confirmButton: "btn btn-success",
+				cancelButton: "btn btn-danger"
+			},
+			buttonsStyling: false
+		});
+		
+		function confirmarEliminacion(id) {
+			Swal.fire({
+				title: "¿Eliminar vehículo?",
+				text: "Esta acción no se puede deshacer.",
+				icon: "warning",
+				showCancelButton: true,
+				confirmButtonText: "Sí, eliminar",
+				cancelButtonText: "Cancelar",
+				reverseButtons: true
+			}).then((result) => {
+				if (result.isConfirmed) {
+					document.getElementById(`form-delete-${id}`).submit();
+				}
+			});
+		}
+
+
+        function confirmarDesactivacion(id) {
+            swalWithBootstrapButtons.fire({
+                title: "¿Desactivar vehículo?",
+                text: "Podrás reactivarlo más tarde si lo necesitas.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, desactivar",
+                cancelButtonText: "Cancelar",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(`form-desactivar-${id}`).submit();
+                }
+            });
+		}
+
+		function confirmarReactivacion(id) {
+			swalWithBootstrapButtons.fire({
+				title: "¿Reactivar vehículo?",
+				text: "El vehículo volverá a estar disponible para crear viajes.",
+				icon: "question",
+				showCancelButton: true,
+				confirmButtonText: "Sí, reactivar",
+				cancelButtonText: "Cancelar",
+				reverseButtons: true
+			}).then((result) => {
+				if (result.isConfirmed) {
+					document.getElementById(`form-reactivar-${id}`).submit();
+				}
+			});
+		}
+    </script>
+}

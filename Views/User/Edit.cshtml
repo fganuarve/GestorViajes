@@ -1,0 +1,121 @@
+﻿@model GestorViajes.Models.ViewModels.User.UserViewModel
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+    //Aplico Layout para poder ver el logo a la derecha arriba
+    Layout = "_Layout";
+}
+
+@if (TempData["message"] != null)
+{
+    <div class="alert alert-@TempData["status"]">
+        @TempData["message"]
+    </div>
+}
+
+<form asp-action="Edit" asp-controller="User" method="post" class="card shadow p-4">
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.Active)
+    <div class="mb-3">
+        <label class="form-label fw-bold">Correo Electrónico</label>
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", required = "required" })
+        @Html.ValidationMessageFor(m => m.Email, null, new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-bold">Contraseña</label>
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control", required = "required" })
+        @Html.ValidationMessageFor(m => m.Password, null, new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-bold">Nombre</label>
+        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", required = "required" })
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-bold">Apellido</label>
+        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-bold">Segundo Apellido</label>
+        @Html.TextBoxFor(m => m.LastName2, new { @class = "form-control" })
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-bold">DNI</label>
+        @Html.TextBoxFor(m => m.NationalId, new { @class = "form-control", required = "required" })
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-bold">Teléfono</label>
+        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+    </div>
+    <div class="mb-3">
+        <label class="form-label fw-bold">Cuenta Bancaria</label>
+        @Html.TextBoxFor(m => m.BankAccount, new { @class = "form-control" })
+    </div>
+
+
+    <!-- Cambiar la suscripcion -->
+    <!-- Habra un boton que se mostrara en base al tipo de suscripcion activa -->
+
+    <button type="submit" class="btn btn-success w-100 mb-3">
+        <i class='bx bx-save'></i> Guardar Cambios
+    </button>
+
+    <a asp-controller="User" asp-action="Details" class="btn btn-secondary w-100 mb-3">
+        <i class='bx bx-arrow-back'></i> Atrás
+    </a>
+</form>
+
+<form id="deleteForm" asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="button" class="btn btn-danger w-100" onclick="confirmDelete()">
+        <i class='bx bx-trash'></i> Borrar mi cuenta
+    </button>
+</form>
+
+<!-- Estilo para SweetAlert2 para tener espaciado entre botones -->
+<style>
+    .swal2-actions button {
+        margin: 0 5px;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: "btn btn-danger"
+            },
+            buttonsStyling: false
+        });
+
+        function confirmDelete() {
+            swalWithBootstrapButtons.fire({
+                title: "¿Estás seguro?",
+                text: "¡No podrás revertir esto!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, borrar",
+                cancelButtonText: "No, cancelar",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("deleteForm").submit();
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire({
+                        title: "Cancelado",
+                        text: "Tu cuenta está a salvo :)",
+                        icon: "error"
+                    });
+                }
+            });
+        }
+    </script>
+}
+

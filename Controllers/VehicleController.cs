@@ -1,31 +1,38 @@
 ﻿using AutoMapper;
-using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Models.ViewModels.Vehicle;
-using GestorViajes.Services.Vehicle;
+using GestorViajes.Services.Users;
+using GestorViajes.Services.Vehicles;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace GestorViajes.Controllers
 {
+    [Authorize]
     public class VehicleController : Controller
     {
         private readonly IVehicleService _vehicleService;
         private readonly IMapper _mapper;
-
-        public VehicleController(IVehicleService vehicleService, IMapper mapper)
+        private readonly IUserService _userService;
+        public VehicleController(
+            IUserService userService,
+            IVehicleService vehicleService,
+            IMapper mapper
+            )
         {
+            _userService = userService;
             _vehicleService = vehicleService;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> IndexVehicle()
+        public async Task<IActionResult> Index()
         {
-            var response = await _vehicleService.List();
+            var current = await _userService.CurrentUser();
+            var response = await _vehicleService.List(x => x.UserId == current.Id);
             if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "No se pudieron cargar los vehículos.";
+                TempData["message"] = response.Error!.Message;
                 return View(new List<VehicleViewModel>());
             }
 
@@ -33,146 +40,115 @@ namespace GestorViajes.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DetailsVehicle(long id)
+        public async Task<IActionResult> Details(long id)
         {
             var response = await _vehicleService.Get(id);
             if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "Vehículo no encontrado.";
-                return RedirectToAction(nameof(IndexVehicle));
+                TempData["message"] = response.Error!.Message;
+                return RedirectToAction(nameof(Index));
             }
 
             return View(response.Data);
         }
 
         [HttpGet]
-        public IActionResult CreateVehicle()
+        public IActionResult Create()
         {
-            return View(new VehicleViewModel());
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateVehicleSubmit(VehicleViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = "Datos inválidos. Verifica e intenta nuevamente.";
-                return View("CreateVehicle", model);
-            }
-
-            // Obtener ID del usuario autenticado desde los claims de forma segura
-            //uso TryParse en caso de que el claim venga vacio o mal formado
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!long.TryParse(userIdClaim, out var userId))
-            {
-                TempData["status"] = "error";
-                TempData["message"] = "No se pudo determinar el usuario autenticado.";
-                return View("CreateVehicle", model);
-            }
-
-            model.UserId = userId;
-
-            var response = await _vehicleService.Add(model);
-            if (!response.Success)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message;
-                return View("CreateVehicle", model);
-            }
-
-            TempData["status"] = "success";
-            TempData["message"] = "Vehículo creado correctamente.";
-            return RedirectToAction(nameof(IndexVehicle));
-        }
-
-
-        [HttpGet]
-        public async Task<IActionResult> EditVehicle(long id)
-        {
-            var response = await _vehicleService.Get(id);
-            if (!response.Success)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message;
-                return RedirectToAction(nameof(IndexVehicle));
-            }
-
-            return View(response.Data);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EditVehicleSubmit(VehicleViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View("EditVehicle", model);
-            }
-
-            var response = await _vehicleService.Update(model);
-            if (!response.Success)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message;
-                return View("EditVehicle", model);
-            }
-
-            TempData["status"] = "success";
-            TempData["message"] = "Vehículo actualizado correctamente.";
-            return RedirectToAction(nameof(IndexVehicle));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteVehicle(long id)
-        {
-            var response = await _vehicleService.Delete(id);
-            if (!response.Success)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message;
-                return RedirectToAction(nameof(IndexVehicle));
-            }
-
-            TempData["status"] = "success";
-            TempData["message"] = "Vehículo eliminado correctamente.";
-            return RedirectToAction(nameof(IndexVehicle));
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ReactivateVehicle(long id)
-        {
-            var response = await _vehicleService.ReactivateVehicle(id);
+        public async Task<IActionResult> Create(VehicleViewModel input)
+        {            
+            var response = await _vehicleService.Add(input);
 
-            if (response.Error != null)
-            {
-                TempData["message"] = "Ocurrió un error al reactivar el vehículo.";
-                TempData["status"] = "danger";
-            }
-            else
-            {
-                TempData["message"] = "Vehículo reactivado correctamente.";
-                TempData["status"] = "success";
-            }
-
-            return RedirectToAction("MyVehicles");
-        }
-
-
-
-        [HttpGet]
-        public async Task<IActionResult> ByUser(long userId)
-        {
-            var response = await _vehicleService.ListByUser(userId);
             if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "No se pudieron cargar los vehículos del usuario.";
-                return RedirectToAction(nameof(IndexVehicle));
+                TempData["message"] = response.Error!.Message;
+                return RedirectToAction(nameof(Index));
             }
 
-            return View("IndexVehicle", response.Data);
+            TempData["status"] = "success";
+            TempData["message"] = "Vehículo registrado correctamente.";
+            return RedirectToAction(nameof(Index));
         }
-    }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(long id)
+        {
+            
+            var response = await _vehicleService.Get(id);
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error!.Message;
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(response.Data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(VehicleViewModel input)
+        {
+            var response = await _vehicleService.Update(input);
+            if (!response.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = response.Error!.Message;
+                return RedirectToAction(nameof(Index), new { id = input.Id });
+            }
+
+            TempData["status"] = "success";
+            TempData["message"] = "Vehículo actualizado correctamente.";
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        //Borrado que deberia hacer solo un admin
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(long id)
+        {
+            var response = await _vehicleService.Delete(id);
+
+			TempData["status"] = response.Success ? "success" : "danger";
+			TempData["message"] = response.Success
+				? "Vehículo eliminado correctamente."
+				: $"Ocurrió un error al eliminar el vehículo. {response.Error?.Message}";
+
+			return RedirectToAction(nameof(Index));
+        }
+
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> ToggleVehicle(long id)
+		{
+			var response = await _vehicleService.Toggle(id);
+
+			TempData["status"] = response.Success ? "success" : "danger";
+			TempData["message"] = response.Success
+				? "Vehículo actualizado correctamente."
+				: $"Ocurrió un error al actualizar el vehículo. {response.Error?.Message}";
+
+			return RedirectToAction(nameof(Index));
+		}
+
+        [HttpGet]
+        public async Task<IActionResult> GetVehicleDetails(int id)
+        {
+            var response = await _vehicleService.Get(id);
+            if (!response.Success)
+            {
+                return Json(new { success = false, message = response.Error!.Message });
+			}
+            return Json(new { success = true, data = response.Data });
+		}
+	}
 }

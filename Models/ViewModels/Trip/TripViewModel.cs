@@ -1,4 +1,5 @@
 ﻿using GestorViajes.Models.EFCore.Rove;
+using GestorViajes.Models.ViewModels.Vehicle;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,64 +7,51 @@ namespace GestorViajes.Models.ViewModels.Trip
 {
     public class TripViewModel : CommonFields
     {
-        public long? Id { get; set; }
+        public long Id { get; set; }
 
         //Conductor
 
         [Required]
-        [Display(Name = "Driver")]
+        [Display(Name = "Conductor")]
         public long DriverId { get; set; }
 
         //Vehiculo
 
         [Required]
-        [Display(Name = "Vehicle")]
+        [Display(Name = "Vehiculo")]
         public long VehicleId { get; set; }
 
         [Range(1, 100)]
-        [Display(Name = "Seats")]
+        [Display(Name = "Asientos")]
         public int Seats { get; set; }
 
         //Viaje
 
         [MaxLength(100)]
-        [Display(Name = "Origin")]
+        [Display(Name = "Origen")]
         public string Origin { get; set; }
 
         [MaxLength(100)]
-        [Display(Name = "Destination")]
+        [Display(Name = "Destino")]
         public string Destination { get; set; }
 
+        [Display(Name = "Fecha")]
         [Required]
-        public DateTime? Date { get; set; }
+        public DateTime Date { get; set; } = DateTime.Now;
 
-        [Display(Name = "Active")]
+        [Display(Name = "Activo")]
         public bool Active { get; set; }
 
         public List<TripRequest> TripRequests { get; set; } = [];
 
-        [Display(Name = "Status")]
-        public string? Status { get; set; }
+        [Display(Name = "Estado")]
+        public string? StatusDescription { get; set; }
+        public int Status { get; set; }
 
         //Pasajeros
         //Representa la relacion entre usuarios y viajes en la bd (tabla intermedia UserTrip)
-        public  List<UserTrip> Passengers { get; set; } = [];   
-       
-
-        // Display info
-        public DriverSummaryViewModel? Driver { get; set; }
-        public VehicleSummaryViewModel? Vehicle { get; set; }
-    }
-
-    public class DriverSummaryViewModel
-    {
-        public long Id { get; set; }
-        public string FullName { get; set; }
-    }
-
-    public class VehicleSummaryViewModel
-    {
-        public long Id { get; set; }
-        public string Description { get; set; }
+        public List<UserTrip> Passengers { get; set; } = [];
+        public List<SelectListItem> Vehicles { get; set; } = [];
+        public VehicleViewModel Vehicle { get; set; }
     }
 }

@@ -1,127 +1,123 @@
 ﻿using AutoMapper;
 using GestorViajes.Models.ViewModels.User;
-using GestorViajes.Services.User;
+using GestorViajes.Services.Users;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using GestorViajes.Constants;
 
 namespace GestorViajes.Controllers
 {
-    public class AccountController : Controller
-    {
-        private readonly IUserService _userService;
-        private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _contextAccessor;
+	public class AccountController : Controller
+	{
+		private readonly IUserService _userService;
 
-        public AccountController(IUserService userService, IMapper mapper, IHttpContextAccessor contextAccessor)
-        {
-            _userService = userService;
-            _mapper = mapper;
-            _contextAccessor = contextAccessor;
-        }
+		public AccountController(
+			IUserService userService
+			)
+		{
+			_userService = userService;
+		}
 
-        // Muestra la vista AccountLogin.cshtml
-        [HttpGet]
-        public IActionResult Login()
-        {   
-            return View("AccountLogin");
-        }
+		// Muestra la vista AccountLogin.cshtml
+		[HttpGet]
+		public IActionResult Login()
+		{
+			return View();
+		}
 
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {   // Reenvia a AccountLogin si hay errores
-                return View("AccountLogin", model);
-            }
+		[HttpPost]
+		public async Task<IActionResult> Login(LoginViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{   // Reenvia a AccountLogin si hay errores
+				return View(nameof(Login), model);
+			}
 
-            var user = await _userService.GetUserByCredentialsAsync(model.Email, model.Password);
+			var userResponse = await _userService.AuthenticateUserAsync(model.Email, model.Password);
+			if (!userResponse.Success)
+			{
+				// Usamos TempData para pasar el mensaje a la vista
+				TempData["message"] = userResponse.Error!.Message;
+				TempData["status"] = "error";
+				// Reenvia a AccountLogin si hay errores
+				return View(nameof(Login), model);
+			}
 
-            if (user == null)
-            {
-                // Usamos TempData para pasar el mensaje a la vista
-                TempData["message"] = "Correo electrónico o contraseña incorrectos.";
-                TempData["status"] = "danger";
-                // Redirige a la accion Login
-                return RedirectToAction("Login", "Account");
-            }
+			// Autenticacion con cookies
+			var claims = new List<Claim>
+			{
+				new Claim(ClaimTypes.Name, userResponse.Data!.Name),
+				new Claim(ClaimTypes.Email, userResponse.Data!.Email),
+				new Claim(ClaimTypes.Role, userResponse.Data!.Role),
+				new Claim(Settings.UserId, userResponse.Data!.Id.ToString())
+			};
 
-            // Autenticacion con cookies
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role),
-                new Claim("UserId", user.Id.ToString())
-            };
+			var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+			var principal = new ClaimsPrincipal(identity);
+			//IMPORTANTE! usar contextAccesor!! y usando ! le digo que se que no es nulo
+			await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-            //IMPORTANTE! usar contextAccesor!! y usando ! le digo que se que no es nulo
-            await _contextAccessor.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+			TempData["message"] = "Inicio de sesión exitoso.";
+			TempData["status"] = "success";
+			// Redirige a IndexUser.cshtml de User  -> importante!!!
+			return RedirectToAction("Index", "User");
+		}
 
-            TempData["message"] = "Inicio de sesión exitoso.";
-            TempData["status"] = "success";
-            // Redirige a IndexUser.cshtml de User  -> importante!!!
-            return RedirectToAction("IndexUser", "User");
-        }
+		[HttpPost]
+		[Authorize]
+		public async Task<IActionResult> Logout()
+		{
+			// Cerrar sesion
+			await HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-        [HttpPost]
-        public async Task<IActionResult> Logout()
-        {
-            // Cerrar sesion
-            await _contextAccessor.HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			// Eliminar manualmente la cookie de autenticacin
+			//utilizar context accesor!
+			HttpContext!.Response.Cookies.Delete(".GestorViajes");
 
-            // Eliminar manualmente la cookie de autenticacin
-            //utilizar context accesor!
-            _contextAccessor.HttpContext!.Response.Cookies.Delete(".AspNetCore.Cookies");
+			return RedirectToAction(nameof(Login));
+		}
 
-            TempData["message"] = "Has cerrado sesión correctamente.";
-            TempData["status"] = "info";
+		[HttpGet]
+		public IActionResult Register()
+		{
+			return View(new UserViewModel());
+		}
 
-            return RedirectToAction("Login", "Account");
-        }
+		[HttpPost]
+		public async Task<IActionResult> Register(UserViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				TempData["message"] = "Hubo un problema al crear tu cuenta. Por favor, verifica los datos.";
+				TempData["status"] = "error";
+				return View(model);
+			}
 
+			var response = await _userService.Add(model);
 
-        [HttpGet]
-        public IActionResult AccountRegister()
-        {
-            return View(new UserViewModel());
-        }
+			// Verificamos si hubo algún error al crear el usuario
+			if (!response.Success)
+			{
+				if(response.Error!.Message == "El email ya está en uso.")
+				{
+					TempData["message"] = $"{response.Error!.Message}";
+					TempData["status"] = "error";
+					return RedirectToAction(nameof(Login));
+				}
+				TempData["message"] = $"Hubo un problema al crear tu cuenta. {response.Error!.Message}";
+				TempData["status"] = "error";  // Error
+				return View(model);
+			}
 
-        [HttpPost]
-        public async Task<IActionResult> AccountRegister(UserViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var response = await _userService.Add(model);
+			// Si el usuario se ha registrado correctamente
+			TempData["message"] = "Tu cuenta ha sido creada correctamente.";
+			TempData["status"] = "success";  // Éxito
 
-                // Verificamos si hubo algún error al crear el usuario
-                if (response.Error != null)
-                {
-                    TempData["message"] = "Hubo un problema al crear tu cuenta. Por favor, intenta nuevamente.";
-                    TempData["status"] = "danger";  // Error
-                    return View(model);
-                }
-
-                // Si el usuario se ha registrado correctamente
-                TempData["message"] = "Tu cuenta ha sido creada correctamente.";
-                TempData["status"] = "success";  // Éxito
-
-                // Redirigir a Login después de crear la cuenta
-                return RedirectToAction("Login", "Account");
-            }
-
-            // Si el modelo no es válido, mostrar el mensaje de error
-            TempData["message"] = "Hubo un problema al crear tu cuenta. Por favor, verifica los datos.";
-            // Error
-            TempData["status"] = "danger";
-            return View(model);
-        }
-
-
-
-    }
-
+			// Redirigir a Login después de crear la cuenta
+			return RedirectToAction(nameof(Login));
+		}
+	}
 }

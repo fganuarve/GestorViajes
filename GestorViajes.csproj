@@ -8,6 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="jquery-globalize" Version="1.0.0" />
+    <PackageReference Include="jQuery.Validation" Version="1.21.0" />
+    <PackageReference Include="jQuery.Validation.Globalize" Version="1.1.0" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="14.6.0" />
+    <PackageReference Include="Magick.NET.Core" Version="14.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="9.0.4" />
@@ -31,9 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\ViewModels\Account\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Services\Account\" />
   </ItemGroup>
 
 </Project>

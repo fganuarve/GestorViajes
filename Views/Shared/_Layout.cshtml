@@ -1,17 +1,23 @@
 ﻿<!-- Solo en _Layout tenemos este fragmento de código una vez en cada proyecto -->
-<!-- Solo en _Layout tenemos la estrcutura que es comun al resto de vistas -->
+<!-- Solo en _Layout tenemos la estructura que es común al resto de vistas -->
 <!-- Las que no queremos que apliquen layout tenemos que especificarlo -->
+<!-- Aqui estoy caputurando el id del user que esta logueado -->
+@inject GestorViajes.Services.Users.IUserService _userService;
+@{ var current = await _userService.CurrentUser();}
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"] - Rove</title>
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewData["Title"] - Rove</title>
+	<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+		  integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -28,15 +34,15 @@
             </div>
             <ul class="sidebar-nav">
                 <li class="sidebar-item">
-                    <a asp-controller="User" asp-action="IndexUser" class="sidebar-link">
+                    <a asp-controller="User" asp-action="Index" class="sidebar-link">
                         <i class='bx bxs-home'></i>
                         <span>Home</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
+                    <a asp-controller="User" asp-action="Details" class="sidebar-link">
                         <i class='bx bxs-user-account'></i>
-                        <span>Comunidad</span>
+                        <span>Perfil</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
@@ -44,7 +50,7 @@
                         <i class='bx bxs-car'></i>
                         <span>Mis Vehículos</span>
                     </a>
-                    <form id="vehicleIndexForm" asp-controller="Vehicle" asp-action="IndexVehicle" method="get" style="display: none;"></form>
+                    <form id="vehicleIndexForm" asp-controller="Vehicle" asp-action="Index" method="get" style="display: none;"></form>
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -59,7 +65,7 @@
                             <a href="#" class="sidebar-link" onclick="document.getElementById('tripCreateForm').submit(); return false;">
                                 Publicar Viaje
                             </a>
-                            <form id="tripCreateForm" asp-controller="Trip" asp-action="CreateTrip" method="get" style="display: none;"></form>
+                            <form id="tripCreateForm" asp-controller="Trip" asp-action="Create" method="get" style="display: none;"></form>
                         </li>
 
                         <!-- Mis Viajes -->
@@ -67,23 +73,27 @@
                             <a href="#" class="sidebar-link" onclick="document.getElementById('tripMyTripsForm').submit(); return false;">
                                 Mis Viajes
                             </a>
-                            <form id="tripMyTripsForm" asp-controller="Trip" asp-action="MyTrips" method="get" style="display: none;"></form>
+							<form id="tripMyTripsForm" asp-controller="Trip" asp-action="Index" asp-route-myTrips=true method="get" style="display: none;">
+								<input type="hidden" name="myTrips" value="true" />
+							</form>
                         </li>
+
                         <!-- Unirme a un viaje -->
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link" onclick="document.getElementById('tripCreateForm').submit(); return false;">
+                            <a href="#" class="sidebar-link" onclick="document.getElementById('tripJoinForm').submit(); return false;">
                                 Unirme a un viaje
                             </a>
-                            <form id="tripCreateForm" asp-controller="Trip" asp-action="CreateTrip" method="get" style="display: none;"></form>
+							<form id="tripJoinForm" asp-controller="Trip" asp-action="Index" method="get" style="display: none;">
+								<input type="hidden" name="status" value="@((int)GestorViajes.Models.EFCore.Rove.TripStatus.Available)" />
+							</form>
                         </li>
                     </ul>
                 </li>
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
+                    <a asp-controller="FuelTicket" asp-action="Index" class="sidebar-link">
                         <i class='bx bxs-notepad'></i>
                         <span>Mis Tickets</span>
                     </a>
-                </li>
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -99,20 +109,14 @@
                             </a>
                             <ul id="multi-two" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item">
-                                    <a href="#" class="sidebar-link">Datos de pago</a>
+                                    <a asp-controller="Home" asp-action="Plans" class="sidebar-link">Ver Planes</a>
                                 </li>
                                 <li class="sidebar-item">
-                                    <a href="#" class="sidebar-link">Gestionar suscripción</a>
+                                    <a asp-controller="User" asp-action="Details" asp-route-id="@current.Id" class="sidebar-link">Cambiar suscripción</a>
                                 </li>
                             </ul>
                         </li>
                     </ul>
-                </li>
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
-                        <i class='bx bxs-bell-ring'></i>
-                        <span>Notificationes</span>
-                    </a>
                 </li>
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link" onclick="document.getElementById('aboutForm').submit(); return false;">
@@ -122,31 +126,21 @@
                     <form id="aboutForm" asp-controller="Home" asp-action="About" method="get" style="display: none;"></form>
                 </li>
                 <li class="sidebar-item">
-                    <a asp-controller="User" asp-action="DetailsUser" class="sidebar-link">
-                        <i class='bx bxs-smile'></i>
-                        <span>Perfil</span>
+                    <a asp-controller="Home" asp-action="Comunity" class="sidebar-link">
+                        <i class='bx bxl-instagram-alt'></i>
+                        <span>Comunidad</span>
                     </a>
                 </li>
             </ul>
-            <!-- Boton logout inicialmente -->
-            @*<div class="sidebar-footer">
-                <a href="#" class="sidebar-link">
-                    <i class='bx bx-log-out'></i>
-                    <span>Logout</span>
-                </a>
-                </div>*@
-            <!-- Boton logout ahora funciona con la logica de logout -->
             <div class="sidebar-footer">
                 <a href="#" class="sidebar-link" onclick="document.getElementById('logoutForm').submit(); return false;">
                     <i class='bx bx-log-out'></i>
                     <span>Logout</span>
                 </a>
-
                 <form id="logoutForm" asp-controller="Account" asp-action="Logout" method="post" style="display: none;">
                     @Html.AntiForgeryToken()
                 </form>
             </div>
-
         </aside>
 
         <!-- Main Content -->
@@ -159,14 +153,13 @@
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item dropdown">
                             <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
-                                <!-- TO DO: Gestionar que el logo se vea en todas las vistas*-->
-                                <img src="img/logo3.png" class="avatar img-fluid" alt="Usuario">
+                                <img src="~/img/logo3.png" asp-append-version="true" class="avatar img-fluid" alt="Usuario">
                             </a>
                             <div class="dropdown-menu dropdown-menu-end rounded-0 border-0 shadow mt-3">
-                                <a asp-controller="User" asp-action="DetailsUser" class="dropdown-item">
+                                <a asp-controller="User" asp-action="Details" class="dropdown-item">
                                     <i class='bx bx-smile'></i> <span>Perfil</span>
                                 </a>
-                                <a href="#" class="dropdown-item">
+                                <a asp-controller="User" asp-action="Edit" asp-route-id="@current.Id" class="dropdown-item">
                                     <i class='bx bx-cog'></i> <span>Configuración</span>
                                 </a>
                                 <div class="dropdown-divider"></div>
@@ -179,6 +172,7 @@
                     </ul>
                 </div>
             </nav>
+
             <!-- Main Content Section -->
             <main class="content px-3 py-4">
                 <div class="container-fluid">
@@ -192,12 +186,15 @@
         </div>
     </div>
 
+    <!-- Scripts al final del body para evitar bloqueos de carga -->
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
+
     <script src="~/js/script.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-
 </html>

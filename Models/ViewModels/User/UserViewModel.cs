@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using GestorViajes.Models.EFCore.Rove;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace GestorViajes.Models.ViewModels.User
@@ -35,6 +36,11 @@ namespace GestorViajes.Models.ViewModels.User
         [MaxLength(15)]
         public string? PhoneNumber { get; set; }
 
+        public string? BankAccount { get; set; }
+
+        public SubscriptionType CurrentPlan { get; set; } = SubscriptionType.Basic;
+
+
         // Rol
         [Required]
         [Display(Name = "Rol")]
@@ -43,6 +49,8 @@ namespace GestorViajes.Models.ViewModels.User
 
         // Lista de roles
         public List<SelectListItem> Roles { get; set; } = [];
+
+        public bool Active { get; set; }
          
     }
 }

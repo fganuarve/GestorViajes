@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using GestorViajes.Models;
 using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Models.ViewModels.User;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GestorViajes.Automapper
 {

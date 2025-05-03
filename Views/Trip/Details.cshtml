@@ -1,0 +1,43 @@
+﻿@model GestorViajes.Models.ViewModels.Trip.TripViewModel
+
+@{
+	ViewData["Title"] = "Detalles del Viaje";
+}
+
+<h2 class="mb-4">Detalles del Viaje</h2>
+
+<div class="card mb-4 shadow-sm">
+	<div class="card-body">
+		<h5 class="card-title mb-3">Información General</h5>
+		<ul class="list-group list-group-flush">
+			<li class="list-group-item"><strong>Origen:</strong> @Model.Origin</li>
+			<li class="list-group-item"><strong>Destino:</strong> @Model.Destination</li>
+			<li class="list-group-item"><strong>Fecha:</strong> @Model.Date.ToString("dd/MM/yyyy")</li>
+			<li class="list-group-item"><strong>Plazas disponibles:</strong> @(Model.Seats - Model.Passengers.Count)</li>
+			<li class="list-group-item"><strong>Plazas máximas:</strong> @Model.Seats</li>
+		</ul>
+	</div>
+</div>
+
+<h4 class="mb-3">Pasajeros</h4>
+
+<div class="row">
+	@foreach (var passenger in Model.Passengers)
+	{
+		<div class="col-md-6 col-lg-4 mb-4">
+			<div class="card h-100 shadow-sm">
+				<div class="card-body">
+					<h5 class="card-title">
+						@($"{passenger.User.Name} {passenger.User.LastName1} {passenger.User.LastName2}")
+					</h5>
+					<p class="card-text mb-1"><strong>Teléfono:</strong> @passenger.User.PhoneNumber</p>
+					<p class="card-text"><strong>DNI:</strong> @passenger.User.NationalId</p>
+				</div>
+			</div>
+		</div>
+	}
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">
+	<i class='bx bx-arrow-back'></i> Volver a la lista
+</a>

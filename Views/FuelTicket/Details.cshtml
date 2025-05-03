@@ -1,0 +1,40 @@
+﻿@model GestorViajes.ViewModels.FuelTicketViewModel
+
+@{
+    ViewData["Title"] = "Detalles del Ticket";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Detalles del Ticket</h2>
+    <div>
+        <a asp-action="Edit" asp-controller="FuelTicket" asp-route-id="@Model.Id" class="btn btn-warning me-2">
+            <i class='bx bx-edit'></i> Editar
+        </a>
+        <a asp-action="Index" asp-controller="FuelTicket" class="btn btn-secondary">
+            <i class='bx bx-arrow-back'></i> Atrás
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Descripción del ticket</dt>
+            <dd class="col-sm-9">@Model.Notes</dd>
+
+            <dt class="col-sm-3">Monto del ticket</dt>
+            <dd class="col-sm-9">@Model.Amount.ToString("C")</dd>
+
+            <dt class="col-sm-3">Fecha de subida</dt>
+            <dd class="col-sm-9">@Model.UploadedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <dt class="col-sm-3">Imagen del ticket</dt>
+                <dd class="col-sm-9">
+                    <img src="@Url.Content(Model.Image)" alt="Imagen del ticket" class="img-fluid rounded" style="max-height: 400px;" />
+                </dd>
+            }
+        </dl>
+    </div>
+</div>

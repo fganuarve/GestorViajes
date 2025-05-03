@@ -31,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\ViewModels\Account\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

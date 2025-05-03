@@ -6,8 +6,8 @@ namespace GestorViajes.Models.ViewModels.Vehicle
 {
     public class VehicleViewModel : CommonFields
     {
-        public long? Id { get; set; }
-       
+        public long Id { get; set; }
+        [BindRequired]
         [Required(ErrorMessage = "La matrícula es un campo obligatorio.")]
         public string Plate { get; set; }
 
@@ -29,6 +29,6 @@ namespace GestorViajes.Models.ViewModels.Vehicle
 
         //vehiculo se crea activo por defecto
         [Display(Name = "Active")]
-        public bool Active { get; set; } = true;        
+        public bool Active { get; set; } = true;
     }
 }

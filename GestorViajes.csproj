@@ -33,7 +33,6 @@
   <ItemGroup>
     <Folder Include="Models\ViewModels\Account\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Services\Account\" />
     <Folder Include="Views\FuelTicket\" />
   </ItemGroup>
 

@@ -38,14 +38,21 @@ namespace GestorViajes.Repositories.Vehicles
             }
         }
 
-        public async Task<GenericResponse<Vehicle>> Get(long id)
+        public async Task<GenericResponse<Vehicle>> Get(long id, bool? include = false)
         {
             try
             {
                 await using var context = await _contextFactory.CreateDbContextAsync();
-                var entity = await context.Vehicles
-                    .Include(v => v.Owner)
-                    .FirstOrDefaultAsync(v => v.Id == id);
+
+                IQueryable<Vehicle> query = context.Vehicles;
+
+                if (include == true)
+                {
+                    query = query.Include(v => v.Owner)
+                                 .Include(v => v.Trips).ThenInclude(x => x.Passengers);
+                }
+
+                var entity = await query.FirstOrDefaultAsync(v => v.Id == id);
 
                 if (entity == null)
                     return new GenericResponse<Vehicle> { Error = new ErrorResponse("Vehículo no encontrado.") };
@@ -57,6 +64,7 @@ namespace GestorViajes.Repositories.Vehicles
                 return new GenericResponse<Vehicle> { Error = new ErrorResponse(ex) };
             }
         }
+
 
         public async Task<GenericResponse<Vehicle>> Add(Vehicle entity)
         {
@@ -88,7 +96,7 @@ namespace GestorViajes.Repositories.Vehicles
             }
         }
 
-        public async Task<GenericResponse<bool>> Delete(long id)
+        public async Task<GenericResponse<bool>> ForceDelete(long id)
         {
             try
             {

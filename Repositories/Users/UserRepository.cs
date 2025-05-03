@@ -18,12 +18,21 @@ namespace GestorViajes.Repositories.Users
         // Buscar usuario por email
         //Puede ser nullable:   User?
         //T? — el primer elemento que cumple la condición, o null si no existe.
-        public async Task<User?> GetUserByEmailAsync(string email)
+        public async Task<GenericResponse<User>> Get(Expression<Func<User, bool>> predicate)
         {
-            using (var context = _contextFactory.CreateDbContext())
+            try
             {
-                return await context.Users
-                    .FirstOrDefaultAsync(u => u.Email == email);
+                await using var context = await _contextFactory.CreateDbContextAsync();
+                var response = await context.Users.FirstOrDefaultAsync(predicate);
+                if (response == null)
+                {
+                    return new GenericResponse<User>() { Error = new ErrorResponse("User not found.") };
+                }
+                return new GenericResponse<User>() { Data = response };
+            }
+            catch (Exception ex)
+            {
+                return new GenericResponse<User>() { Error = new ErrorResponse(ex) };
             }
         }
 
@@ -54,23 +63,21 @@ namespace GestorViajes.Repositories.Users
             }
         }
 
-        public async Task<GenericResponse<User>> GetById(long id)
+        public async Task<GenericResponse<User>> GetCurrentUser(long id)
         {
             try
             {
                 await using var context = await _contextFactory.CreateDbContextAsync();
-                var user = await context.Users
-                    .Include(u => u.TripRequests)
-                    .Include(u => u.UserTrips)
-                    .Include(u => u.Vehicles)
-                    .Include(u => u.Trips)
-                    .FirstOrDefaultAsync(u => u.Id == id);
+                var user = await context.Users.FindAsync(id);
 
                 if (user == null)
                 {
                     return new GenericResponse<User>() { Error = new ErrorResponse("User not found.") };
                 }
-
+                if (!user.Active)
+                {
+                    return new GenericResponse<User>() { Error = new ErrorResponse("Usuario inactivo") };
+                }
                 return new GenericResponse<User>() { Data = user };
             }
             catch (Exception ex)
@@ -124,7 +131,19 @@ namespace GestorViajes.Repositories.Users
                     return new GenericResponse<bool>() { Error = new ErrorResponse("User not found.") };
                 }
 
-                context.Users.Remove(user);
+                // borrar todas las tablas que tengan a ese user id
+                // Esta logica se ha sacado al service
+                //context.TripRequests.RemoveRange(context.TripRequests.Where(tr => tr.UserId == id));
+                //context.UserTrips.RemoveRange(context.UserTrips.Where(ut => ut.UserId == id));
+                //context.Trips.RemoveRange(context.Trips.Where(t => t.DriverId == id));
+                //context.Trips.RemoveRange(context.Trips.Where(t => t.Passengers.Any(p => p.UserId == id)));
+                //context.FuelTickets.RemoveRange(context.FuelTickets.Where(ft => ft.UserId == id));
+                //context.Vehicles.RemoveRange(context.Vehicles.Where(v => v.UserId == id));
+                // TODO: Añadir las tablas que dependan de usuario- blog, post, etc
+
+
+                context.Users.RemoveRange(context.Users.Where(u => u.Id == id));
+
                 await context.SaveChangesAsync();
 
                 return new GenericResponse<bool>() { Data = true };
@@ -135,6 +154,20 @@ namespace GestorViajes.Repositories.Users
             }
         }
 
+
+        public async Task<GenericResponse<bool>> Exists(Expression<Func<User, bool>> predicate)
+        {
+            try
+            {
+                await using var context = await _contextFactory.CreateDbContextAsync();
+                var exists = await context.Users.AnyAsync(predicate);
+                return new GenericResponse<bool>() { Data = exists };
+            }
+            catch (Exception ex)
+            {
+                return new GenericResponse<bool>() { Error = new ErrorResponse(ex) };
+            }
+        }
         #endregion
     }
 }

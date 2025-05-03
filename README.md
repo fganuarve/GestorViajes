@@ -34,7 +34,7 @@
 ## Enlace a la Demo
 
 Puedes probar la app en:  
-👉 [http://rove.runasp.net](http://rove.runasp.net)
+[http://rove.runasp.net](http://rove.runasp.net)
 
 ### Acceso de prueba
 

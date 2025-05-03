@@ -21,6 +21,8 @@ namespace GestorViajes.Models.EFCore.Rove
         public DbSet<Trip> Trips { get; set; }
         public DbSet<TripRequest> TripRequests { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<FuelTicket> FuelTickets { get; set; }
+        public DbSet<FuelTicketImage> FuelTicketImage { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -38,17 +40,19 @@ namespace GestorViajes.Models.EFCore.Rove
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Id);
+
                 entity.Property(e => e.Name).IsRequired();
                 entity.Property(e => e.NationalId).IsRequired();
                 entity.Property(e => e.LastName1).IsRequired();
                 entity.Property(e => e.Password).IsRequired();
                 entity.Property(e => e.Email).IsRequired();
                 entity.Property(e => e.Role).IsRequired();
+                entity.Property(e => e.CurrentPlan).IsRequired();
 
                 entity.HasMany(u => u.TripRequests)
-                     .WithOne(tr => tr.User)
-                     .HasForeignKey(tr => tr.UserId)
-                     .OnDelete(DeleteBehavior.Cascade);
+                      .WithOne(tr => tr.User)
+                      .HasForeignKey(tr => tr.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasMany(u => u.UserTrips)
                       .WithOne(ut => ut.User)
@@ -64,6 +68,12 @@ namespace GestorViajes.Models.EFCore.Rove
                       .WithOne(t => t.Driver)
                       .HasForeignKey(t => t.DriverId)
                       .OnDelete(DeleteBehavior.Cascade);
+
+
+                entity.HasMany(u => u.FuelTickets)
+                      .WithOne()
+                      .HasForeignKey(ft => ft.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Trip>(entity =>
@@ -74,6 +84,7 @@ namespace GestorViajes.Models.EFCore.Rove
                 entity.Property(e => e.Origin).IsRequired();
                 entity.Property(e => e.Seats).IsRequired();
                 entity.Property(e => e.Active).IsRequired();
+                entity.Property(e => e.Status).IsRequired();
 
                 entity.HasOne(t => t.Driver)
                       .WithMany(u => u.Trips)
@@ -114,7 +125,7 @@ namespace GestorViajes.Models.EFCore.Rove
             modelBuilder.Entity<UserTrip>(entity =>
             {
                 entity.HasKey(e => e.Id);
-
+                entity.Property(e => e.Active).IsRequired();
                 entity.HasOne(ut => ut.User)
                       .WithMany(u => u.UserTrips)
                       .HasForeignKey(ut => ut.UserId)
@@ -129,11 +140,9 @@ namespace GestorViajes.Models.EFCore.Rove
             modelBuilder.Entity<Vehicle>(entity =>
             {
                 entity.HasKey(e => e.Id);
-
                 entity.Property(e => e.Plate).IsRequired();
                 entity.Property(e => e.MaxSeats).IsRequired();
                 entity.Property(e => e.Active).IsRequired();
-                entity.Property(e => e.Model);
 
                 entity.HasOne(v => v.Owner)
                       .WithMany(u => u.Vehicles)
@@ -144,6 +153,43 @@ namespace GestorViajes.Models.EFCore.Rove
                       .WithOne(t => t.Vehicle)
                       .HasForeignKey(t => t.VehicleId)
                       .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<FuelTicket>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Notes)
+                      .IsRequired()
+                      .HasMaxLength(1000);
+
+                entity.Property(e => e.Amount)
+                      .HasPrecision(10, 2);
+
+                entity.Property(e => e.UploadedAt)
+                      .IsRequired();
+
+                entity.HasOne(e => e.User)
+                      .WithMany(u => u.FuelTickets)
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Image)
+                      .WithOne(i => i.FuelTicket)
+                      .HasForeignKey<FuelTicketImage>(i => i.FuelTicketId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<FuelTicketImage>(entity =>
+            {
+                entity.HasKey(i => i.Id); // Regular PK
+
+                entity.Property(i => i.Image)
+                      .IsRequired()
+                      .HasColumnType("nvarchar(max)");
+
+                entity.HasIndex(i => i.FuelTicketId) // Enforce 1:1
+                      .IsUnique();
             });
 
         }

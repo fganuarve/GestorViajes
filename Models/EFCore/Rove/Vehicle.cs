@@ -19,7 +19,7 @@ public partial class Vehicle : CommonFields
 
     public long UserId { get; set; }
 
-    public virtual User Owner { get; set; } 
+    public virtual User Owner { get; set; }
 
     public virtual List<Trip> Trips { get; set; } = [];
 

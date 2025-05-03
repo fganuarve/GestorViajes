@@ -23,6 +23,16 @@ public partial class User : CommonFields
     public string Role { get; set; }
 
     public string? PhoneNumber { get; set; }
+
+    public string? BankAccount { get; set; }
+
+    public virtual List<FuelTicket> FuelTickets { get; set; }
+
+
+    //Plan Basic por defecto
+    public SubscriptionType CurrentPlan { get; set; } = SubscriptionType.Basic;
+
+
     //List, no Collection
     public virtual List<TripRequest> TripRequests { get; set; } = [];
 

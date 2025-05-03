@@ -12,38 +12,39 @@ namespace GestorViajes.Models.ViewModels.Trip
         //Conductor
 
         [Required]
-        [Display(Name = "Driver")]
+        [Display(Name = "Conductor")]
         public long DriverId { get; set; }
 
         //Vehiculo
 
         [Required]
-        [Display(Name = "Vehicle")]
+        [Display(Name = "Vehiculo")]
         public long VehicleId { get; set; }
 
         [Range(1, 100)]
-        [Display(Name = "Seats")]
+        [Display(Name = "Asientos")]
         public int Seats { get; set; }
 
         //Viaje
 
         [MaxLength(100)]
-        [Display(Name = "Origin")]
+        [Display(Name = "Origen")]
         public string Origin { get; set; }
 
         [MaxLength(100)]
-        [Display(Name = "Destination")]
+        [Display(Name = "Destino")]
         public string Destination { get; set; }
 
+        [Display(Name = "Fecha")]
         [Required]
         public DateTime Date { get; set; } = DateTime.Now;
 
-        [Display(Name = "Active")]
+        [Display(Name = "Activo")]
         public bool Active { get; set; }
 
         public List<TripRequest> TripRequests { get; set; } = [];
 
-        [Display(Name = "Status")]
+        [Display(Name = "Estado")]
         public string? StatusDescription { get; set; }
         public int Status { get; set; }
 

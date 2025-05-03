@@ -8,6 +8,7 @@ namespace GestorViajes.Models.ViewModels.Vehicle
     {
         public long Id { get; set; }
         [BindRequired]
+        [Display(Name = "Matrícula")]
         [Required(ErrorMessage = "La matrícula es un campo obligatorio.")]
         public string Plate { get; set; }
 

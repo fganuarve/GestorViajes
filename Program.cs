@@ -94,7 +94,13 @@ namespace GestorViajes
 				name: "default",
 				pattern: "{controller=User}/{action=Index}/{id?}");
 
-			app.Run();
+			//Para que ejecute una migracion automaticamente
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<RoveDbContext>();
+                dbContext.Database.Migrate();
+            }
+            app.Run();
 		}
 	}
 }

@@ -14,11 +14,11 @@
     </div>
 }
 
-<form asp-action="CreateTrip" method="post">
+<form asp-action="Create" method="post">
     <!-- Vehículo -->
     <div class="form-group mb-3">
         <label asp-for="VehicleId" class="form-label fw-bold"></label>
-        <select asp-for="VehicleId" asp-items="ViewBag.Vehicles" class="form-control" required>
+        <select asp-for="VehicleId" asp-items="Model.Vehicles" class="form-control" required>
             <option value="">Selecciona un vehículo</option>
         </select>
         <span asp-validation-for="VehicleId" class="text-danger"></span>
@@ -52,19 +52,42 @@
         <span asp-validation-for="Date" class="text-danger"></span>
     </div>
 
-    <!-- Estado activo -->
-    <div class="form-check mb-4">
-        <input class="form-check-input" type="checkbox" asp-for="Active" />
-        <label class="form-check-label" asp-for="Active">Activo</label>
-    </div>
-
     <!-- Botones -->
     <button type="submit" class="btn btn-success">
         <i class="bx bx-plus"></i> Crear Viaje
     </button>
-    <a asp-action="IndexTrip" class="btn btn-secondary ms-2">Cancelar</a>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancelar</a>
 </form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function(){
+        $("#VehicleId").on("change", function () {
+            var vehicleId = $(this).val();
+            $.ajax({
+                url: '@Url.Action("GetVehicleDetails", "Vehicle")',
+                type: 'GET',
+                data: { id: vehicleId },
+                success: function (response) {
+					if (response.success) {
+						$("#Seats").attr("min", "1");
+                        $("#Seats").attr("max", response.data.maxSeats);
+						$("#Seats").val(response.data.maxSeats);
+                    } else {
+						Swal.fire({
+							icon: "error",
+							title: "Oops...",
+							text: "Error al obtener los detalles del vehículo."
+						});
+                    }
+                },
+                error: function () {
+                    alert("Error al obtener los detalles del vehículo.");
+                }
+            });
+        })
+    });
+</script>

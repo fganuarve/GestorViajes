@@ -1,0 +1,53 @@
+﻿@model GestorViajes.Models.ViewModels.User.UserViewModel
+@using GestorViajes.Models.EFCore.Rove
+
+
+@{
+    ViewData["Title"] = "Detalles de mi cuenta";
+    Layout = "_Layout";
+    var nextPlan = Model.CurrentPlan == SubscriptionType.Basic ? SubscriptionType.Premium : SubscriptionType.Basic;
+}
+
+<h2 class="mb-4">Detalles de mi cuenta</h2>
+
+<div class="card shadow-sm p-4">
+    <dl class="row">
+        <dt class="col-sm-3">Nombre</dt>
+        <dd class="col-sm-9">@Model.FirstName</dd>
+
+        <dt class="col-sm-3">Primer Apellido</dt>
+        <dd class="col-sm-9">@Model.LastName</dd>
+
+        <dt class="col-sm-3">Segundo Apellido</dt>
+        <dd class="col-sm-9">@Model.LastName2</dd>
+
+        <dt class="col-sm-3">DNI / NIE</dt>
+        <dd class="col-sm-9">@Model.NationalId</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+
+        <dt class="col-sm-3">Teléfono</dt>
+        <dd class="col-sm-9">@Model.PhoneNumber</dd>
+
+        <dt class="col-sm-3">Número de cuenta</dt>
+        <dd class="col-sm-9">@Model.BankAccount</dd>
+
+        <dt class="col-sm-3">Tipo de suscripción</dt>
+        <dd class="col-sm-9">
+            @Model.CurrentPlan.ToString()
+            <form asp-action="ChangeSubscription"
+                  asp-controller="User"
+                  method="post"
+                  asp-route-idSubscription="@((int)nextPlan)"
+                  class="d-inline">
+                <button type="submit" class="btn btn-sm btn-outline-primary ms-2">Cambiar suscripción</button>
+            </form>
+        </dd>
+    </dl>
+
+    <div class="mt-4">
+        <a asp-action="Index" asp-controller="User" class="btn btn-secondary">Atrás</a>
+        <a asp-action="Edit" asp-controller="User" asp-route-id="@Model.Id" class="btn btn-primary ms-2">Editar mi cuenta</a>
+    </div>
+</div>

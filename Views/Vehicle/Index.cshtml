@@ -13,7 +13,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold">Mis Vehículos</h2>
-    <a href="@Url.Action("CreateVehicle", "Vehicle")" class="btn btn-primary">
+    <a href="@Url.Action("Create", "Vehicle")" class="btn btn-primary">
         <i class='bx bx-plus'></i> Añadir vehículo
     </a>
 </div>
@@ -57,35 +57,46 @@ else
                             }
                         </td>
                         <td>
-                            <a href="@Url.Action("EditVehicle", "Vehicle", new { id = vehicle.Id })" class="btn btn-sm btn-warning me-1">
+                            <a href="@Url.Action("Edit", "Vehicle", new { id = vehicle.Id })" class="btn btn-sm btn-warning me-1">
                                 <i class='bx bx-edit'></i> Editar
                             </a>
 
-                            @if (vehicle.Active)
-                            {
-                                <button type="button" class="btn btn-sm btn-danger" onclick="confirmarDesactivacion(@vehicle.Id)">
-                                    <i class='bx bx-trash'></i> Desactivar
+                            <form id="form-@(vehicle.Active ? "desactivar" : "reactivar")-@vehicle.Id"
+                                  method="post"
+                                  asp-action="ToggleVehicle"
+                                  asp-controller="Vehicle"
+                                  asp-route-id="@vehicle.Id"
+                                  class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="button"
+                                        class="btn btn-sm @(vehicle.Active ? "btn-danger" : "btn-success")"
+                                        onclick="@(vehicle.Active ? $"confirmarDesactivacion({vehicle.Id})" : $"confirmarReactivacion({vehicle.Id})")">
+                                    <i class='bx @(vehicle.Active ? "bx-trash" : "bx-revision")'></i>
+                                    @(vehicle.Active ? "Desactivar" : "Reactivar")
                                 </button>
-
-                                <form id="form-desactivar-@vehicle.Id" method="post" asp-action="DeactivateVehicle" asp-controller="Vehicle" asp-route-id="@vehicle.Id" style="display: none;">
+                            </form>
+                            @if (!vehicle.Active)
+                            {
+                                <form id="form-delete-@vehicle.Id"
+                                      method="post"
+                                      asp-action="Delete"
+                                      asp-controller="Vehicle"
+                                      asp-route-id="@vehicle.Id"
+                                      class="d-inline">
                                     @Html.AntiForgeryToken()
+                                    <button type="button"
+                                            class="btn btn-sm btn-info me-1"
+                                            onclick="confirmarEliminacion(@vehicle.Id)">
+                                        <i class='bx bx-detail'></i> Eliminar
+                                    </button>
                                 </form>
                             }
-                            else
-                            {
-                                <form id="form-reactivar-@vehicle.Id" method="post" asp-action="ReactivateVehicle" asp-controller="Vehicle" asp-route-id="@vehicle.Id" style="display: none;">
-                                    @Html.AntiForgeryToken()
-                                </form>
 
-                                <button type="button" class="btn btn-sm btn-success" onclick="confirmarReactivacion(@vehicle.Id)">
-                                    <i class='bx bx-revision'></i> Reactivar
-                                </button>
-
-                            }
                         </td>
                     </tr>
                 }
             </tbody>
+
         </table>
     </div>
 }
@@ -100,15 +111,32 @@ else
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        function confirmarDesactivacion(id) {
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: "btn btn-success me-2",
-                    cancelButton: "btn btn-danger"
-                },
-                buttonsStyling: false
-            });
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: "btn btn-danger"
+            },
+            buttonsStyling: false
+        });
 
+        function confirmarEliminacion(id) {
+            Swal.fire({
+                title: "¿Eliminar vehículo?",
+                text: "Esta acción no se puede deshacer.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(`form-delete-${id}`).submit();
+                }
+            });
+        }
+
+
+        function confirmarDesactivacion(id) {
             swalWithBootstrapButtons.fire({
                 title: "¿Desactivar vehículo?",
                 text: "Podrás reactivarlo más tarde si lo necesitas.",
@@ -124,17 +152,7 @@ else
             });
         }
 
-    </script>
-    <script>
         function confirmarReactivacion(id) {
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: "btn btn-success me-2",
-                    cancelButton: "btn btn-secondary"
-                },
-                buttonsStyling: false
-            });
-
             swalWithBootstrapButtons.fire({
                 title: "¿Reactivar vehículo?",
                 text: "El vehículo volverá a estar disponible para crear viajes.",
@@ -150,5 +168,4 @@ else
             });
         }
     </script>
-
 }

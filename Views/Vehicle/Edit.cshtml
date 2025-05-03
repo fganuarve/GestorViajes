@@ -15,7 +15,7 @@
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<form asp-action="EditVehicleSubmit" asp-controller="Vehicle" method="post">
+<form asp-action="Edit" asp-controller="Vehicle" method="post">
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
 
@@ -43,11 +43,7 @@
     <!-- Número de Plazas -->
     <div class="mb-3">
         <label class="form-label fw-bold">Número de Plazas</label>
-        <div class="input-group" style="max-width: 200px;">
-            <button type="button" class="btn btn-outline-secondary" onclick="cambiarPlazas(-1)">-</button>
-            <input type="text" id="plazas" asp-for="MaxSeats" class="form-control text-center" readonly />
-            <button type="button" class="btn btn-outline-secondary" onclick="cambiarPlazas(1)">+</button>
-        </div>
+        <input asp-for="MaxSeats" type="number" class="form-control" min="1" max="3" required />
         <span asp-validation-for="MaxSeats" class="text-danger"></span>
         <small class="form-text text-muted">Máximo 3 plazas.</small>
     </div>
@@ -55,22 +51,9 @@
     <!-- Botones -->
     <div class="d-flex gap-2">
         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-        <a asp-action="IndexVehicle" asp-controller="Vehicle" class="btn btn-secondary">Atrás</a>
+        <a asp-action="Index" asp-controller="Vehicle" class="btn btn-secondary">Atrás</a>
     </div>
 </form>
-
-<script>
-    function cambiarPlazas(valor) {
-        let plazasInput = document.getElementById('plazas');
-        let plazas = parseInt(plazasInput.value) || 1;
-
-        plazas += valor;
-        if (plazas < 1) plazas = 1;
-        if (plazas > 3) plazas = 3;
-
-        plazasInput.value = plazas;
-    }
-</script>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

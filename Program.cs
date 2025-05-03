@@ -12,10 +12,6 @@ using GestorViajes.Services.Trips;
 using GestorViajes.Services.Image;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
-using GestorViajes.Services.Trip;
-using GestorViajes.Services.User.GestorViajes.Services.User;
-using GestorViajes.Services.User;
-using GestorViajes.Services.Vehicle;
 
 namespace GestorViajes
 {

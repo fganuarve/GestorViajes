@@ -3,7 +3,6 @@ using GestorViajes.Models.ViewModels;
 using GestorViajes.Models.ViewModels.Image;
 using GestorViajes.Services.FuelTicket;
 using GestorViajes.Services.Image;
-using GestorViajes.Services.User;
 using GestorViajes.Services.Users;
 using GestorViajes.ViewModels;
 using Microsoft.AspNetCore.Authorization;

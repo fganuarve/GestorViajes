@@ -7,10 +7,6 @@ using GestorViajes.Services.Users;
 using GestorViajes.Services.Vehicles;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
-using GestorViajes.Services.Trip;
-using GestorViajes.Services.User;
-using GestorViajes.Services.Vehicle;
-using System.Net.NetworkInformation;
 
 namespace GestorViajes.Controllers
 {

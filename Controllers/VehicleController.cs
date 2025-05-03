@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using GestorViajes.Models.ViewModels.Vehicle;
-using GestorViajes.Services.User;
 using GestorViajes.Services.Users;
-using GestorViajes.Services.Vehicle;
 using GestorViajes.Services.Vehicles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

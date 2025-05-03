@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using System.Net.NetworkInformation;
 using AutoMapper;
 using Azure;
 using GestorViajes.Models;
@@ -7,7 +6,6 @@ using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Models.ViewModels.Trip;
 using GestorViajes.Repositories.Trips;
 using GestorViajes.Repositories.Users;
-using GestorViajes.Services.User;
 using GestorViajes.Services.Users;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;

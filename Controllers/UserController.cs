@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using GestorViajes.Services.Trips;
 using GestorViajes.Constants;
-using GestorViajes.Services.Trip;
-using GestorViajes.Services.User;
 
 namespace GestorViajes.Controllers
 {

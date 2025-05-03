@@ -73,7 +73,7 @@ namespace GestorViajes.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("Trips");
+                    b.ToTable("Trips", (string)null);
                 });
 
             modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.TripRequest", b =>
@@ -110,7 +110,7 @@ namespace GestorViajes.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TripRequests");
+                    b.ToTable("TripRequests", (string)null);
                 });
 
             modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.User", b =>
@@ -170,7 +170,7 @@ namespace GestorViajes.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.UserTrip", b =>
@@ -193,7 +193,7 @@ namespace GestorViajes.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserTrips");
+                    b.ToTable("UserTrips", (string)null);
                 });
 
             modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.Vehicle", b =>
@@ -241,7 +241,7 @@ namespace GestorViajes.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Vehicles");
+                    b.ToTable("Vehicles", (string)null);
                 });
 
             modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.Trip", b =>

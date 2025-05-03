@@ -1,15 +1,21 @@
-
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using GestorViajes.Repositories.Users;
-using GestorViajes.Services.User;
+using GestorViajes.Services.Users;
 using GestorViajes.Models.EFCore.Rove;
-using GestorViajes.Services.Vehicle;
-using GestorViajes.Services.Trip;
-using GestorViajes.Services.User.GestorViajes.Services.User;
+using GestorViajes.Services.Vehicles;
 using GestorViajes.Repositories.Vehicles;
 using GestorViajes.Repositories.Trips;
+using GestorViajes.Repositories.FuelTickets;
+using GestorViajes.Services.FuelTicket;
+using GestorViajes.Services.Trips;
+using GestorViajes.Services.Image;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+using GestorViajes.Services.Trip;
+using GestorViajes.Services.User.GestorViajes.Services.User;
+using GestorViajes.Services.User;
+using GestorViajes.Services.Vehicle;
 
 namespace GestorViajes
 {
@@ -35,8 +41,9 @@ namespace GestorViajes
                     options.LoginPath = "/Account/Login";
                     // Ruta de acceso denegado
                     options.AccessDeniedPath = "/Account/AccessDenied";
-                    // Tiempo de expiración de la cookie
+                    // Tiempo de expiracion de la cookie
                     options.ExpireTimeSpan = TimeSpan.FromDays(30);
+                    options.Cookie.Name = ".GestorViajes";
                 });
 
             // Configuracion de la conexion a la base de datos
@@ -48,11 +55,15 @@ namespace GestorViajes
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
             builder.Services.AddScoped<ITripRepository, TripRepository>();
+            builder.Services.AddScoped<IFuelTicketRepository, FuelTicketRepository>();
 
             // Servicios
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ITripService, TripService>();
             builder.Services.AddScoped<IVehicleService, VehicleService>();
+            builder.Services.AddScoped<IFuelTicketService, FuelTicketService>();
+            builder.Services.AddScoped<IImageProcessor, ImageProcessor>();
+
             builder.Services.AddAutoMapper(typeof(Program));
 
             // Otros servicios
@@ -68,6 +79,11 @@ namespace GestorViajes
                 app.UseHsts();
             }
 
+
+            app.UseRequestLocalization("es-ES", "en-US");
+
+
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -80,7 +96,7 @@ namespace GestorViajes
             // Rutas de controladores
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=User}/{action=IndexUser}/{id?}");
+                pattern: "{controller=User}/{action=Index}/{id?}");
 
             app.Run();
         }

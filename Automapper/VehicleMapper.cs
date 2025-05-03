@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using GestorViajes.Models;
 using GestorViajes.Models.EFCore.Rove;
-using GestorViajes.Models.ViewModels.Trip;
 using GestorViajes.Models.ViewModels.Vehicle;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GestorViajes.Automapper
 {
@@ -22,7 +21,7 @@ namespace GestorViajes.Automapper
 
             // ViewModel → Entidad
             CreateMap<VehicleViewModel, Vehicle>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id ?? 0))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Plate, opt => opt.MapFrom(src => src.Plate))
                 .ForMember(dest => dest.Model, opt => opt.MapFrom(src => src.Model))
                 .ForMember(dest => dest.MaxSeats, opt => opt.MapFrom(src => src.MaxSeats))
@@ -32,7 +31,10 @@ namespace GestorViajes.Automapper
                 .ForMember(dest => dest.Owner, opt => opt.Ignore())
                 .ForMember(dest => dest.Trips, opt => opt.Ignore());
 
-            CreateMap<Vehicle, VehicleSummaryViewModel>();
+            CreateMap<Vehicle, SelectListItem>()
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id.ToString()))
+                .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Plate))
+                .ReverseMap();
         }
     }
 }

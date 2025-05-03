@@ -1,30 +1,40 @@
 ﻿using AutoMapper;
-using GestorViajes.Models.EFCore.Rove;
 using GestorViajes.Models.ViewModels.Vehicle;
+using GestorViajes.Services.User;
+using GestorViajes.Services.Users;
 using GestorViajes.Services.Vehicle;
+using GestorViajes.Services.Vehicles;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestorViajes.Controllers
 {
+    [Authorize]
     public class VehicleController : Controller
     {
         private readonly IVehicleService _vehicleService;
         private readonly IMapper _mapper;
-
-        public VehicleController(IVehicleService vehicleService, IMapper mapper)
+        private readonly IUserService _userService;
+        public VehicleController(
+            IUserService userService,
+            IVehicleService vehicleService,
+            IMapper mapper
+            )
         {
+            _userService = userService;
             _vehicleService = vehicleService;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> IndexVehicle()
+        public async Task<IActionResult> Index()
         {
-            var response = await _vehicleService.List();
+            var current = await _userService.CurrentUser();
+            var response = await _vehicleService.List(x => x.UserId == current.Id);
             if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "No se pudieron cargar los vehículos.";
+                TempData["message"] = response.Error!.Message;
                 return View(new List<VehicleViewModel>());
             }
 
@@ -32,71 +42,53 @@ namespace GestorViajes.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DetailsVehicle(long id)
+        public async Task<IActionResult> Details(long id)
         {
             var response = await _vehicleService.Get(id);
             if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "Vehículo no encontrado.";
-                return RedirectToAction(nameof(IndexVehicle));
+                TempData["message"] = response.Error!.Message;
+                return RedirectToAction(nameof(Index));
             }
 
             return View(response.Data);
         }
 
         [HttpGet]
-        public IActionResult CreateVehicle()
+        public IActionResult Create()
         {
-            return View(new VehicleViewModel
-            {    
-            });
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateVehicleSubmit(VehicleViewModel input)
-        {            
+        public async Task<IActionResult> Create(VehicleViewModel input)
+        {
             var response = await _vehicleService.Add(input);
 
             if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = "Error al registrar el vehículo.";
-                return View("CreateVehicle", input);
+                TempData["message"] = response.Error!.Message;
+                return RedirectToAction(nameof(Index));
             }
 
             TempData["status"] = "success";
             TempData["message"] = "Vehículo registrado correctamente.";
-            return RedirectToAction("IndexVehicle");
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditVehicle(long id)
+        public async Task<IActionResult> Edit(long id)
         {
-            // Obtener el ID del usuario autenticado
-            var userIdClaim = User.FindFirst("UserId")?.Value;
-            if (!long.TryParse(userIdClaim, out var userId))
-            {
-                TempData["status"] = "danger";
-                TempData["message"] = "No se pudo determinar el usuario autenticado.";
-                return RedirectToAction(nameof(IndexVehicle));
-            }
 
             var response = await _vehicleService.Get(id);
-            if (!response.Success || response.Data == null)
+            if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "Vehículo no encontrado.";
-                return RedirectToAction(nameof(IndexVehicle));
-            }
-
-            // Verificar que el vehículo pertenece al usuario autenticado
-            if (response.Data.UserId != userId)
-            {
-                TempData["status"] = "danger";
-                TempData["message"] = "No tienes permiso para editar este vehículo.";
-                return RedirectToAction(nameof(IndexVehicle));
+                TempData["message"] = response.Error!.Message;
+                return RedirectToAction(nameof(Index));
             }
 
             return View(response.Data);
@@ -104,158 +96,61 @@ namespace GestorViajes.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditVehicleSubmit(VehicleViewModel model)
+        public async Task<IActionResult> Edit(VehicleViewModel input)
         {
-            if (!ModelState.IsValid)
-            {
-                return View("EditVehicle", model);
-            }
-
-            var userIdClaim = User.FindFirst("UserId")?.Value;
-            if (!long.TryParse(userIdClaim, out var userId))
-            {
-                TempData["status"] = "error";
-                TempData["message"] = "No se pudo determinar el usuario autenticado.";
-                return View("EditVehicle", model);
-            }
-
-            if (model.Id == null)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = "ID de vehículo no válido.";
-                return View("EditVehicle", model);
-            }
-
-            var vehicleResult = await _vehicleService.Get(model.Id.Value);
-            if (vehicleResult.Error != null || vehicleResult.Data == null || vehicleResult.Data.UserId != userId)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = "No tienes permiso para editar este vehículo.";
-                return RedirectToAction(nameof(IndexVehicle));
-            }
-
-            var response = await _vehicleService.Update(model);
+            var response = await _vehicleService.Update(input);
             if (!response.Success)
             {
                 TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message;
-                return View("EditVehicle", model);
+                TempData["message"] = response.Error!.Message;
+                return RedirectToAction(nameof(Index), new { id = input.Id });
             }
 
             TempData["status"] = "success";
             TempData["message"] = "Vehículo actualizado correctamente.";
-            return RedirectToAction(nameof(IndexVehicle));
+            return RedirectToAction(nameof(Index));
         }
 
 
         //Borrado que deberia hacer solo un admin
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteVehicle(long id)
+        public async Task<IActionResult> Delete(long id)
         {
-            //// Validar que el usuario es administrador
-            //var roleClaim = User.FindFirst("Rol")?.Value;
-            //if (string.IsNullOrEmpty(roleClaim) || roleClaim.ToLower() != "admin")
-            //{
-            //    TempData["status"] = "danger";
-            //    TempData["message"] = "No tienes permiso para realizar esta acción.";
-            //    return RedirectToAction(nameof(IndexVehicle));
-            //}
-
-            // Verificar que el vehículo exista antes de intentar eliminarlo
-            var vehicleResult = await _vehicleService.Get(id);
-            if (!vehicleResult.Success || vehicleResult.Data == null)
-            {
-                TempData["status"] = "danger";
-                TempData["message"] = "Vehículo no encontrado.";
-                return RedirectToAction(nameof(IndexVehicle));
-            }
-
             var response = await _vehicleService.Delete(id);
+
+            TempData["status"] = response.Success ? "success" : "danger";
+            TempData["message"] = response.Success
+                ? "Vehículo eliminado correctamente."
+                : $"Ocurrió un error al eliminar el vehículo. {response.Error?.Message}";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleVehicle(long id)
+        {
+            var response = await _vehicleService.Toggle(id);
+
+            TempData["status"] = response.Success ? "success" : "danger";
+            TempData["message"] = response.Success
+                ? "Vehículo actualizado correctamente."
+                : $"Ocurrió un error al actualizar el vehículo. {response.Error?.Message}";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetVehicleDetails(int id)
+        {
+            var response = await _vehicleService.Get(id);
             if (!response.Success)
             {
-                TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message;
-                return RedirectToAction(nameof(IndexVehicle));
+                return Json(new { success = false, message = response.Error!.Message });
             }
-
-            TempData["status"] = "success";
-            TempData["message"] = "Vehículo eliminado correctamente.";
-            return RedirectToAction(nameof(IndexVehicle));
+            return Json(new { success = true, data = response.Data });
         }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeactivateVehicle(long id)
-        {
-            var userIdClaim = User.FindFirst("UserId")?.Value;
-            if (!long.TryParse(userIdClaim, out var userId))
-            {
-                TempData["message"] = "No se pudo determinar el usuario autenticado.";
-                TempData["status"] = "danger";
-                return RedirectToAction("MyVehicles");
-            }
-
-            // Validar que el vehículo pertenece al usuario autenticado
-            var vehicleResult = await _vehicleService.Get(id);
-            if (vehicleResult.Error != null || vehicleResult.Data == null || vehicleResult.Data.UserId != userId)
-            {
-                TempData["message"] = "No tienes permiso para modificar este vehículo.";
-                TempData["status"] = "danger";
-                return RedirectToAction("MyVehicles");
-            }
-
-            var response = await _vehicleService.DeactivateVehicle(id);
-
-            if (response.Error != null)
-            {
-                TempData["message"] = "Ocurrió un error al desactivar el vehículo.";
-                TempData["status"] = "danger";
-            }
-            else
-            {
-                TempData["message"] = "Vehículo desactivado correctamente.";
-                TempData["status"] = "success";
-            }
-            return RedirectToAction("IndexVehicle");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ReactivateVehicle(long id)
-        {
-            var userIdClaim = User.FindFirst("UserId")?.Value;
-            if (!long.TryParse(userIdClaim, out var userId))
-            {
-                TempData["message"] = "No se pudo determinar el usuario autenticado.";
-                TempData["status"] = "danger";
-                return RedirectToAction("MyVehicles");
-            }
-
-            // Validar que el vehículo pertenece al usuario autenticado
-            var vehicleResult = await _vehicleService.Get(id);
-            if (vehicleResult.Error != null || vehicleResult.Data == null || vehicleResult.Data.UserId != userId)
-            {
-                TempData["message"] = "No tienes permiso para modificar este vehículo.";
-                TempData["status"] = "danger";
-                return RedirectToAction("IndexVehicle");
-            }
-
-            var response = await _vehicleService.ReactivateVehicle(id);
-
-            if (response.Error != null)
-            {
-                TempData["message"] = "Ocurrió un error al reactivar el vehículo.";
-                TempData["status"] = "danger";
-            }
-            else
-            {
-                TempData["message"] = "Vehículo reactivado correctamente.";
-                TempData["status"] = "success";
-            }
-            return RedirectToAction("IndexVehicle");
-        }
-        
     }
 }

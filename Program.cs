@@ -57,8 +57,8 @@ namespace GestorViajes
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ITripService, TripService>();
             builder.Services.AddScoped<IVehicleService, VehicleService>();
-            builder.Services.AddScoped<IFuelTicketService, FuelTicketService>();
-            builder.Services.AddScoped<IImageProcessor, ImageProcessor>();
+            //builder.Services.AddScoped<IFuelTicketService, FuelTicketService>();
+            //builder.Services.AddScoped<IImageProcessor, ImageProcessor>();
 
             builder.Services.AddAutoMapper(typeof(Program));
 

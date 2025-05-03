@@ -43,6 +43,6 @@ Puedes registrarte con datos ficticios o usar una cuenta de ejemplo:
 - 📧 **Correo:** `user@gmail.com`  
 - 🔐 **Contraseña:** `123456`
 
-> Un perfil nuevo es completamente funcional, pero con esta cuenta verás más datos precargados (vehículos y viajes).
+> Un perfil nuevo es completamente funcional, pero con esta cuenta se ven más datos precargados (vehículos y viajes).
 
 ---

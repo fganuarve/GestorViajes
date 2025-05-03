@@ -7,7 +7,7 @@ hamburger.addEventListener("click", function () {
     toggler.classList.toggle("bxs-chevrons-left");
 });
 
-// Verificar que el canvas exista antes de crear el gráfico
+// Verificar que el canvas exista antes de crear el grï¿½fico
 const canvas = document.getElementById("bar-chart-grouped");
 
 if (canvas) {

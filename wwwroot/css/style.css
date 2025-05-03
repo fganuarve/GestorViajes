@@ -298,177 +298,31 @@ footer {
         font-size: 1.5rem;
     }
 }
-
-/*html {
-    font-size: 14px;
+/* Estilos personalizados que son solo para la vista Sobre Nosotros */
+.about-container {
+    background-color: #e6ebe0;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    max-width: 900px;
+    margin: 0 auto;
 }
 
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-    position: relative;
-    min-height: 100%;
-}
-
-body {
-    font-family: "Lato", sans-serif;
-    display: flex;
-    flex-direction: column;
-    min-height: 100%;*/ /* Ensure content stretches even with scrolling */
-/*}
-
-html, body {
-    height: 100%;*/ /* Ensure the body and html take up full height */
-    /*margin: 0;*/ /* Remove default margin */
-    /*padding: 0;*/ /* Remove default padding */
-    /*background-color: #272d4f;*/ /* Add your desired background color */
-    /*overflow-x: hidden;*/ /* Optional: Prevent horizontal scrolling */
-/*}
-
-#toggle_icon {
-    width: 35px;
-    height: 5px;
-    background-color: white;
-    margin: 6px;
-}
-
-#sidebar_logo {
-    border-bottom: 2px solid #272d4f;
-}
-
-.sidebar {
-    height: 100%;
-    width: 160px;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: #111;
-    overflow-x: hidden;
-    padding-top: 16px;
-    transition: 0.2s linear;
-}
-
-    .sidebar a {
-        padding: 6px 8px 6px 16px;
-        text-decoration: none;
-        font-size: 20px;
-        color: #0077cc;*/ /*color elementos del navbar*/
-        /*display: block;
+    .about-container h2 {
+        color: #0f3d1c;
+        font-weight: 700;
     }
 
-        .sidebar a:hover {
-            color: #f1f1f1;
-        }
-
-.sidebar-control {
-    position: absolute;
-}
-
-.main {
-    margin-left: 160px;*/ /* Same as the width of the sidenav */
-    /*padding: 0px 10px;
-}
-
-@media screen and (max-height: 450px) {
-    .sidebar {
-        padding-top: 15px;
+    .about-container p {
+        font-size: 1.125rem;
+        line-height: 1.8;
+        color: #2b2b2b;
     }
-
-        .sidebar a {
-            font-size: 18px;
-        }
-}*/
-/* Estilo comun para los iconos */
-/*.icon-style {
-    font-size: 1.1 rem;
-    color: #007bff;
-    transition: color 0.3s ease, transform 0.3s ease;
-}*/
-
-    /* Color de los iconos en hover */
-    /*.icon-style:hover {
-        color: #333;
-    }*/
-/* Eliminar efectos de enlaces, que no tengan subrayado ni borde */
-/*a {
-    text-decoration: none;*/ /* Elimina el subrayado */
-    /*border: none;*/ /* Elimina borde */
-/*}*/
-/* Espaciado horizontal entre botones de sweetAlert2*/
-/*.swal2-actions {
-    gap: 15px !important;
-}*/
-
-/*Tarjetas de boostrap*/
-/* Colores de la tarjeta */
-/*.card {
-    border: 1px solid #272d4f;*/ /* Color oscuro para la tarjeta */
-    /*background-color: #1a1f34;*/ /* Fondo oscuro de la tarjeta */
-/*}
-
-.card-header {
-    background-color: #111;*/ /* Fondo oscuro para el encabezado de la tarjeta */
-    /*color: #f1f1f1;*/ /* Color claro para el texto en el encabezado */
-/*}
-
-.card-body {
-    color: #f1f1f1;*/ /* Color claro para el texto en el cuerpo de la tarjeta */
-/*}*/
-
-    /* Enlaces dentro de la tarjeta */
-    /*.card-body a {
-        color: #0077cc;*/ /* Color de los enlaces dentro de la tarjeta */
-    /*}
-
-        .card-body a:hover {
-            color: #f1f1f1;*/ /* Color de los enlaces al pasar el ratón */
-        /*}*/
-
-/* Colores de los iconos en las tarjetas */
-/*.icon-style {
-    font-size: 1.1rem;
-    color: #0077cc;*/ /* Color de los iconos */
-    /*transition: color 0.3s ease, transform 0.3s ease;
+.alert.alert-error {
+	background-color: #f8d7da;
+	color: #721c24;
+	border-color: #f5c6cb;
+	padding: 1rem;
+	border-radius: 0.5rem;
+	margin-bottom: 1rem;
 }
-
-    .icon-style:hover {
-        color: #f1f1f1;*/ /* Color del icono al pasar el ratón */
-    /*}*/
-
-/* Botones dentro de la tarjeta */
-/*.btn-outline-primary {
-    border-color: #0077cc;
-    color: #0077cc;
-}
-
-    .btn-outline-primary:hover {
-        background-color: #0077cc;
-        color: #fff;
-    }
-
-.btn-outline-secondary {
-    border-color: #272d4f;
-    color: #272d4f;
-}
-
-    .btn-outline-secondary:hover {
-        background-color: #272d4f;
-        color: #fff;
-    }*/
-
-/* Asegurando que la tarjeta mantenga su color y formato en pantallas pequeñas */
-/*@media (max-width: 768px) {
-    .card {
-        margin-bottom: 10px;*/ /* Añadir un poco de separación entre tarjetas */
-    /*}
-}*/
-

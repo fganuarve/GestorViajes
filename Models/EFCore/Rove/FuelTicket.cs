@@ -9,7 +9,7 @@
         public DateTime UploadedAt { get; set; }
 
         public virtual FuelTicketImage Image { get; set; }
-        public virtual User User { get; set; }
-    }
+		public virtual User User { get; set; }
+	}
 }
 

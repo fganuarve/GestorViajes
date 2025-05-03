@@ -12,8 +12,8 @@ namespace GestorViajes.Services.Vehicles
         Task<GenericResponse<VehicleViewModel>> Get(long id);
         Task<GenericResponse<VehicleViewModel>> Add(VehicleViewModel model);
         Task<GenericResponse<VehicleViewModel>> Update(VehicleViewModel model);
-        Task<GenericResponse<bool>> Toggle(long id);
-        Task<GenericResponse<bool>> Delete(long id);
+		Task<GenericResponse<bool>> Toggle(long id);
+		Task<GenericResponse<bool>> Delete(long id);
         //Para exists, trabajo sobre la entidad, no sobre el ViewModel
         Task<GenericResponse<bool>> Exists(Expression<Func<Vehicle, bool>> predicate);
         Task<GenericResponse<List<VehicleViewModel>>> ListByUser(long userId);

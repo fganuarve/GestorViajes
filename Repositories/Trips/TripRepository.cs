@@ -2,7 +2,6 @@
 using GestorViajes.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Net.NetworkInformation;
 
 namespace GestorViajes.Repositories.Trips
 {
@@ -34,7 +33,7 @@ namespace GestorViajes.Repositories.Trips
                     query = query.Where(predicate);
                 }
 
-                return new GenericResponse<List<Trip>>() { Data = await query.OrderByDescending(x => x.CreatedAt).ToListAsync() };
+                return new GenericResponse<List<Trip>>() { Data = await query.OrderByDescending(x=> x.CreatedAt).ToListAsync() };
             }
             catch (Exception ex)
             {
@@ -111,9 +110,9 @@ namespace GestorViajes.Repositories.Trips
                     return new GenericResponse<bool>() { Error = new ErrorResponse("Trip not found.") };
                 }
                 trip.Status = TripStatus.Cancelled;
-                trip.Active = false;
-                context.Trips.Update(trip);
-                await context.SaveChangesAsync();
+				trip.Active = false;
+				context.Trips.Update(trip);
+				await context.SaveChangesAsync();
 
                 return new GenericResponse<bool>() { Data = true };
             }
@@ -123,30 +122,30 @@ namespace GestorViajes.Repositories.Trips
             }
         }
 
-        public async Task<GenericResponse<bool>> ForceDelete(long id)
-        {
-            try
-            {
-                await using var context = await _context.CreateDbContextAsync();
-                var trip = await context.Trips.FindAsync(id);
+		public async Task<GenericResponse<bool>> ForceDelete(long id)
+		{
+			try
+			{
+				await using var context = await _context.CreateDbContextAsync();
+				var trip = await context.Trips.FindAsync(id);
 
-                if (trip == null)
-                {
-                    return new GenericResponse<bool>() { Error = new ErrorResponse("Trip not found.") };
-                }
-                context.Trips.Remove(trip);
-                await context.SaveChangesAsync();
+				if (trip == null)
+				{
+					return new GenericResponse<bool>() { Error = new ErrorResponse("Trip not found.") };
+				}
+				context.Trips.Remove(trip);
+				await context.SaveChangesAsync();
 
-                return new GenericResponse<bool>() { Data = true };
-            }
-            catch (Exception ex)
-            {
-                return new GenericResponse<bool>() { Error = new ErrorResponse(ex) };
-            }
-        }
+				return new GenericResponse<bool>() { Data = true };
+			}
+			catch (Exception ex)
+			{
+				return new GenericResponse<bool>() { Error = new ErrorResponse(ex) };
+			}
+		}
 
 
-        public async Task<GenericResponse<bool>> Exists(Expression<Func<Trip, bool>> predicate)
+		public async Task<GenericResponse<bool>> Exists(Expression<Func<Trip, bool>> predicate)
         {
             try
             {
@@ -161,90 +160,90 @@ namespace GestorViajes.Repositories.Trips
             }
         }
 
-        #endregion
-        #region Trip passengers
-        public async Task<GenericResponse<UserTrip>> AddPassenger(UserTrip usertrip)
-        {
-            try
-            {
-                await using var context = await _context.CreateDbContextAsync();
-                context.UserTrips.Add(usertrip);
-                await context.SaveChangesAsync();
+		#endregion
+		#region Trip passengers
+		public async Task<GenericResponse<UserTrip>> AddPassenger(UserTrip usertrip)
+		{
+			try
+			{
+				await using var context = await _context.CreateDbContextAsync();
+				context.UserTrips.Add(usertrip);
+				await context.SaveChangesAsync();
 
-                return new GenericResponse<UserTrip>() { Data = usertrip };
-            }
-            catch (Exception ex)
-            {
-                return new GenericResponse<UserTrip>() { Error = new ErrorResponse(ex) };
-            }
-        }
+				return new GenericResponse<UserTrip>() { Data = usertrip };
+			}
+			catch (Exception ex)
+			{
+				return new GenericResponse<UserTrip>() { Error = new ErrorResponse(ex) };
+			}
+		}
 
-        public async Task<GenericResponse<UserTrip>> DeletePassenger(long tripId, long userId)
-        {
-            try
-            {
-                await using var context = await _context.CreateDbContextAsync();
+		public async Task<GenericResponse<UserTrip>> DeletePassenger(long tripId, long userId)
+		{
+			try
+			{
+				await using var context = await _context.CreateDbContextAsync();
                 var usertrip = context.UserTrips.FirstOrDefault(x => x.TripId == tripId && x.UserId == userId);
-                if (usertrip == null)
+                if(usertrip == null)
                 {
-                    return new GenericResponse<UserTrip>() { Error = new ErrorResponse("User trip not found.") };
-                }
-                context.UserTrips.Remove(usertrip);
-                await context.SaveChangesAsync();
+					return new GenericResponse<UserTrip>() { Error = new ErrorResponse("User trip not found.") };
+				}
+				context.UserTrips.Remove(usertrip);
+				await context.SaveChangesAsync();
 
-                return new GenericResponse<UserTrip>() { Data = usertrip };
-            }
-            catch (Exception ex)
-            {
-                return new GenericResponse<UserTrip>() { Error = new ErrorResponse(ex) };
-            }
-        }
+				return new GenericResponse<UserTrip>() { Data = usertrip };
+			}
+			catch (Exception ex)
+			{
+				return new GenericResponse<UserTrip>() { Error = new ErrorResponse(ex) };
+			}
+		}
 
         public async Task<GenericResponse<bool>> DeletePassengers(long tripid)
         {
-            try
-            {
-                await using var context = await _context.CreateDbContextAsync();
-                var userTrips = context.UserTrips.Where(x => x.TripId == tripid);
-                if (userTrips == null)
-                {
-                    return new GenericResponse<bool>() { Error = new ErrorResponse("User trips not found.") };
-                }
-                foreach (var item in userTrips)
-                {
+			try
+			{
+				await using var context = await _context.CreateDbContextAsync();
+				var userTrips = context.UserTrips.Where(x => x.TripId == tripid);
+				if (userTrips == null)
+				{
+					return new GenericResponse<bool>() { Error = new ErrorResponse("User trips not found.") };
+				}
+				foreach (var item in userTrips)
+				{
                     item.Active = false;
-                }
+				}
 
-                context.UserTrips.UpdateRange(userTrips);
-                await context.SaveChangesAsync();
-                return new GenericResponse<bool>() { Data = true };
-            }
-            catch (Exception ex)
-            {
-                return new GenericResponse<bool>() { Error = new ErrorResponse(ex) };
-            }
-        }
+				context.UserTrips.UpdateRange(userTrips);
+				await context.SaveChangesAsync();
+				return new GenericResponse<bool>() { Data = true };
+			}
+			catch (Exception ex)
+			{
+				return new GenericResponse<bool>() { Error = new ErrorResponse(ex) };
+			}
+		}
 
-        public async Task<GenericResponse<bool>> ForceDeletePassengers(long tripid)
-        {
-            try
-            {
-                await using var context = await _context.CreateDbContextAsync();
-                var userTrips = context.UserTrips.Where(x => x.TripId == tripid);
-                if (userTrips == null)
-                {
-                    return new GenericResponse<bool>() { Error = new ErrorResponse("User trips not found.") };
-                }
-
-                context.UserTrips.RemoveRange(userTrips);
-                await context.SaveChangesAsync();
-                return new GenericResponse<bool>() { Data = true };
-            }
-            catch (Exception ex)
-            {
-                return new GenericResponse<bool>() { Error = new ErrorResponse(ex) };
-            }
-        }
-        #endregion
-    }
+		public async Task<GenericResponse<bool>> ForceDeletePassengers(long tripid)
+		{
+			try
+			{
+				await using var context = await _context.CreateDbContextAsync();
+				var userTrips = context.UserTrips.Where(x => x.TripId == tripid);
+				if (userTrips == null)
+				{
+					return new GenericResponse<bool>() { Error = new ErrorResponse("User trips not found.") };
+				}
+				
+				context.UserTrips.RemoveRange(userTrips);
+				await context.SaveChangesAsync();
+				return new GenericResponse<bool>() { Data = true };
+			}
+			catch (Exception ex)
+			{
+				return new GenericResponse<bool>() { Error = new ErrorResponse(ex) };
+			}
+		}
+		#endregion
+	}
 }

@@ -62,22 +62,22 @@ namespace GestorViajes.Services.Trips
 
             try
             {
-                var current = await _userService.CurrentUser();
-                var result = await _tripRepository.GetById(id);
+				var current = await _userService.CurrentUser();
+				var result = await _tripRepository.GetById(id);
                 if (!result.Success)
                 {
                     response.Error = result.Error;
                     return response;
                 }
 
-                // verificamos que el usuario actual tiene permisos al ser conductor o pasajero
-                if (result.Data!.DriverId != current!.Id && !result.Data.Passengers.Any(x => x.UserId == current.Id))
-                {
-                    response.Error = new ErrorResponse("No tienes permiso para ver este viaje.");
-                    return response;
-                }
+				// verificamos que el usuario actual tiene permisos al ser conductor o pasajero
+				if (result.Data!.DriverId != current!.Id && !result.Data.Passengers.Any(x => x.UserId == current.Id))
+				{
+					response.Error = new ErrorResponse("No tienes permiso para ver este viaje.");
+					return response;
+				}
 
-                response.Data = _mapper.Map<TripViewModel>(result.Data);
+				response.Data = _mapper.Map<TripViewModel>(result.Data);
             }
             catch (Exception ex)
             {
@@ -113,21 +113,21 @@ namespace GestorViajes.Services.Trips
 
             try
             {
-                // solo puede editar el viaje el conductor
-                var current = await _userService.CurrentUser();
+				// solo puede editar el viaje el conductor
+				var current = await _userService.CurrentUser();
                 var viajeResponse = await _tripRepository.GetById(model.Id);
-                if (!viajeResponse.Success)
-                {
-                    response.Error = viajeResponse.Error;
-                    return response;
-                }
-                if (viajeResponse.Data!.DriverId != current!.Id)
-                {
-                    response.Error = new ErrorResponse("No tienes permiso para editar este viaje.");
-                    return response;
-                }
+				if (!viajeResponse.Success)
+				{
+					response.Error = viajeResponse.Error;
+					return response;
+				}
+				if (viajeResponse.Data!.DriverId != current!.Id)
+				{
+					response.Error = new ErrorResponse("No tienes permiso para editar este viaje.");
+					return response;
+				}
 
-                var trip = _mapper.Map<Trip>(model);
+				var trip = _mapper.Map<Trip>(model);
                 var result = await _tripRepository.Update(trip);
                 if (!result.Success)
                 {
@@ -151,21 +151,21 @@ namespace GestorViajes.Services.Trips
 
             try
             {
-                // solo puede borrarlo el conductor
-                var current = await _userService.CurrentUser();
-                var viajeResponse = await _tripRepository.GetById(id);
-                if (!viajeResponse.Success)
-                {
-                    response.Error = viajeResponse.Error;
-                    return response;
-                }
-                if (viajeResponse.Data!.DriverId != current!.Id)
-                {
-                    response.Error = new ErrorResponse("No tienes permiso para eliminar este viaje.");
-                    return response;
-                }
+				// solo puede borrarlo el conductor
+				var current = await _userService.CurrentUser();
+				var viajeResponse = await _tripRepository.GetById(id);
+				if (!viajeResponse.Success)
+				{
+					response.Error = viajeResponse.Error;
+					return response;
+				}
+				if (viajeResponse.Data!.DriverId != current!.Id)
+				{
+					response.Error = new ErrorResponse("No tienes permiso para eliminar este viaje.");
+					return response;
+				}
 
-                var result = await _tripRepository.Delete(id);
+				var result = await _tripRepository.Delete(id);
                 if (!result.Success)
                 {
                     response.Error = result.Error;
@@ -260,26 +260,26 @@ namespace GestorViajes.Services.Trips
                 return new GenericResponse<bool>() { Error = new ErrorResponse("El viaje no está disponible.") };
             }
 
-            // comprobamos que el usuario es un pasajero
-            var passenger = trip.Passengers.FirstOrDefault(x => x.UserId == userId);
-            if (passenger == null)
-            {
-                return new GenericResponse<bool>() { Error = new ErrorResponse("No eres un pasajero en este viaje.") };
-            }
+			// comprobamos que el usuario es un pasajero
+			var passenger = trip.Passengers.FirstOrDefault(x => x.UserId == userId);
+			if (passenger == null)
+			{
+				return new GenericResponse<bool>() { Error = new ErrorResponse("No eres un pasajero en este viaje.") };
+			}
 
-            var deleteResponse = await _tripRepository.DeletePassenger(id, userId);
+			var deleteResponse = await _tripRepository.DeletePassenger(id, userId);
             if (!deleteResponse.Success)
             {
                 return new GenericResponse<bool>() { Error = deleteResponse.Error };
             }
-            // Reactualizamos el trip
-            tripResponse = await _tripRepository.GetById(id);
-            if (!tripResponse.Success)
-            {
-                return new GenericResponse<bool>() { Error = tripResponse.Error };
-            }
+			// Reactualizamos el trip
+			tripResponse = await _tripRepository.GetById(id);
+			if (!tripResponse.Success)
+			{
+				return new GenericResponse<bool>() { Error = tripResponse.Error };
+			}
             trip = tripResponse.Data;
-            if (trip.Status == TripStatus.Full)
+			if (trip.Status == TripStatus.Full)
             {
                 // Si el viaje estaba lleno, cambiamos el estado a Available
                 trip.Status = TripStatus.Available;
@@ -338,36 +338,36 @@ namespace GestorViajes.Services.Trips
 
         public async Task<GenericResponse<bool>> EndTrip(long id)
         {
-            try
-            {
-                var current = await _userService.CurrentUser();
-                var tripResponse = await _tripRepository.GetById(id);
-                if (!tripResponse.Success)
-                {
-                    return new GenericResponse<bool>() { Error = tripResponse.Error };
-                }
-                if (tripResponse.Data.DriverId != current.Id)
-                {
-                    return new GenericResponse<bool>() { Error = new ErrorResponse("No tienes permiso para finalizar este viaje.") };
-                }
-                var trip = tripResponse.Data;
-                if (trip.Status == TripStatus.Completed || trip.Status == TripStatus.Cancelled)
-                {
-                    return new GenericResponse<bool>() { Error = new ErrorResponse("El viaje no está disponible.") };
-                }
-                trip.Status = TripStatus.Completed;
-                trip.Active = false;
-                var result = await _tripRepository.Update(trip);
-                if (!result.Success)
-                {
-                    return new GenericResponse<bool>() { Error = result.Error };
-                }
-                return new GenericResponse<bool> { Data = true };
-            }
-            catch (Exception ex)
-            {
-                return new GenericResponse<bool>() { Error = new ErrorResponse(ex) };
-            }
-        }
+			try
+			{
+				var current = await _userService.CurrentUser();
+				var tripResponse = await _tripRepository.GetById(id);
+				if (!tripResponse.Success)
+				{
+					return new GenericResponse<bool>() { Error = tripResponse.Error };
+				}
+				if (tripResponse.Data.DriverId != current.Id)
+				{
+					return new GenericResponse<bool>() { Error = new ErrorResponse("No tienes permiso para finalizar este viaje.") };
+				}
+				var trip = tripResponse.Data;
+				if (trip.Status == TripStatus.Completed || trip.Status == TripStatus.Cancelled)
+				{
+					return new GenericResponse<bool>() { Error = new ErrorResponse("El viaje no está disponible.") };
+				}
+				trip.Status = TripStatus.Completed;
+				trip.Active = false;
+				var result = await _tripRepository.Update(trip);
+				if (!result.Success)
+				{
+					return new GenericResponse<bool>() { Error = result.Error };
+				}
+				return new GenericResponse<bool> { Data = true };
+			}
+			catch (Exception ex)
+			{
+				return new GenericResponse<bool>() { Error = new ErrorResponse(ex) };
+			}
+		}
     }
 }

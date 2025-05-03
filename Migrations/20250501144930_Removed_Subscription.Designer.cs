@@ -4,6 +4,7 @@ using GestorViajes.Models.EFCore.Rove;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestorViajes.Migrations
 {
     [DbContext(typeof(RoveDbContext))]
-    partial class RoveDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250501144930_Removed_Subscription")]
+    partial class Removed_Subscription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,6 +41,10 @@ namespace GestorViajes.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -66,7 +73,7 @@ namespace GestorViajes.Migrations
                     b.ToTable("FuelTickets");
                 });
 
-            modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.FuelTicketImage", b =>
+            modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.Payment", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,19 +81,41 @@ namespace GestorViajes.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("FuelTicketId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Image")
+                    b.Property<string>("BankAccount")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("FuelTicketId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("LastUpdateAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("FuelTicketId")
-                        .IsUnique();
+                    b.HasIndex("FuelTicketId");
 
-                    b.ToTable("FuelTicketImage");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.Trip", b =>
@@ -262,13 +291,10 @@ namespace GestorViajes.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<long>("TripId")
+                    b.Property<long?>("TripId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("UserId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -330,24 +356,30 @@ namespace GestorViajes.Migrations
 
             modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.FuelTicket", b =>
                 {
-                    b.HasOne("GestorViajes.Models.EFCore.Rove.User", "User")
+                    b.HasOne("GestorViajes.Models.EFCore.Rove.User", null)
                         .WithMany("FuelTickets")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.FuelTicketImage", b =>
+            modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.Payment", b =>
                 {
                     b.HasOne("GestorViajes.Models.EFCore.Rove.FuelTicket", "FuelTicket")
-                        .WithOne("Image")
-                        .HasForeignKey("GestorViajes.Models.EFCore.Rove.FuelTicketImage", "FuelTicketId")
+                        .WithMany()
+                        .HasForeignKey("FuelTicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GestorViajes.Models.EFCore.Rove.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("FuelTicket");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.Trip", b =>
@@ -399,14 +431,12 @@ namespace GestorViajes.Migrations
                     b.HasOne("GestorViajes.Models.EFCore.Rove.Trip", "Trip")
                         .WithMany("Passengers")
                         .HasForeignKey("TripId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("GestorViajes.Models.EFCore.Rove.User", "User")
                         .WithMany("UserTrips")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Trip");
 
@@ -422,12 +452,6 @@ namespace GestorViajes.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.FuelTicket", b =>
-                {
-                    b.Navigation("Image")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.Trip", b =>

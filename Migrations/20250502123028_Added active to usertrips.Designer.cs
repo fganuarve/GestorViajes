@@ -4,6 +4,7 @@ using GestorViajes.Models.EFCore.Rove;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestorViajes.Migrations
 {
     [DbContext(typeof(RoveDbContext))]
-    partial class RoveDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250502123028_Added active to usertrips")]
+    partial class Addedactivetousertrips
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -330,13 +333,11 @@ namespace GestorViajes.Migrations
 
             modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.FuelTicket", b =>
                 {
-                    b.HasOne("GestorViajes.Models.EFCore.Rove.User", "User")
+                    b.HasOne("GestorViajes.Models.EFCore.Rove.User", null)
                         .WithMany("FuelTickets")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GestorViajes.Models.EFCore.Rove.FuelTicketImage", b =>

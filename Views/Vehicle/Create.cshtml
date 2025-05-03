@@ -2,76 +2,76 @@
 
 
 @{
-    ViewData["Title"] = "Crear Vehículo";
-    Layout = "_Layout";
+	ViewData["Title"] = "Crear Vehículo";
+	Layout = "_Layout";
 }
 
 <h2 class="mb-4">Crear Vehículo</h2>
 
 @if (TempData["message"] != null)
 {
-    <div class="alert alert-@(TempData["status"])">
-        @TempData["message"]
-    </div>
+	<div class="alert alert-@(TempData["status"])">
+		@TempData["message"]
+	</div>
 }
 
 @if (!ViewData.ModelState.IsValid)
 {
-    <div class="alert alert-warning">
-        <ul>
-            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-            {
-                <li>@error.ErrorMessage</li>
-            }
-        </ul>
-    </div>
+	<div class="alert alert-warning">
+		<ul>
+			@foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+			{
+				<li>@error.ErrorMessage</li>
+			}
+		</ul>
+	</div>
 }
 
 <form asp-action="Create" asp-controller="Vehicle" method="post">
-    @Html.AntiForgeryToken()
+	@Html.AntiForgeryToken()
 
-    <!-- Matrícula -->
-    <div class="mb-3">
-        <label asp-for="Plate" class="form-label fw-bold"></label>
-        <input asp-for="Plate" class="form-control" placeholder="Ej: 1234-ABC" />
-        <span asp-validation-for="Plate" class="text-danger"></span>
-    </div>
+	<!-- Matrícula -->
+	<div class="mb-3">
+		<label asp-for="Plate" class="form-label fw-bold"></label>
+		<input asp-for="Plate" class="form-control" placeholder="Ej: 1234-ABC" />
+		<span asp-validation-for="Plate" class="text-danger"></span>
+	</div>
 
 
-    <!-- Modelo -->
-    <div class="mb-3">
-        <label asp-for="Model" class="form-label fw-bold"></label>
-        <input asp-for="Model" class="form-control" placeholder="Ej: Toyota Corolla" />
-        <span asp-validation-for="Model" class="text-danger"></span>
-    </div>
+	<!-- Modelo -->
+	<div class="mb-3">
+		<label asp-for="Model" class="form-label fw-bold"></label>
+		<input asp-for="Model" class="form-control" placeholder="Ej: Toyota Corolla" />
+		<span asp-validation-for="Model" class="text-danger"></span>
+	</div>
 
-    <!-- Color -->
-    <div class="mb-3">
-        <label asp-for="Color" class="form-label fw-bold"></label>
-        <input asp-for="Color" class="form-control" placeholder="Ej: Rojo, Azul, Negro..." />
-        <span asp-validation-for="Color" class="text-danger"></span>
-    </div>
+	<!-- Color -->
+	<div class="mb-3">
+		<label asp-for="Color" class="form-label fw-bold"></label>
+		<input asp-for="Color" class="form-control" placeholder="Ej: Rojo, Azul, Negro..." />
+		<span asp-validation-for="Color" class="text-danger"></span>
+	</div>
 
-    <!-- Número de Plazas -->
-    <div class="mb-3">
-        <label asp-for="MaxSeats" class="form-label fw-bold"></label>
-        <input asp-for="MaxSeats" class="form-control text-center" id="plazas" min="1" max="3" type="number" style="max-width: 200px;" />
-        <span asp-validation-for="MaxSeats" class="text-danger"></span>
-        <small class="form-text text-muted">Máximo 3 plazas.</small>
-    </div>
+	<!-- Número de Plazas -->
+	<div class="mb-3">
+		<label asp-for="MaxSeats" class="form-label fw-bold"></label>
+		<input asp-for="MaxSeats" class="form-control text-center" id="plazas" min="1" max="3" type="number" style="max-width: 200px;" />
+		<span asp-validation-for="MaxSeats" class="text-danger"></span>
+		<small class="form-text text-muted">Máximo 3 plazas.</small>
+	</div>
 
-    <!-- Campos ocultos -->
-    <input type="hidden" asp-for="UserId" />
-    <input type="hidden" asp-for="CreatedAt" />
-    <input type="hidden" asp-for="LastUpdateAt" />
-    <input type="hidden" asp-for="CreatedBy" />
-    <input type="hidden" asp-for="LastUpdatedBy" />
-    <input type="hidden" asp-for="Active" />
+	<!-- Campos ocultos -->
+	<input type="hidden" asp-for="UserId" />
+	<input type="hidden" asp-for="CreatedAt" />
+	<input type="hidden" asp-for="LastUpdateAt" />
+	<input type="hidden" asp-for="CreatedBy" />
+	<input type="hidden" asp-for="LastUpdatedBy" />
+	<input type="hidden" asp-for="Active" />
 
-    <!-- Botón -->
-    <button type="submit" class="btn btn-success">Crear Vehículo</button>
+	<!-- Botón -->
+	<button type="submit" class="btn btn-success">Crear Vehículo</button>
 </form>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+	<partial name="_ValidationScriptsPartial" />
 }

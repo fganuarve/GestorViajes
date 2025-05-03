@@ -62,7 +62,7 @@ namespace GestorViajes.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(VehicleViewModel input)
-        {
+        {            
             var response = await _vehicleService.Add(input);
 
             if (!response.Success)
@@ -80,7 +80,7 @@ namespace GestorViajes.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(long id)
         {
-
+            
             var response = await _vehicleService.Get(id);
             if (!response.Success)
             {
@@ -117,28 +117,28 @@ namespace GestorViajes.Controllers
         {
             var response = await _vehicleService.Delete(id);
 
-            TempData["status"] = response.Success ? "success" : "danger";
-            TempData["message"] = response.Success
-                ? "Vehículo eliminado correctamente."
-                : $"Ocurrió un error al eliminar el vehículo. {response.Error?.Message}";
+			TempData["status"] = response.Success ? "success" : "danger";
+			TempData["message"] = response.Success
+				? "Vehículo eliminado correctamente."
+				: $"Ocurrió un error al eliminar el vehículo. {response.Error?.Message}";
 
-            return RedirectToAction(nameof(Index));
+			return RedirectToAction(nameof(Index));
         }
 
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ToggleVehicle(long id)
-        {
-            var response = await _vehicleService.Toggle(id);
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> ToggleVehicle(long id)
+		{
+			var response = await _vehicleService.Toggle(id);
 
-            TempData["status"] = response.Success ? "success" : "danger";
-            TempData["message"] = response.Success
-                ? "Vehículo actualizado correctamente."
-                : $"Ocurrió un error al actualizar el vehículo. {response.Error?.Message}";
+			TempData["status"] = response.Success ? "success" : "danger";
+			TempData["message"] = response.Success
+				? "Vehículo actualizado correctamente."
+				: $"Ocurrió un error al actualizar el vehículo. {response.Error?.Message}";
 
-            return RedirectToAction(nameof(Index));
-        }
+			return RedirectToAction(nameof(Index));
+		}
 
         [HttpGet]
         public async Task<IActionResult> GetVehicleDetails(int id)
@@ -147,8 +147,8 @@ namespace GestorViajes.Controllers
             if (!response.Success)
             {
                 return Json(new { success = false, message = response.Error!.Message });
-            }
+			}
             return Json(new { success = true, data = response.Data });
-        }
-    }
+		}
+	}
 }

@@ -12,7 +12,7 @@ namespace GestorViajes.Automapper
             CreateMap<FuelTicket, FuelTicketViewModel>()
                 .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image.Image));
             CreateMap<FuelTicketViewModel, FuelTicket>();
-        }
+		}
     }
 
 }

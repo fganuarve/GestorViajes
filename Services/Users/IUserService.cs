@@ -15,17 +15,17 @@ namespace GestorViajes.Services.Users
         Task<GenericResponse<User>> AuthenticateUserAsync(string email, string password);
         Task<GenericResponse<bool>> Toggle(long id);
 
-        #region Subscription
-        Task<GenericResponse<bool>> ChangeSubscriptionAsync(long id, SubscriptionType newPlan);
-        #endregion
+		#region Subscription
+		Task<GenericResponse<bool>> ChangeSubscriptionAsync(long id, SubscriptionType newPlan);
+		#endregion
 
 
-        #region Current User
-        /// <summary>
-        /// Garantizado que existe el usuario si se ha logueado.
-        /// </summary>
-        /// <returns>Datos completos del usuario logueado</returns>
-        Task<User?> CurrentUser();
-        #endregion
-    }
+		#region Current User
+		/// <summary>
+		/// Garantizado que existe el usuario si se ha logueado.
+		/// </summary>
+		/// <returns>Datos completos del usuario logueado</returns>
+		Task<User?> CurrentUser();
+		#endregion
+	}
 }

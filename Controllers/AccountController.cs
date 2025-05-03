@@ -1,139 +1,123 @@
 ﻿using AutoMapper;
-using GestorViajes.Models.ViewModels;
-using GestorViajes.Models.ViewModels.Image;
-using GestorViajes.Services.FuelTicket;
-using GestorViajes.Services.Image;
+using GestorViajes.Models.ViewModels.User;
 using GestorViajes.Services.Users;
-using GestorViajes.ViewModels;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using GestorViajes.Constants;
 
 namespace GestorViajes.Controllers
 {
-    [Authorize]
-    public class FuelTicketController : Controller
-    {
-        private readonly IFuelTicketService _fuelTicketService;
-        private readonly IUserService _userService;
-        public FuelTicketController(
-            IFuelTicketService fuelTicketService,
-            IUserService userService
-            )
-        {
-            _fuelTicketService = fuelTicketService;
-            _userService = userService;
-        }
+	public class AccountController : Controller
+	{
+		private readonly IUserService _userService;
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            var current = await _userService.CurrentUser();
-            var response = await _fuelTicketService.List(x => x.UserId == current.Id);
-            if (!response.Success)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "No se pudieron cargar los tickets.";
-                return View(new List<FuelTicketViewModel>());
-            }
+		public AccountController(
+			IUserService userService
+			)
+		{
+			_userService = userService;
+		}
 
-            return View(response.Data);
-        }
+		// Muestra la vista AccountLogin.cshtml
+		[HttpGet]
+		public IActionResult Login()
+		{
+			return View();
+		}
 
-        [HttpGet]
-        public async Task<IActionResult> Details(long id)
-        {
-            var response = await _fuelTicketService.Get(id, true);
-            if (!response.Success || response.Data == null)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = "Ticket no encontrado.";
-                return RedirectToAction(nameof(Index));
-            }
+		[HttpPost]
+		public async Task<IActionResult> Login(LoginViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{   // Reenvia a AccountLogin si hay errores
+				return View(nameof(Login), model);
+			}
 
-            return View(response.Data);
-        }
+			var userResponse = await _userService.AuthenticateUserAsync(model.Email, model.Password);
+			if (!userResponse.Success)
+			{
+				// Usamos TempData para pasar el mensaje a la vista
+				TempData["message"] = userResponse.Error!.Message;
+				TempData["status"] = "error";
+				// Reenvia a AccountLogin si hay errores
+				return View(nameof(Login), model);
+			}
 
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View(new FuelTicketViewModel());
-        }
+			// Autenticacion con cookies
+			var claims = new List<Claim>
+			{
+				new Claim(ClaimTypes.Name, userResponse.Data!.Name),
+				new Claim(ClaimTypes.Email, userResponse.Data!.Email),
+				new Claim(ClaimTypes.Role, userResponse.Data!.Role),
+				new Claim(Settings.UserId, userResponse.Data!.Id.ToString())
+			};
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(FuelTicketViewModel model)
-        {
-            if (model.ImageFile == null || model.ImageFile.Length == 0)
-            {
-                TempData["Error"] = "Por favor, suba una imagen al ticket.";
-                return RedirectToAction(nameof(Create));
-            }
+			var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+			var principal = new ClaimsPrincipal(identity);
+			//IMPORTANTE! usar contextAccesor!! y usando ! le digo que se que no es nulo
+			await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-            var response = await _fuelTicketService.Add(model);
-            if (!response.Success)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "Error al registrar el ticket.";
-                return RedirectToAction(nameof(Index));
-            }
+			TempData["message"] = "Inicio de sesión exitoso.";
+			TempData["status"] = "success";
+			// Redirige a IndexUser.cshtml de User  -> importante!!!
+			return RedirectToAction("Index", "User");
+		}
 
-            TempData["status"] = "success";
-            TempData["message"] = "Ticket registrado correctamente.";
-            return RedirectToAction(nameof(Index));
-        }
+		[HttpPost]
+		[Authorize]
+		public async Task<IActionResult> Logout()
+		{
+			// Cerrar sesion
+			await HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-        [HttpGet]
-        public async Task<IActionResult> Edit(long id)
-        {
-            var response = await _fuelTicketService.Get(id, true);
-            if (!response.Success || response.Data == null)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = "Ticket no encontrado.";
-                return RedirectToAction(nameof(Index));
-            }
+			// Eliminar manualmente la cookie de autenticacin
+			//utilizar context accesor!
+			HttpContext!.Response.Cookies.Delete(".GestorViajes");
 
-            return View(response.Data);
-        }
+			return RedirectToAction(nameof(Login));
+		}
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(FuelTicketViewModel model)
-        {
-            if (model.ImageFile == null || model.ImageFile.Length == 0)
-            {
-                TempData["Error"] = "Por favor, suba una imagen al ticket.";
-                return RedirectToAction(nameof(Create));
-            }
+		[HttpGet]
+		public IActionResult Register()
+		{
+			return View(new UserViewModel());
+		}
 
-            var response = await _fuelTicketService.Update(model);
-            if (!response.Success)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "Error al actualizar el ticket.";
-                return RedirectToAction(nameof(Edit), model);
-            }
+		[HttpPost]
+		public async Task<IActionResult> Register(UserViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				TempData["message"] = "Hubo un problema al crear tu cuenta. Por favor, verifica los datos.";
+				TempData["status"] = "error";
+				return View(model);
+			}
 
-            TempData["status"] = "success";
-            TempData["message"] = "Ticket actualizado correctamente.";
-            return RedirectToAction(nameof(Index));
-        }
+			var response = await _userService.Add(model);
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(long id)
-        {
-            var response = await _fuelTicketService.Delete(id);
-            if (!response.Success)
-            {
-                TempData["status"] = "error";
-                TempData["message"] = response.Error?.Message ?? "Error al eliminar el ticket.";
-                return RedirectToAction(nameof(Index));
-            }
+			// Verificamos si hubo algún error al crear el usuario
+			if (!response.Success)
+			{
+				if(response.Error!.Message == "El email ya está en uso.")
+				{
+					TempData["message"] = $"{response.Error!.Message}";
+					TempData["status"] = "error";
+					return RedirectToAction(nameof(Login));
+				}
+				TempData["message"] = $"Hubo un problema al crear tu cuenta. {response.Error!.Message}";
+				TempData["status"] = "error";  // Error
+				return View(model);
+			}
 
-            TempData["status"] = "success";
-            TempData["message"] = "Ticket eliminado correctamente.";
-            return RedirectToAction(nameof(Index));
-        }
-    }
+			// Si el usuario se ha registrado correctamente
+			TempData["message"] = "Tu cuenta ha sido creada correctamente.";
+			TempData["status"] = "success";  // Éxito
+
+			// Redirigir a Login después de crear la cuenta
+			return RedirectToAction(nameof(Login));
+		}
+	}
 }

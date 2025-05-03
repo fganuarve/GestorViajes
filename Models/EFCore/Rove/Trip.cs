@@ -24,7 +24,7 @@ public partial class Trip : CommonFields
 
     public string Origin { get; set; }
 
-    public DateTime? Date { get; set; }
+    public DateTime? Date { get; set; }    
 
     //Este lo dejo para los softdelete? o realmente un softdelete es cancelar un viaje?
     public bool Active { get; set; }
@@ -34,8 +34,8 @@ public partial class Trip : CommonFields
 
     public virtual FuelTicket? FuelTicket { get; set; }
 
-    public virtual List<TripRequest> TripRequests { get; set; } = [];
+    public virtual List<TripRequest> TripRequests { get; set; } = [];    
 
     public virtual List<UserTrip> Passengers { get; set; } = [];
-
+    
 }

@@ -7,16 +7,16 @@ namespace GestorViajes.Models.ViewModels.User
 {
     public class UserViewModel : CommonFields
     {
-
+        
         public long Id { get; set; }
 
-
+        
         [Required]
         [MaxLength(50)]
         [Display(Name = "Nombre")]
         public string FirstName { get; set; }
 
-
+        
         [MaxLength(50)]
         public string LastName { get; set; }
         //El segundo apellido va a ser es opcional
@@ -32,7 +32,7 @@ namespace GestorViajes.Models.ViewModels.User
         [MaxLength(100)]
         public string Email { get; set; }
 
-
+        
         [MaxLength(15)]
         public string? PhoneNumber { get; set; }
 
@@ -51,7 +51,7 @@ namespace GestorViajes.Models.ViewModels.User
         public List<SelectListItem> Roles { get; set; } = [];
 
         public bool Active { get; set; }
-
+         
     }
 }
 

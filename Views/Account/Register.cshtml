@@ -33,45 +33,45 @@
                 }
 
                 <!-- Formulario de registro -->
-                <form asp-action="Register" asp-controller="Account" method="post">
-                    @Html.ValidationSummary(true, "", new { @class = "error-message" })
-                    <!-- Tengo el rol como parametro oculto para que funcione el Add -->
-                    @Html.HiddenFor(m => m.SelectedRol)
+            <form asp-action="Register" asp-controller="Account" method="post">
+                @Html.ValidationSummary(true, "", new { @class = "error-message" })
+                <!-- Tengo el rol como parametro oculto para que funcione el Add -->
+                @Html.HiddenFor(m => m.SelectedRol)
 
-                    <div class="form-container">
-                        <div class="form-element">
-                            <input asp-for="FirstName" class="input-control" placeholder="Nombre" />
-                            <span asp-validation-for="FirstName" class="error-message"></span>
-                        </div>
-                        <div class="form-element">
-                            <input asp-for="LastName" class="input-control" placeholder="Primer apellido" />
-                            <span asp-validation-for="LastName" class="error-message"></span>
-                        </div>
-                        <div class="form-element">
-                            <input asp-for="LastName2" class="input-control" placeholder="Segundo apellido (opcional)" />
-                            <span asp-validation-for="LastName2" class="error-message"></span>
-                        </div>
-                        <div class="form-element">
-                            <input asp-for="NationalId" class="input-control" placeholder="DNI/NIF" />
-                            <span asp-validation-for="NationalId" class="error-message"></span>
-                        </div>
-                        <div class="form-element">
-                            <input asp-for="PhoneNumber" class="input-control" placeholder="Teléfono (opcional)" />
-                            <span asp-validation-for="PhoneNumber" class="error-message"></span>
-                        </div>
-                        <div class="form-element">
-                            <input asp-for="Email" class="input-control" placeholder="Correo electrónico" />
-                            <span asp-validation-for="Email" class="error-message"></span>
-                        </div>
-                        <div class="form-element">
-                            <input asp-for="Password" type="password" class="input-control password" placeholder="Contraseña" />
-                            <span asp-validation-for="Password" class="error-message"></span>
-                        </div>
-                        <div class="form-element">
-                            <button type="submit" class="btn-submit">Registrarme</button>
-                        </div>
+                <div class="form-container">
+                    <div class="form-element">
+                        <input asp-for="FirstName" class="input-control" placeholder="Nombre" />
+                        <span asp-validation-for="FirstName" class="error-message"></span>
                     </div>
-                </form>
+                    <div class="form-element">
+                        <input asp-for="LastName" class="input-control" placeholder="Primer apellido" />
+                        <span asp-validation-for="LastName" class="error-message"></span>
+                    </div>
+                    <div class="form-element">
+                        <input asp-for="LastName2" class="input-control" placeholder="Segundo apellido (opcional)" />
+                        <span asp-validation-for="LastName2" class="error-message"></span>
+                    </div>
+                    <div class="form-element">
+                        <input asp-for="NationalId" class="input-control" placeholder="DNI/NIF" />
+                        <span asp-validation-for="NationalId" class="error-message"></span>
+                    </div>
+                    <div class="form-element">
+                        <input asp-for="PhoneNumber" class="input-control" placeholder="Teléfono (opcional)" />
+                        <span asp-validation-for="PhoneNumber" class="error-message"></span>
+                    </div>
+                    <div class="form-element">
+                        <input asp-for="Email" class="input-control" placeholder="Correo electrónico" />
+                        <span asp-validation-for="Email" class="error-message"></span>
+                    </div>
+                    <div class="form-element">
+                        <input asp-for="Password" type="password" class="input-control password" placeholder="Contraseña" />
+                        <span asp-validation-for="Password" class="error-message"></span>
+                    </div>
+                    <div class="form-element">
+                        <button type="submit" class="btn-submit">Registrarme</button>
+                    </div>
+                </div>
+            </form>
             </div>
         </div>
     </section>

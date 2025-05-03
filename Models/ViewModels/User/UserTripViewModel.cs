@@ -9,6 +9,6 @@
 
         // Para mostrar en vistas
         public string UserFullName { get; set; }
-        public string TripSummary { get; set; }
+        public string TripSummary { get; set; } 
     }
 }

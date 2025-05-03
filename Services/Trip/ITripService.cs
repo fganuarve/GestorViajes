@@ -16,8 +16,8 @@ namespace GestorViajes.Services.Trips
         Task<GenericResponse<bool>> Exists(Expression<Func<Trip, bool>> predicate);
 
         Task<GenericResponse<bool>> JoinTrip(long id);
-        Task<GenericResponse<bool>> ExitTrip(long id, long userId);
+		Task<GenericResponse<bool>> ExitTrip(long id, long userId);
         Task<GenericResponse<bool>> CancelTrip(long id);
         Task<GenericResponse<bool>> EndTrip(long id);
-    }
+	}
 }

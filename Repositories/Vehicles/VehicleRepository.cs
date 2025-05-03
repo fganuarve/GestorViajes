@@ -38,35 +38,35 @@ namespace GestorViajes.Repositories.Vehicles
             }
         }
 
-        public async Task<GenericResponse<Vehicle>> Get(long id, bool? include = false)
-        {
-            try
-            {
-                await using var context = await _contextFactory.CreateDbContextAsync();
+		public async Task<GenericResponse<Vehicle>> Get(long id, bool? include = false)
+		{
+			try
+			{
+				await using var context = await _contextFactory.CreateDbContextAsync();
 
-                IQueryable<Vehicle> query = context.Vehicles;
+				IQueryable<Vehicle> query = context.Vehicles;
 
-                if (include == true)
-                {
+				if (include == true)
+				{
                     query = query.Include(v => v.Owner)
                                  .Include(v => v.Trips).ThenInclude(x => x.Passengers);
-                }
+				}
 
-                var entity = await query.FirstOrDefaultAsync(v => v.Id == id);
+				var entity = await query.FirstOrDefaultAsync(v => v.Id == id);
 
-                if (entity == null)
-                    return new GenericResponse<Vehicle> { Error = new ErrorResponse("Vehículo no encontrado.") };
+				if (entity == null)
+					return new GenericResponse<Vehicle> { Error = new ErrorResponse("Vehículo no encontrado.") };
 
-                return new GenericResponse<Vehicle> { Data = entity };
-            }
-            catch (Exception ex)
-            {
-                return new GenericResponse<Vehicle> { Error = new ErrorResponse(ex) };
-            }
-        }
+				return new GenericResponse<Vehicle> { Data = entity };
+			}
+			catch (Exception ex)
+			{
+				return new GenericResponse<Vehicle> { Error = new ErrorResponse(ex) };
+			}
+		}
 
 
-        public async Task<GenericResponse<Vehicle>> Add(Vehicle entity)
+		public async Task<GenericResponse<Vehicle>> Add(Vehicle entity)
         {
             try
             {

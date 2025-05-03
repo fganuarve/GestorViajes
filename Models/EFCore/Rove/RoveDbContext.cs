@@ -5,193 +5,193 @@ using Microsoft.Extensions.Configuration;
 
 namespace GestorViajes.Models.EFCore.Rove
 {
-    public class RoveDbContext : DbContext
-    {
-        private readonly IConfiguration _configuration;
+	public class RoveDbContext : DbContext
+	{
+		private readonly IConfiguration _configuration;
 
 
-        public RoveDbContext(DbContextOptions<RoveDbContext> options, IConfiguration configuration) : base(options)
-        {
-            _configuration = configuration;
-        }
+		public RoveDbContext(DbContextOptions<RoveDbContext> options, IConfiguration configuration) : base(options)
+		{
+			_configuration = configuration;
+		}
 
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<UserTrip> UserTrips { get; set; }
-        public DbSet<Trip> Trips { get; set; }
-        public DbSet<TripRequest> TripRequests { get; set; }
-        public DbSet<Vehicle> Vehicles { get; set; }
-        public DbSet<FuelTicket> FuelTickets { get; set; }
-        public DbSet<FuelTicketImage> FuelTicketImage { get; set; }
+		public DbSet<User> Users { get; set; }
+		public DbSet<UserTrip> UserTrips { get; set; }
+		public DbSet<Trip> Trips { get; set; }
+		public DbSet<TripRequest> TripRequests { get; set; }
+		public DbSet<Vehicle> Vehicles { get; set; }
+		public DbSet<FuelTicket> FuelTickets { get; set; }
+		public DbSet<FuelTicketImage> FuelTicketImage { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                var connectionString = _configuration.GetConnectionString("Rove");
-                optionsBuilder.UseSqlServer(connectionString);
-            }
-            optionsBuilder.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
-        }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		{
+			if (!optionsBuilder.IsConfigured)
+			{
+				var connectionString = _configuration.GetConnectionString("Rove");
+				optionsBuilder.UseSqlServer(connectionString);
+			}
+			optionsBuilder.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
+		}
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+			base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasKey(e => e.Id);
+			modelBuilder.Entity<User>(entity =>
+			{
+				entity.HasKey(e => e.Id);
 
-                entity.Property(e => e.Name).IsRequired();
-                entity.Property(e => e.NationalId).IsRequired();
-                entity.Property(e => e.LastName1).IsRequired();
-                entity.Property(e => e.Password).IsRequired();
-                entity.Property(e => e.Email).IsRequired();
-                entity.Property(e => e.Role).IsRequired();
-                entity.Property(e => e.CurrentPlan).IsRequired();
+				entity.Property(e => e.Name).IsRequired();
+				entity.Property(e => e.NationalId).IsRequired();
+				entity.Property(e => e.LastName1).IsRequired();
+				entity.Property(e => e.Password).IsRequired();
+				entity.Property(e => e.Email).IsRequired();
+				entity.Property(e => e.Role).IsRequired();
+				entity.Property(e => e.CurrentPlan).IsRequired();
 
-                entity.HasMany(u => u.TripRequests)
-                      .WithOne(tr => tr.User)
-                      .HasForeignKey(tr => tr.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+				entity.HasMany(u => u.TripRequests)
+					  .WithOne(tr => tr.User)
+					  .HasForeignKey(tr => tr.UserId)
+					  .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasMany(u => u.UserTrips)
-                      .WithOne(ut => ut.User)
-                      .HasForeignKey(ut => ut.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+				entity.HasMany(u => u.UserTrips)
+					  .WithOne(ut => ut.User)
+					  .HasForeignKey(ut => ut.UserId)
+					  .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasMany(u => u.Vehicles)
-                      .WithOne(v => v.Owner)
-                      .HasForeignKey(v => v.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+				entity.HasMany(u => u.Vehicles)
+					  .WithOne(v => v.Owner)
+					  .HasForeignKey(v => v.UserId)
+					  .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasMany(u => u.Trips)
-                      .WithOne(t => t.Driver)
-                      .HasForeignKey(t => t.DriverId)
-                      .OnDelete(DeleteBehavior.Cascade);
+				entity.HasMany(u => u.Trips)
+					  .WithOne(t => t.Driver)
+					  .HasForeignKey(t => t.DriverId)
+					  .OnDelete(DeleteBehavior.Cascade);
 
 
-                entity.HasMany(u => u.FuelTickets)
-                      .WithOne()
-                      .HasForeignKey(ft => ft.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
+				entity.HasMany(u => u.FuelTickets)
+					  .WithOne()
+					  .HasForeignKey(ft => ft.UserId)
+					  .OnDelete(DeleteBehavior.Cascade);
+			});
 
-            modelBuilder.Entity<Trip>(entity =>
-            {
-                entity.HasKey(e => e.Id);
+			modelBuilder.Entity<Trip>(entity =>
+			{
+				entity.HasKey(e => e.Id);
 
-                entity.Property(e => e.Destination).IsRequired();
-                entity.Property(e => e.Origin).IsRequired();
-                entity.Property(e => e.Seats).IsRequired();
-                entity.Property(e => e.Active).IsRequired();
-                entity.Property(e => e.Status).IsRequired();
+				entity.Property(e => e.Destination).IsRequired();
+				entity.Property(e => e.Origin).IsRequired();
+				entity.Property(e => e.Seats).IsRequired();
+				entity.Property(e => e.Active).IsRequired();
+				entity.Property(e => e.Status).IsRequired();
 
-                entity.HasOne(t => t.Driver)
-                      .WithMany(u => u.Trips)
-                      .HasForeignKey(t => t.DriverId)
-                      .OnDelete(DeleteBehavior.Restrict);
+				entity.HasOne(t => t.Driver)
+					  .WithMany(u => u.Trips)
+					  .HasForeignKey(t => t.DriverId)
+					  .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(t => t.Vehicle)
-                      .WithMany(v => v.Trips)
-                      .HasForeignKey(t => t.VehicleId)
-                      .OnDelete(DeleteBehavior.Restrict);
+				entity.HasOne(t => t.Vehicle)
+					  .WithMany(v => v.Trips)
+					  .HasForeignKey(t => t.VehicleId)
+					  .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasMany(t => t.TripRequests)
-                      .WithOne(tr => tr.Trip)
-                      .HasForeignKey(tr => tr.TripId)
-                      .OnDelete(DeleteBehavior.Cascade);
+				entity.HasMany(t => t.TripRequests)
+					  .WithOne(tr => tr.Trip)
+					  .HasForeignKey(tr => tr.TripId)
+					  .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasMany(t => t.Passengers)
-                      .WithOne(ut => ut.Trip)
-                      .HasForeignKey(ut => ut.TripId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
+				entity.HasMany(t => t.Passengers)
+					  .WithOne(ut => ut.Trip)
+					  .HasForeignKey(ut => ut.TripId)
+					  .OnDelete(DeleteBehavior.Cascade);
+			});
 
-            modelBuilder.Entity<TripRequest>(entity =>
-            {
-                entity.HasKey(e => e.Id);
+			modelBuilder.Entity<TripRequest>(entity =>
+			{
+				entity.HasKey(e => e.Id);
 
-                entity.HasOne(tr => tr.User)
-                      .WithMany(u => u.TripRequests)
-                      .HasForeignKey(tr => tr.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+				entity.HasOne(tr => tr.User)
+					  .WithMany(u => u.TripRequests)
+					  .HasForeignKey(tr => tr.UserId)
+					  .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasOne(tr => tr.Trip)
-                      .WithMany(t => t.TripRequests)
-                      .HasForeignKey(tr => tr.TripId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
+				entity.HasOne(tr => tr.Trip)
+					  .WithMany(t => t.TripRequests)
+					  .HasForeignKey(tr => tr.TripId)
+					  .OnDelete(DeleteBehavior.Cascade);
+			});
 
-            modelBuilder.Entity<UserTrip>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Active).IsRequired();
-                entity.HasOne(ut => ut.User)
-                      .WithMany(u => u.UserTrips)
-                      .HasForeignKey(ut => ut.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+			modelBuilder.Entity<UserTrip>(entity =>
+			{
+				entity.HasKey(e => e.Id);
+				entity.Property(e => e.Active).IsRequired();
+				entity.HasOne(ut => ut.User)
+					  .WithMany(u => u.UserTrips)
+					  .HasForeignKey(ut => ut.UserId)
+					  .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasOne(ut => ut.Trip)
-                      .WithMany(t => t.Passengers)
-                      .HasForeignKey(ut => ut.TripId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
+				entity.HasOne(ut => ut.Trip)
+					  .WithMany(t => t.Passengers)
+					  .HasForeignKey(ut => ut.TripId)
+					  .OnDelete(DeleteBehavior.Cascade);
+			});
 
-            modelBuilder.Entity<Vehicle>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Plate).IsRequired();
-                entity.Property(e => e.MaxSeats).IsRequired();
-                entity.Property(e => e.Active).IsRequired();
+			modelBuilder.Entity<Vehicle>(entity =>
+			{
+				entity.HasKey(e => e.Id);
+				entity.Property(e => e.Plate).IsRequired();
+				entity.Property(e => e.MaxSeats).IsRequired();
+				entity.Property(e => e.Active).IsRequired();
 
-                entity.HasOne(v => v.Owner)
-                      .WithMany(u => u.Vehicles)
-                      .HasForeignKey(v => v.UserId)
-                      .OnDelete(DeleteBehavior.Restrict);
+				entity.HasOne(v => v.Owner)
+					  .WithMany(u => u.Vehicles)
+					  .HasForeignKey(v => v.UserId)
+					  .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasMany(v => v.Trips)
-                      .WithOne(t => t.Vehicle)
-                      .HasForeignKey(t => t.VehicleId)
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
+				entity.HasMany(v => v.Trips)
+					  .WithOne(t => t.Vehicle)
+					  .HasForeignKey(t => t.VehicleId)
+					  .OnDelete(DeleteBehavior.Restrict);
+			});
 
-            modelBuilder.Entity<FuelTicket>(entity =>
-            {
-                entity.HasKey(e => e.Id);
+			modelBuilder.Entity<FuelTicket>(entity =>
+			{
+				entity.HasKey(e => e.Id);
 
-                entity.Property(e => e.Notes)
-                      .IsRequired()
-                      .HasMaxLength(1000);
+				entity.Property(e => e.Notes)
+					  .IsRequired()
+					  .HasMaxLength(1000);
 
-                entity.Property(e => e.Amount)
-                      .HasPrecision(10, 2);
+				entity.Property(e => e.Amount)
+					  .HasPrecision(10, 2);
 
-                entity.Property(e => e.UploadedAt)
-                      .IsRequired();
+				entity.Property(e => e.UploadedAt)
+					  .IsRequired();
 
-                entity.HasOne(e => e.User)
-                      .WithMany(u => u.FuelTickets)
-                      .HasForeignKey(e => e.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+				entity.HasOne(e => e.User)
+					  .WithMany(u => u.FuelTickets)
+					  .HasForeignKey(e => e.UserId)
+					  .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasOne(e => e.Image)
-                      .WithOne(i => i.FuelTicket)
-                      .HasForeignKey<FuelTicketImage>(i => i.FuelTicketId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
+				entity.HasOne(e => e.Image)
+					  .WithOne(i => i.FuelTicket)
+					  .HasForeignKey<FuelTicketImage>(i => i.FuelTicketId)
+					  .OnDelete(DeleteBehavior.Cascade);
+			});
 
-            modelBuilder.Entity<FuelTicketImage>(entity =>
-            {
-                entity.HasKey(i => i.Id); // Regular PK
+			modelBuilder.Entity<FuelTicketImage>(entity =>
+			{
+				entity.HasKey(i => i.Id); // Regular PK
 
-                entity.Property(i => i.Image)
-                      .IsRequired()
-                      .HasColumnType("nvarchar(max)");
+				entity.Property(i => i.Image)
+					  .IsRequired()
+					  .HasColumnType("nvarchar(max)");
 
-                entity.HasIndex(i => i.FuelTicketId) // Enforce 1:1
-                      .IsUnique();
-            });
+				entity.HasIndex(i => i.FuelTicketId) // Enforce 1:1
+					  .IsUnique();
+			});
 
-        }
-    }
+		}
+	}
 }

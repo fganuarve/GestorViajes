@@ -41,13 +41,13 @@ namespace GestorViajes.Repositories.FuelTickets
             try
             {
                 await using var context = await _contextFactory.CreateDbContextAsync();
-                IQueryable<FuelTicket> query = context.FuelTickets;
-                if (include == true)
+				IQueryable<FuelTicket> query = context.FuelTickets;
+                if(include == true)
                 {
-                    query = query.Include(t => t.Image).Include(t => t.User);
-                }
+					query = query.Include(t => t.Image).Include(t => t.User);
+				}
                 var ticket = await query.FirstOrDefaultAsync(t => t.Id == id);
-                if (ticket == null)
+				if (ticket == null)
                 {
                     return new GenericResponse<FuelTicket> { Error = new ErrorResponse("Fuel ticket not found.") };
                 }
@@ -129,48 +129,48 @@ namespace GestorViajes.Repositories.FuelTickets
             }
         }
 
-        #endregion
+		#endregion
 
-        #region Image
-        public async Task<GenericResponse<FuelTicketImage>> UploadImage(long id, string base64)
-        {
-            try
-            {
-                await using var context = await _contextFactory.CreateDbContextAsync();
+		#region Image
+		public async Task<GenericResponse<FuelTicketImage>> UploadImage(long id, string base64)
+		{
+			try
+			{
+				await using var context = await _contextFactory.CreateDbContextAsync();
 
-                var ticket = await context.FuelTickets
-                    .Include(t => t.Image)
-                    .FirstOrDefaultAsync(t => t.Id == id);
+				var ticket = await context.FuelTickets
+					.Include(t => t.Image)
+					.FirstOrDefaultAsync(t => t.Id == id);
 
-                if (ticket == null)
-                {
-                    return new GenericResponse<FuelTicketImage> { Error = new ErrorResponse("Fuel ticket not found.") };
-                }
+				if (ticket == null)
+				{
+					return new GenericResponse<FuelTicketImage> { Error = new ErrorResponse("Fuel ticket not found.") };
+				}
 
-                // Remove existing image if it exists
-                if (ticket.Image != null)
-                {
-                    context.FuelTicketImage.Remove(ticket.Image);
-                }
+				// Remove existing image if it exists
+				if (ticket.Image != null)
+				{
+					context.FuelTicketImage.Remove(ticket.Image);
+				}
 
-                // Add new image
-                var image = new FuelTicketImage
-                {
-                    FuelTicketId = id,
-                    Image = "data:image/jpeg;base64," + base64
-                };
-                context.FuelTicketImage.Add(image);
+				// Add new image
+				var image = new FuelTicketImage
+				{
+					FuelTicketId = id,
+					Image = "data:image/jpeg;base64," + base64
+				};
+				context.FuelTicketImage.Add(image);
 
-                await context.SaveChangesAsync();
+				await context.SaveChangesAsync();
 
-                return new GenericResponse<FuelTicketImage> { Data = image };
-            }
-            catch (Exception ex)
-            {
-                return new GenericResponse<FuelTicketImage> { Error = new ErrorResponse(ex) };
-            }
-        }
+				return new GenericResponse<FuelTicketImage> { Data = image };
+			}
+			catch (Exception ex)
+			{
+				return new GenericResponse<FuelTicketImage> { Error = new ErrorResponse(ex) };
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -15,16 +15,16 @@ namespace GestorViajes.Controllers
     public class UserController : Controller
     {
         private readonly ITripService _tripService;
-        private readonly IUserService _userService;
-        private readonly IMapper _mapper;
+		private readonly IUserService _userService;
+		private readonly IMapper _mapper;
         public UserController(
             IUserService userService,
-            ITripService tripService,
-            IMapper mapper
+			ITripService tripService,
+			IMapper mapper
             )
         {
-            _userService = userService;
-            _tripService = tripService;
+			_userService = userService;
+			_tripService = tripService;
             _mapper = mapper;
         }
 
@@ -33,34 +33,34 @@ namespace GestorViajes.Controllers
         public async Task<IActionResult> Index()
         {
             var current = await _userService.CurrentUser();
-            if (current == null)
+            if(current == null)
             {
                 // el authorize garantiza que esta logueado
                 var userId = long.Parse(User?.FindFirst(Settings.UserId).Value);
                 var exists = await _userService.Get(x => x.Id == userId);
-                if (!exists.Success)
-                {
-                    TempData["status"] = "error";
-                    TempData["message"] = exists.Error!.Message;
+				if (!exists.Success)
+				{
+					TempData["status"] = "error";
+					TempData["message"] = exists.Error!.Message;
                     return RedirectToAction("Register", "Account");
-                }
-                if (exists.Data == null)
+				}
+                if(exists.Data == null)
                 {
-                    return RedirectToAction("Register", "Account");
-                }
+					return RedirectToAction("Register", "Account");
+				}
                 else
                 {
-                    TempData["status"] = "error";
-                    TempData["message"] = "Su cuenta está inactiva, contacte con un administrador para reactivarla.";
+					TempData["status"] = "error";
+					TempData["message"] = "Su cuenta está inactiva, contacte con un administrador para reactivarla.";
                     // forzamos el borrado de la cookie
-                    await HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                    HttpContext!.Response.Cookies.Delete(".GestorViajes");
-                    return RedirectToAction("Login", "Account");
-                }
-            }
+					await HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+					HttpContext!.Response.Cookies.Delete(".GestorViajes");
+					return RedirectToAction("Login", "Account");
+				}
+			}
 
 
-            var response = await _tripService.List(x => x.DriverId == current!.Id || x.Passengers.Select(y => y.UserId).Contains(current.Id));
+			var response = await _tripService.List(x => x.DriverId == current!.Id || x.Passengers.Select(y => y.UserId).Contains(current.Id));
 
             if (!response.Success)
             {
@@ -133,14 +133,14 @@ namespace GestorViajes.Controllers
 
             // Cerrar sesion y eliminar la cookie si se trata del usuario logueado
             var current = await _userService.CurrentUser();
-            if (current == null)
+            if(current == null)
             {
-                await HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                HttpContext!.Response.Cookies.Delete(".GestorViajes");
-                return RedirectToAction("Login", "Account");
-            }
-            return RedirectToAction(nameof(Index));
-        }
+				await HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+				HttpContext!.Response.Cookies.Delete(".GestorViajes");
+				return RedirectToAction("Login", "Account");
+			}
+			return RedirectToAction(nameof(Index));
+		}
 
         //Boton para activar o desactivar
         [HttpPost]

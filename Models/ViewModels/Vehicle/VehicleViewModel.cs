@@ -29,6 +29,6 @@ namespace GestorViajes.Models.ViewModels.Vehicle
 
         //vehiculo se crea activo por defecto
         [Display(Name = "Active")]
-        public bool Active { get; set; } = true;
+        public bool Active { get; set; } = true;        
     }
 }

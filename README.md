@@ -23,9 +23,9 @@
 
 ##  Características principales
 
-- Aplicación **responsive**, usable tanto en escritorio como en dispositivos móviles.
-- Arquitectura **MVC** con separación clara entre **controladores**, **servicios** y **repositorios**.
-- **Manejo robusto de errores** mediante clases `GenericResponse` y `ErrorResponse`.
+- Aplicación **responsive**
+- Arquitectura **MVC**
+- **Manejo de errores** `GenericResponse` y `ErrorResponse`.
 - **SweetAlert2** para mostrar alertas visuales y confirmaciones.
 - Despliegue en **MonsterASP.net**, servicio gratuito con soporte para proyectos .NET.
 

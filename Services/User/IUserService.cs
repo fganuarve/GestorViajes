@@ -1,26 +1,31 @@
 ﻿using GestorViajes.Models;
 using GestorViajes.Models.EFCore.Rove;
-using GestorViajes.Models.ViewModels.Trip;
 using GestorViajes.Models.ViewModels.User;
 using System.Linq.Expressions;
 
-namespace GestorViajes.Services.User
+namespace GestorViajes.Services.Users
 {
     public interface IUserService
     {
-        Task<GenericResponse<List<UserViewModel>>> List(Expression<Func<Models.EFCore.Rove.User, bool>>? predicate = null);
-        Task<GenericResponse<UserViewModel>> GetById(long id);
+        Task<GenericResponse<List<UserViewModel>>> List(Expression<Func<User, bool>>? predicate = null);
+        Task<GenericResponse<UserViewModel>> Get(Expression<Func<User, bool>> predicate);
         Task<GenericResponse<UserViewModel>> Add(UserViewModel model);
         Task<GenericResponse<UserViewModel>> Update(UserViewModel model);
         Task<GenericResponse<bool>> Delete(long id);
-        //Para exists, trabajo sobre la entidad, no sobre el ViewModel
-        Task<GenericResponse<bool>> Exists(Expression<Func<Models.EFCore.Rove.User, bool>> predicate);
-        Task<bool> AuthenticateUserAsync(LoginViewModel loginModel);
-        Task<Models.EFCore.Rove.User?> GetUserByCredentialsAsync(string email, string password);
-        Task<UserViewModel?> GetUserByEmailAsync(string email);
-        Task<GenericResponse<bool>> Reactivate(long id);
-        Task<GenericResponse<bool>> Deactivate(long id);
+        Task<GenericResponse<User>> AuthenticateUserAsync(string email, string password);
+        Task<GenericResponse<bool>> Toggle(long id);
+
+        #region Subscription
+        Task<GenericResponse<bool>> ChangeSubscriptionAsync(long id, SubscriptionType newPlan);
+        #endregion
 
 
+        #region Current User
+        /// <summary>
+        /// Garantizado que existe el usuario si se ha logueado.
+        /// </summary>
+        /// <returns>Datos completos del usuario logueado</returns>
+        Task<User?> CurrentUser();
+        #endregion
     }
 }

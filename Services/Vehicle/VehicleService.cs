@@ -1,41 +1,45 @@
-﻿using GestorViajes.Models;
-using GestorViajes.Repositories.Users;
-using System.Linq.Expressions;
-using GestorViajes.Models.ViewModels.Vehicle;
+﻿using AutoMapper;
+using GestorViajes.Models;
 using GestorViajes.Models.EFCore.Rove;
+using GestorViajes.Models.ViewModels.Vehicle;
+using GestorViajes.Repositories.Trips;
 using GestorViajes.Repositories.Vehicles;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using GestorViajes.Models.ViewModels.Trip;
+using GestorViajes.Services.Users;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq.Expressions;
+using System.Net.NetworkInformation;
 
-namespace GestorViajes.Services.Vehicle
+namespace GestorViajes.Services.Vehicles
 {
     public class VehicleService : IVehicleService
     {
         private readonly IVehicleRepository _vehicleRepository;
-        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
+        private readonly IUserService _userService;
+        private readonly ITripRepository _tripRepository;
         public VehicleService(
             IVehicleRepository vehicleRepository,
-            IUserRepository userRepository,
             IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
+            IUserService userService,
+            ITripRepository tripRepository)
         {
             _vehicleRepository = vehicleRepository;
-            _userRepository = userRepository;
             _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
+            _userService = userService;
+            _tripRepository = tripRepository;
         }
 
-        public async Task<GenericResponse<List<VehicleViewModel>>> List()
+        public async Task<GenericResponse<List<VehicleViewModel>>> List(Expression<Func<Vehicle, bool>>? predicate = null)
         {
             var response = new GenericResponse<List<VehicleViewModel>>();
             try
             {
-                var result = await _vehicleRepository.List();
-                if (result.Error != null) return result.ConvertError<List<VehicleViewModel>>();
+                var result = await _vehicleRepository.List(predicate);
+                if (!result.Success)
+                {
+                    response.Error = result.Error;
+                    return response;
+                }
 
                 response.Data = _mapper.Map<List<VehicleViewModel>>(result.Data);
             }
@@ -51,13 +55,12 @@ namespace GestorViajes.Services.Vehicle
             var response = new GenericResponse<VehicleViewModel>();
             try
             {
-                var result = await _vehicleRepository.GetById(id);
-                if (result.Error != null || result.Data == null)
+                var result = await _vehicleRepository.Get(id);
+                if (!result.Success)
                 {
-                    response.Error = new ErrorResponse("Vehículo no encontrado.");
+                    response.Error = result.Error;
                     return response;
                 }
-
                 response.Data = _mapper.Map<VehicleViewModel>(result.Data);
             }
             catch (Exception ex)
@@ -69,54 +72,76 @@ namespace GestorViajes.Services.Vehicle
 
         public async Task<GenericResponse<VehicleViewModel>> Add(VehicleViewModel model)
         {
-            var response = new GenericResponse<VehicleViewModel>();
             try
             {
-                var vehicle = _mapper.Map<Models.EFCore.Rove.Vehicle>(model);
+                var current = await _userService.CurrentUser();
 
+                // comprobar que la matricula es unica
+                var exists = await _vehicleRepository.Exists(x => x.Plate == model.Plate);
+                if (!exists.Success)
+                    return new GenericResponse<VehicleViewModel>() { Error = exists.Error };
+                if (exists.Data)
+                    return new GenericResponse<VehicleViewModel>() { Error = new ErrorResponse("Ya existe un vehiculo con esta matricula.") };
+
+
+
+                var vehicle = _mapper.Map<Vehicle>(model);
+                vehicle.UserId = current!.Id;
                 vehicle.Active = true;
-                vehicle.CreatedAt = DateTime.UtcNow;
-                vehicle.LastUpdateAt = DateTime.UtcNow;
-
-                var userIdClaim = _httpContextAccessor.HttpContext?.User.Claims
-                    .FirstOrDefault(c => c.Type == "UserId")?.Value;
-
-                if (!long.TryParse(userIdClaim, out var userId))
-                    return response.ConvertError<VehicleViewModel>("No se ha podido encontrar el usuario");
-
-                vehicle.UserId = userId;
-                vehicle.CreatedBy = userId.ToString();
-                vehicle.LastUpdatedBy = userId.ToString();
+                vehicle.CreatedBy = current.Email;
+                vehicle.LastUpdatedBy = current.Email;
 
                 var result = await _vehicleRepository.Add(vehicle);
-                if (result.Error != null) return result.ConvertError<VehicleViewModel>();
+                if (!result.Success)
+                {
+                    return new GenericResponse<VehicleViewModel>() { Error = result.Error };
+                }
 
-                model.Id = result.Data.Id;
-                response.Data = model;
+                var data = _mapper.Map<VehicleViewModel>(result.Data);
+                return new GenericResponse<VehicleViewModel>() { Data = data };
             }
             catch (Exception ex)
             {
-                response.Error = new ErrorResponse(ex);
+                return new GenericResponse<VehicleViewModel>() { Error = new ErrorResponse(ex) };
             }
-            return response;
         }
+
 
         public async Task<GenericResponse<VehicleViewModel>> Update(VehicleViewModel model)
         {
             var response = new GenericResponse<VehicleViewModel>();
             try
             {
-                var result = await _vehicleRepository.GetById(model.Id);
-                if (result.Error != null || result.Data == null)
-                    return response.ConvertError<VehicleViewModel>("Vehículo no encontrado.");
+                // solo el propietario puede modificar el coche
+                var current = await _userService.CurrentUser();
+                var vehicleResponse = await _vehicleRepository.Get(model.Id);
+                if (!vehicleResponse.Success)
+                {
+                    response.Error = vehicleResponse.Error;
+                    return response;
+                }
+                if (vehicleResponse.Data!.UserId != current!.Id)
+                {
+                    response.Error = new ErrorResponse("No tienes permisos para modificar este vehiculo.");
+                    return response;
+                }
 
-                var vehicle = result.Data;
-                _mapper.Map(model, vehicle);
+                // Comprobar que la matricula es unica
+                var exists = await _vehicleRepository.Exists(x => x.Plate == model.Plate && x.Id != model.Id);
+                if (!exists.Success)
+                    return new GenericResponse<VehicleViewModel>() { Error = exists.Error };
+                if (exists.Data)
+                    return new GenericResponse<VehicleViewModel>() { Error = new ErrorResponse("Ya existe un vehiculo con esta matricula.") };
 
-                var updateResult = await _vehicleRepository.Update(vehicle);
-                if (updateResult.Error != null) return updateResult.ConvertError<VehicleViewModel>();
 
-                response.Data = model;
+                var vehicle = _mapper.Map<Vehicle>(model);
+                var result = await _vehicleRepository.Update(vehicle);
+                if (!result.Success)
+                {
+                    response.Error = result.Error;
+                    return response;
+                }
+                response.Data = _mapper.Map<VehicleViewModel>(result.Data);
             }
             catch (Exception ex)
             {
@@ -125,46 +150,53 @@ namespace GestorViajes.Services.Vehicle
             return response;
         }
 
-        public async Task<GenericResponse<bool>> DeactivateVehicle(long id)
+        public async Task<GenericResponse<bool>> Toggle(long id)
         {
-            var response = new GenericResponse<bool>();
-            try
+            var result = await _vehicleRepository.Get(id, true);
+            if (!result.Success)
+                return new GenericResponse<bool>() { Error = result.Error };
+
+            // solo puede modificarlo el propietario
+            var current = await _userService.CurrentUser();
+            if (result.Data!.UserId != current!.Id)
             {
-                var result = await _vehicleRepository.GetById(id);
-                if (result.Error != null || result.Data == null)
-                    return response.ConvertError<bool>("Vehículo no encontrado.");
-
-                result.Data.Active = false;
-                await _vehicleRepository.Update(result.Data);
-
-                response.Data = true;
+                return new GenericResponse<bool>() { Error = new ErrorResponse("No tienes permisos para modificar este vehiculo.") };
             }
-            catch (Exception ex)
+
+
+            var vehicle = result.Data;
+            if (result.Data!.Active)
             {
-                response.Error = new ErrorResponse(ex);
+                if (vehicle.Trips.Any(x => x.Status == TripStatus.Available || x.Status == TripStatus.Full))
+                {
+                    return new GenericResponse<bool>() { Error = new ErrorResponse("No se puede desactivar el vehiculo porque tiene viajes activos.") };
+                }
+                // Si no hay viajes activos, borramos todo
+                var trips = vehicle.Trips.ToList();
+                var errors = new List<string>();
+                foreach (var trip in trips)
+                {
+                    var passengersResponse = await _tripRepository.DeletePassengers(trip.Id);
+                    if (!passengersResponse.Success)
+                        errors.Add(passengersResponse.Error.Message);
+                    var tripResponse = await _tripRepository.Delete(trip.Id);
+                    if (!tripResponse.Success)
+                        errors.Add(tripResponse.Error.Message);
+                }
+                if (errors.Count > 0)
+                {
+                    return new GenericResponse<bool>() { Error = new ErrorResponse(string.Join(", ", errors)) };
+                }
             }
-            return response;
-        }
 
-        public async Task<GenericResponse<bool>> ReactivateVehicle(long id)
-        {
-            var response = new GenericResponse<bool>();
-            try
-            {
-                var result = await _vehicleRepository.GetById(id);
-                if (result.Error != null || result.Data == null)
-                    return response.ConvertError<bool>("Vehículo no encontrado.");
+            // Negamos el estado actual del vehiculo
+            result.Data!.Active = !result.Data!.Active;
 
-                result.Data.Active = true;
-                await _vehicleRepository.Update(result.Data);
+            var updateResult = await _vehicleRepository.Update(result.Data);
+            if (!updateResult.Success)
+                return new GenericResponse<bool>() { Error = updateResult.Error };
 
-                response.Data = true;
-            }
-            catch (Exception ex)
-            {
-                response.Error = new ErrorResponse(ex);
-            }
-            return response;
+            return new GenericResponse<bool>() { Data = true };
         }
 
         public async Task<GenericResponse<bool>> Delete(long id)
@@ -172,12 +204,54 @@ namespace GestorViajes.Services.Vehicle
             var response = new GenericResponse<bool>();
             try
             {
-                var result = await _vehicleRepository.GetById(id);
-                if (result.Error != null || result.Data == null)
-                    return response.ConvertError<bool>("Vehículo no encontrado.");
+                // comprobar que no tenga dependencias en las tablas hijas
+                var vehicle = await _vehicleRepository.Get(id, true);
+                if (!vehicle.Success)
+                {
+                    response.Error = vehicle.Error;
+                    return response;
+                }
+                // solo puede modificarlo el propietario
+                var current = await _userService.CurrentUser();
+                if (vehicle.Data!.UserId != current!.Id)
+                {
+                    response.Error = new ErrorResponse("No tienes permisos para eliminar este vehiculo.");
+                    return response;
+                }
 
-                var deleteResult = await _vehicleRepository.Delete(result.Data);
-                response.Data = deleteResult.Data;
+
+                if (vehicle.Data!.Trips.Any(x => x.Status == TripStatus.Available || x.Status == TripStatus.Full))
+                {
+                    response.Error = new ErrorResponse("No se puede eliminar el vehiculo porque tiene viajes activos.");
+                    return response;
+                }
+                // Si no hay viajes activos, borramos todo
+                var trips = vehicle.Data.Trips.ToList();
+                var errors = new List<string>();
+                foreach (var trip in trips)
+                {
+                    var passengersResponse = await _tripRepository.ForceDeletePassengers(trip.Id);
+                    if (!passengersResponse.Success)
+                        errors.Add(passengersResponse.Error.Message);
+                    var tripResponse = await _tripRepository.ForceDelete(trip.Id);
+                    if (!tripResponse.Success)
+                        errors.Add(tripResponse.Error.Message);
+                }
+                if (errors.Count > 0)
+                {
+                    response.Error = new ErrorResponse(string.Join(", ", errors));
+                    return response;
+                }
+
+
+                var result = await _vehicleRepository.ForceDelete(id);
+                if (!result.Success)
+                {
+                    response.Error = result.Error;
+                    return response;
+                }
+
+                response.Data = result.Data;
             }
             catch (Exception ex)
             {
@@ -186,13 +260,38 @@ namespace GestorViajes.Services.Vehicle
             return response;
         }
 
+        public async Task<GenericResponse<bool>> Exists(Expression<Func<Vehicle, bool>> predicate)
+        {
+            var response = new GenericResponse<bool>();
+            try
+            {
+                var result = await _vehicleRepository.Exists(predicate);
+                if (!result.Success)
+                {
+                    response.Error = result.Error;
+                    return response;
+                }
+
+                response.Data = result.Data;
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorResponse(ex);
+            }
+            return response;
+        }
         public async Task<GenericResponse<List<VehicleViewModel>>> ListByUser(long userId)
         {
             var response = new GenericResponse<List<VehicleViewModel>>();
             try
             {
+                // Filtramos vehiculos que pertenecen al usuario
                 var result = await _vehicleRepository.List(v => v.UserId == userId);
-                if (result.Error != null) return result.ConvertError<List<VehicleViewModel>>();
+                if (!result.Success)
+                {
+                    response.Error = result.Error;
+                    return response;
+                }
 
                 response.Data = _mapper.Map<List<VehicleViewModel>>(result.Data);
             }
@@ -203,9 +302,22 @@ namespace GestorViajes.Services.Vehicle
             return response;
         }
 
-        public async Task<GenericResponse<bool>> Exists(Expression<Func<Models.EFCore.Rove.Vehicle, bool>> predicate)
+        public async Task<GenericResponse<List<SelectListItem>>> DropdownByUser()
         {
-            return await _vehicleRepository.Exists(predicate);
+            var user = await _userService.CurrentUser();
+            var vehicleResponse = await _vehicleRepository.List(x => x.Owner.Id == user!.Id && x.Active);
+            if (!vehicleResponse.Success)
+                return new GenericResponse<List<SelectListItem>>() { Error = vehicleResponse.Error };
+
+            try
+            {
+                var data = _mapper.Map<List<SelectListItem>>(vehicleResponse.Data);
+                return new GenericResponse<List<SelectListItem>>() { Data = data };
+            }
+            catch (Exception ex)
+            {
+                return new GenericResponse<List<SelectListItem>>() { Error = new ErrorResponse(ex) };
+            }
         }
     }
 }

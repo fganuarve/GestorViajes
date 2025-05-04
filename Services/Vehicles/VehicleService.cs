@@ -54,8 +54,8 @@ namespace GestorViajes.Services.Vehicles
 			var response = new GenericResponse<VehicleViewModel>();
 			try
 			{
-				var result = await _vehicleRepository.Get(id);
-				if (!result.Success)
+                var result = await _vehicleRepository.Get(id, true);
+                if (!result.Success)
 				{
 					response.Error = result.Error;
 					return response;
@@ -68,8 +68,27 @@ namespace GestorViajes.Services.Vehicles
 			}
 			return response;
 		}
+        public async Task<GenericResponse<bool>> HasActiveTrips(long id)
+        {
+            var response = new GenericResponse<bool>();
+            try
+            {
+                var result = await _vehicleRepository.Get(id, true);
+                if (!result.Success)
+                {
+                    response.Error = result.Error;
+                    return response;
+                }
+                response.Data = result.Data!.Trips.Any(x => x.Status == TripStatus.Available || x.Status == TripStatus.Full);
+            }
+            catch (Exception ex)
+            {
+                response.Error = new ErrorResponse(ex);
+            }
+            return response;
+        }
 
-		public async Task<GenericResponse<VehicleViewModel>> Add(VehicleViewModel model)
+        public async Task<GenericResponse<VehicleViewModel>> Add(VehicleViewModel model)
 		{
 			try
 			{

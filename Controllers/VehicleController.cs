@@ -89,6 +89,20 @@ namespace GestorViajes.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            var hasActiveTrips = await _vehicleService.HasActiveTrips(id);
+            if (!hasActiveTrips.Success)
+            {
+                TempData["status"] = "error";
+                TempData["message"] = hasActiveTrips.Error!.Message;
+                return RedirectToAction(nameof(Index));
+            }
+            if (hasActiveTrips.Data)
+            {
+                TempData["status"] = "warning";
+                TempData["message"] = "El vehículo tiene viajes activos, no se puede editar.";
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(response.Data);
         }
 

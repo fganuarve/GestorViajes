@@ -14,7 +14,7 @@ namespace GestorViajes.ViewModels
 
 		[Required(ErrorMessage = "La cantidad es obligatoria.")]
 		[Range(0.01, 1000000, ErrorMessage = "La cantidad debe ser mayor a 0.")]
-		[Display(Name = "Monto del ticket")]
+		[Display(Name = "Importe")]
 		public decimal Amount { get; set; }
 
 		[Display(Name = "Fecha de subida")]

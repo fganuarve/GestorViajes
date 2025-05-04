@@ -18,5 +18,6 @@ namespace GestorViajes.Services.Vehicles
         Task<GenericResponse<bool>> Exists(Expression<Func<Vehicle, bool>> predicate);
         Task<GenericResponse<List<VehicleViewModel>>> ListByUser(long userId);
         Task<GenericResponse<List<SelectListItem>>> DropdownByUser();
+        Task<GenericResponse<bool>> HasActiveTrips(long id);
     }
 }
